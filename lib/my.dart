@@ -19,7 +19,7 @@ class MyPage extends StatelessWidget {
           children: [
             InkWell(
               onTap: () {
-                // 사진 선택 다이얼로그 표시
+                
                 _showImagePickerDialog(context);
               },
               child: CircleAvatar(
@@ -32,76 +32,76 @@ class MyPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 10.0), // 버튼과 텍스트 필드 사이에 여백 추가
+            SizedBox(height: 10.0),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0),
               child: TextFormField(
-                textAlign: TextAlign.center, // 텍스트 가운데 정렬
+                textAlign: TextAlign.center, 
                 decoration: InputDecoration(
                   hintText: '사용자', 
-                  border: InputBorder.none, // 테두리 없음 설정
+                  border: InputBorder.none,
                 ),
               ),
             ),
-            SizedBox(height: 20.0), // 추가한 버튼 위에 여백 추가
+            SizedBox(height: 20.0), 
             TextButton(
               onPressed: () {
-                // 전체지도 기능 구현
+               
               },
               child: Text(
                 '전체지도',
-                style: TextStyle(letterSpacing: 1.5), // 글자 간격 조정
+                style: TextStyle(letterSpacing: 1.5), 
               ),
             ),
             TextButton(
               onPressed: () {
-                // 지도나가기 기능 구현
+              
               },
               child: Text(
                 '지도나가기',
-                style: TextStyle(letterSpacing: 1.5), // 글자 간격 조정
+                style: TextStyle(letterSpacing: 1.5), 
               ),
             ),
             TextButton(
               onPressed: () {
-                // 이용약관 기능 구현
+                
               },
               child: Text(
                 '이용약관',
-                style: TextStyle(letterSpacing: 1.5), // 글자 간격 조정
+                style: TextStyle(letterSpacing: 1.5), 
               ),
             ),
             TextButton(
               onPressed: () {
-                // 버전 정보 표시 기능 구현
+                
               },
               child: Text(
                 '버전',
-                style: TextStyle(letterSpacing: 1.5), // 글자 간격 조정
+                style: TextStyle(letterSpacing: 1.5), 
               ),
             ),
             TextButton(
               onPressed: () {
-                // 로그아웃 기능 구현
+               
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()), // LoginPage는 로그인 페이지의 이름입니다.
+                  MaterialPageRoute(builder: (context) => LoginPage()), 
                 );
               },
               child: Text(
                 '로그아웃',
-                style: TextStyle(letterSpacing: 1.5), // 글자 간격 조정
+                style: TextStyle(letterSpacing: 1.5), 
               ),
             ),
             TextButton(
               onPressed: () {
-                // 탈퇴하기 기능 구현
+               
               },
               child: Text(
                 '탈퇴하기',
                 style: TextStyle(
-                  letterSpacing: 1.5, // 글자 간격 조정
-                  color: Colors.red, // 빨간색으로 변경
+                  letterSpacing: 1.5, 
+                  color: Colors.red, 
                 ),
               ),
             ),
@@ -111,7 +111,7 @@ class MyPage extends StatelessWidget {
     );
   }
 
-  // 이미지 선택 다이얼로그 표시 함수
+ 
   void _showImagePickerDialog(BuildContext context) {
     showDialog(
       context: context,
