@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'signup.dart';
+import 'find_id.dart';
+import 'find_pw.dart';
+import 'Home.dart'; 
 
 class LoginPage extends StatefulWidget {
   @override
@@ -43,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       children: [
         Text(
-          "앱이름",
+          "핀콕",
           style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
         ),
       ],
@@ -83,7 +86,6 @@ class _LoginPageState extends State<LoginPage> {
                 _isObscure ? Icons.visibility : Icons.visibility_off,
               ),
               onPressed: () {
-              
                 setState(() {
                   _isObscure = !_isObscure;
                 });
@@ -94,7 +96,13 @@ class _LoginPageState extends State<LoginPage> {
         ),
         SizedBox(height: 10),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            // 로그인 버튼이 클릭되었을 때 Home.dart 페이지로 이동
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Home()), 
+            );
+          },
           child: Text(
             "로그인",
             style: TextStyle(fontSize: 20),
@@ -122,14 +130,24 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _findID(context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => FindId()),
+        );
+      },
       child: Text("아이디 찾기"),
     );
   }
 
   Widget _forgotPassword(context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => FindPw()), 
+        );
+      },
       child: Text("비밀번호 찾기"),
     );
   }

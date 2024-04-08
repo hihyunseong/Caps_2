@@ -1,24 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'my.dart';
+import 'book.dart';
+import 'map.dart';
 
 class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+
   @override
-  _HomeState createState() => _HomeState();
+  State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
   late GoogleMapController _mapController;
-  Position? _currentPosition; 
-  Set<Marker> _markers = {}; 
-  bool _showPinButton = false; 
-  bool _showExpenseButton = false; 
-  int _selectedIndex = 0; 
+  Position? _currentPosition;
+  Marker? _marker;
+  bool _showPinButton = true;
+  bool _showExpenseButton = false;
+  int _selectedIndex = 0;
+  DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation(); 
+
+    _getCurrentLocation();
+  }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+
+    super.dispose();
   }
 
   void _getCurrentLocation() async {
@@ -37,7 +51,8 @@ class _HomeState extends State<Home> {
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
         return;
       }
     }
@@ -48,7 +63,15 @@ class _HomeState extends State<Home> {
 
     setState(() {
       _currentPosition = position;
+      _marker = _createMarker(position.latitude, position.longitude);
     });
+  }
+
+  Marker _createMarker(double lat, double lng) {
+    return Marker(
+      markerId: const MarkerId('current_location'),
+      position: LatLng(lat, lng),
+    );
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -58,42 +81,27 @@ class _HomeState extends State<Home> {
   }
 
   void _onMapTap(LatLng position) {
-    if (!_showPinButton) {
-      setState(() {
-        _markers.add(
-          Marker(
-            markerId: MarkerId(position.toString()),
-            position: position,
-            infoWindow: InfoWindow(
-              title: '마커',
-              snippet: '위치: ${position.latitude}, ${position.longitude}',
-            ),
-            onTap: () => _onMarkerTapped(position), 
-          ),
-        );
-        _showPinButton = true; 
-        _showExpenseButton = false; 
-      });
+    if (_showPinButton) {
+      // Add your logic here
     }
   }
 
   void _onMarkerTapped(LatLng position) {
     setState(() {
-      _markers.removeWhere((marker) => marker.position == position); 
-      _showPinButton = false; 
-      _showExpenseButton = false; 
+      _marker = null;
+      _showPinButton = true;
+      _showExpenseButton = false;
     });
   }
 
   void _addPin() {
     setState(() {
-      _showPinButton = false; 
-      _showExpenseButton = true; 
-    });
-  }
+    _showExpenseButton = true;
+  });
+}
 
   void _goToCurrentLocation() {
-    if (_currentPosition != null && _mapController != null) {
+    if (_currentPosition != null) {
       _mapController.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
@@ -111,68 +119,108 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void _showDatePickerDialog() async {
+    final selectedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2022),
+      lastDate: DateTime(2025),
+    );
+
+    if (selectedDate != null) {
+      setState(() {
+        _selectedDate = selectedDate;
+      });
+    }
+  }
+
+  void _decreaseDate() {
+    setState(() {
+      _selectedDate = _selectedDate.subtract(Duration(days: 1));
+    });
+  }
+
+  void _increaseDate() {
+    setState(() {
+      _selectedDate = _selectedDate.add(Duration(days: 1));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           GoogleMap(
-            onMapCreated: _onMapCreated, 
+            onMapCreated: (controller) => _onMapCreated(controller),
             initialCameraPosition: _currentPosition != null
                 ? CameraPosition(
                     target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
                     zoom: 15,
                   )
-                : CameraPosition(
-                    target: LatLng(37.006547, 127.226156), 
+                : const CameraPosition(
+                    target: LatLng(37.006547, 127.226156),
                     zoom: 15,
-                  ), 
-            myLocationEnabled: true, 
+                  ),
+            myLocationEnabled: true,
             myLocationButtonEnabled: false,
-            zoomControlsEnabled: false, 
-            onTap: _onMapTap, 
-            markers: _markers, 
+            zoomControlsEnabled: false,
+            onTap: _onMapTap,
+            markers: _marker != null ? Set<Marker>.from([_marker!]) : {},
+            onCameraMove: (position) {
+              if (_marker != null) {
+                setState(() {
+                  _marker = _marker!.copyWith(
+                    positionParam: position.target,
+                  );
+                });
+              }
+            },
           ),
-          if (_showPinButton) 
+          if (_showPinButton)
             Positioned(
-              bottom: 32.0,
+              bottom: 120.0,
               left: 0,
               right: 0,
               child: Center(
-                child: ElevatedButton.icon(
-                  onPressed: _addPin, 
-                  icon: Image.asset(
-                    'assets/pin.png', 
-                    width: 24.0, 
-                    height: 24.0, 
-                  ),
-                  label: Text(
+                child: ElevatedButton(
+                  onPressed: _addPin,
+                  child: const Text(
                     '여기에 핀 꽂기',
-                    style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    style: TextStyle(fontSize: 14.0, color: Colors.white),
                   ),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), 
-                    fixedSize: MaterialStateProperty.all<Size>(Size(200.0, 50.0)),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                    fixedSize:
+                        MaterialStateProperty.all<Size>(Size(150.0, 50.0)),
                   ),
                 ),
               ),
             ),
-          if (_showExpenseButton) 
+          if (_showExpenseButton)
             Positioned(
-              bottom: 32.0,
+              bottom: 120.0,
               left: 0,
               right: 0,
               child: Center(
                 child: ElevatedButton.icon(
-                  onPressed: () {}, 
-                  icon: Icon(Icons.account_balance_wallet), 
-                  label: Text(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Book()),
+                    );
+                  },
+                  icon: const Icon(Icons.account_balance_wallet),
+                  label: const Text(
                     '가계부',
-                    style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    style: TextStyle(fontSize: 14.0, color: Colors.white),
                   ),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.orange), 
-                    fixedSize: MaterialStateProperty.all<Size>(Size(200.0, 50.0)),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.orange),
+                    fixedSize:
+                        MaterialStateProperty.all<Size>(Size(150.0, 50.0)),
                   ),
                 ),
               ),
@@ -183,15 +231,16 @@ class _HomeState extends State<Home> {
             child: Material(
               elevation: 0,
               color: Colors.transparent,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
               child: IconButton(
-                onPressed: () {}, 
-                icon: Icon(Icons.settings, color: Colors.black, size: 28.0), 
+                onPressed: () {},
+                icon:
+                    const Icon(Icons.settings, color: Colors.black, size: 28.0),
               ),
             ),
           ),
           Positioned(
-            bottom: 16.0,
+            bottom: 120.0,
             right: 16.0,
             child: InkWell(
               onTap: _goToCurrentLocation,
@@ -205,30 +254,99 @@ class _HomeState extends State<Home> {
                       color: Colors.black.withOpacity(0.3),
                       blurRadius: 5.0,
                       spreadRadius: 1.0,
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-                child: Icon(Icons.my_location, color: Colors.black, size: 28.0), 
+                child: const Icon(Icons.my_location,
+                    color: Colors.black, size: 28.0),
+              ),
+            ),
+          ),
+          Positioned(
+            left: 16.0,
+            top: 16.0,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.85,
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.search),
+                  SizedBox(width: 8.0),
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: '검색',
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.home),
+
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          height: 60,
+          child: BottomAppBar(
+            shape: const CircularNotchedRectangle(),
+            notchMargin: 8.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.home),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MapPage()),
+                    );
+                  },
+                  icon: const Icon(Icons.map),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyPage()),
+                    );
+                  },
+                  icon: const Icon(Icons.person),
+                ),
+              ],
             ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.person),
-            ),
-          ],
+          ),
         ),
+      ),
+      extendBody: true,
+      bottomSheet: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+            onPressed: _decreaseDate,
+            icon: const Icon(Icons.arrow_back),
+          ),
+          TextButton(
+            onPressed: _showDatePickerDialog,
+            child: Text(
+              '${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}',
+            ),
+          ),
+          IconButton(
+            onPressed: _increaseDate,
+            icon: const Icon(Icons.arrow_forward),
+          ),
+        ],
       ),
     );
   }

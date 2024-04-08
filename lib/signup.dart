@@ -27,7 +27,7 @@ class SignupPage extends StatelessWidget {
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                // 사용자가 약관에 동의하면 회원가입 절차를 진행합니다.
+                // 사용자가 약관에 동의하면 회원가입 절차를 진행
                 _showConfirmationDialog(context);
               },
               child: Text('약관에 동의합니다'),
@@ -35,7 +35,7 @@ class SignupPage extends StatelessWidget {
             SizedBox(height: 10.0),
             ElevatedButton(
               onPressed: () {
-                // 사용자가 약관에 동의하지 않으면 이전 페이지로 돌아갑니다.
+                // 사용자가 약관에 동의하지 않으면 이전 페이지로 돌아감
                 Navigator.pop(context);
               },
               child: Text('약관에 동의하지 않습니다'),
@@ -106,7 +106,7 @@ class _SignupFormPageState extends State<SignupFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('앱이름'),
+        title: Text('.'),
       ),
       body: Container(
         padding: EdgeInsets.all(10.0),
@@ -137,8 +137,8 @@ class _SignupFormPageState extends State<SignupFormPage> {
             SizedBox(height: 8.0),
             ElevatedButton(
               onPressed: () {
-                // 회원가입 절차를 완료하고 다음 단계로 진행합니다.
-                // 예를 들어, 회원가입 정보를 서버에 전송하고 홈 화면으로 이동할 수 있습니다.
+                // 회원가입 절차를 완료하고 다음 단계로 진행
+                // 회원가입 정보를 서버에 전송하고 홈 화면으로 이동
               },
               child: Text('인증요청'),
             ),
