@@ -6,7 +6,7 @@ class FindId extends StatefulWidget {
 }
 
 class _FindIdState extends State<FindId> {
-  String _selectedCountryCode = '+82'; // 기본값은 +82
+  String _selectedCountryCode = '+82'; 
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _FindIdState extends State<FindId> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // 확인 버튼 클릭 시 처리
+                
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -81,7 +81,7 @@ class _FindIdState extends State<FindId> {
           _selectedCountryCode = value!;
         });
       },
-      items: <String>['+82', '+1', '+86', '+91'] // 여기에 필요한 국가 코드를 추가하세요
+      items: <String>['+82', '+1', '+86', '+91']
           .map((String value) {
         return DropdownMenuItem<String>(
           value: value,
