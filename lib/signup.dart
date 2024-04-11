@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:caps_2/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -109,50 +108,6 @@ class _SignupFormPageState extends State<SignupFormPage> {
   void _completeSignup(BuildContext context) {
     _registerUser().then((response) {
       print(response.body);
-      if(response.statusCode == 200){
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        final String name = responseData['name'];
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('회원가입 성공'),
-              content: Text(name + '님 회원가입을 축하합니다. 로그인 페이지로 이동합니다.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                    );
-                  },
-                  child: Text('확인'),
-                ),
-              ],
-            );
-          },
-        );
-
-      }else{
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text(response.body),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-      }
     });
   }
 
