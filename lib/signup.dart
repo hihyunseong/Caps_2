@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:caps_2/login.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class SignupPage extends StatelessWidget {
   @override
@@ -102,6 +106,77 @@ class _SignupFormPageState extends State<SignupFormPage> {
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
+  void _completeSignup(BuildContext context) {
+    _registerUser().then((response) {
+      print(response.body);
+      if(response.statusCode == 200){
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final String name = responseData['name'];
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('회원가입 성공'),
+              content: Text(name + '님 회원가입을 축하합니다. 로그인 페이지로 이동합니다.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
+                  },
+                  child: Text('확인'),
+                ),
+              ],
+            );
+          },
+        );
+
+      }else{
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text(response.body),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    });
+  }
+
+  Future<http.Response> _registerUser() async {
+    final url = Uri.http('43.202.127.16:8080','/api/v1/members/register');
+
+    final response = await http.post(
+      url,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'email': _idController.text,
+        'password': _passwordController.text,
+        'username': _nameController.text,
+        'phone': _phoneController.text,
+      }),
+    );
+
+    return response;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,6 +216,14 @@ class _SignupFormPageState extends State<SignupFormPage> {
                 // 회원가입 정보를 서버에 전송하고 홈 화면으로 이동
               },
               child: Text('인증요청'),
+            ),
+            SizedBox(height: 10.0),
+            ElevatedButton(
+              onPressed: () {
+                // 회원가입 버튼이 클릭되었을 때의 동작을 정의
+                _completeSignup(context);
+              },
+              child: Text('회원가입'),
             ),
           ],
         ),

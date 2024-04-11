@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
+import 'friends/friends.dart';
+import 'home.dart';
 
 class MyPage extends StatelessWidget {
   @override
@@ -9,7 +11,9 @@ class MyPage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => Home()),
+            );
           },
         ),
       ),
@@ -19,7 +23,6 @@ class MyPage extends StatelessWidget {
           children: [
             InkWell(
               onTap: () {
-                
                 _showImagePickerDialog(context);
               },
               child: CircleAvatar(
@@ -36,72 +39,71 @@ class MyPage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0),
               child: TextFormField(
-                textAlign: TextAlign.center, 
+                textAlign: TextAlign.center,
                 decoration: InputDecoration(
-                  hintText: '사용자', 
+                  hintText: '사용자',
                   border: InputBorder.none,
                 ),
               ),
             ),
-            SizedBox(height: 20.0), 
+            SizedBox(height: 20.0),
             TextButton(
-              onPressed: () {
-               
+               onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Friends()),
+                );
               },
+              child: Text(
+                '친구리스트',
+                style: TextStyle(letterSpacing: 1.5),
+              ),
+            ),
+            TextButton(
+              onPressed: () {},
               child: Text(
                 '전체지도',
-                style: TextStyle(letterSpacing: 1.5), 
+                style: TextStyle(letterSpacing: 1.5),
               ),
             ),
             TextButton(
-              onPressed: () {
-              
-              },
-              child: Text(
-                '지도나가기',
-                style: TextStyle(letterSpacing: 1.5), 
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                
-              },
+              onPressed: () {},
               child: Text(
                 '이용약관',
-                style: TextStyle(letterSpacing: 1.5), 
+                style: TextStyle(letterSpacing: 1.5),
               ),
             ),
             TextButton(
-              onPressed: () {
-                
-              },
+              onPressed: () {},
               child: Text(
                 '버전',
-                style: TextStyle(letterSpacing: 1.5), 
+                style: TextStyle(letterSpacing: 1.5),
               ),
             ),
             TextButton(
               onPressed: () {
-               
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()), 
+                  MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               },
               child: Text(
                 '로그아웃',
-                style: TextStyle(letterSpacing: 1.5), 
+                style: TextStyle(letterSpacing: 1.5),
               ),
             ),
             TextButton(
               onPressed: () {
-               
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
               },
               child: Text(
                 '탈퇴하기',
                 style: TextStyle(
-                  letterSpacing: 1.5, 
-                  color: Colors.red, 
+                  letterSpacing: 1.5,
+                  color: Colors.red,
                 ),
               ),
             ),
@@ -111,7 +113,6 @@ class MyPage extends StatelessWidget {
     );
   }
 
- 
   void _showImagePickerDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -124,8 +125,7 @@ class MyPage extends StatelessWidget {
                 GestureDetector(
                   child: Text('갤러리에서 선택'),
                   onTap: () {
-                    // 갤러리에서 이미지 선택
-                    // 선택된 이미지를 처리하거나 저장하는 로직을 추가해야 합니다.
+                    // 선택된 이미지를 처리하거나 저장하는 로직을 추가
                     Navigator.of(context).pop();
                   },
                 ),
@@ -133,8 +133,7 @@ class MyPage extends StatelessWidget {
                 GestureDetector(
                   child: Text('카메라로 촬영'),
                   onTap: () {
-                    // 카메라로 촬영하여 이미지 선택
-                    // 선택된 이미지를 처리하거나 저장하는 로직을 추가해야 합니다.
+                    // 선택된 이미지를 처리하거나 저장하는 로직을 추가
                     Navigator.of(context).pop();
                   },
                 ),

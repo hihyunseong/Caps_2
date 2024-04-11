@@ -46,7 +46,7 @@ class _FindPwState extends State<FindPw2> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // 확인 버튼 클릭 시 find_pw3.dart 페이지로 이동
+               
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => FindPw3()), 
@@ -86,7 +86,7 @@ class _FindPwState extends State<FindPw2> {
           _selectedCountryCode = value!;
         });
       },
-      items: <String>['+82', '+1', '+86', '+91'] // 여기에 필요한 국가 코드를 추가하세요
+      items: <String>['+82', '+1', '+86', '+91'] // 여기에 필요한 국가 코드 추가
           .map((String value) {
         return DropdownMenuItem<String>(
           value: value,
