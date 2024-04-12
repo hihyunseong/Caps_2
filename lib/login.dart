@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -18,6 +19,8 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _idController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
+  static final storage = FlutterSecureStorage();
+
   bool _isObscure = true;
 
   void Login(BuildContext context) {
@@ -25,13 +28,21 @@ class _LoginPageState extends State<LoginPage> {
       print(response.body);
       if(response.statusCode == 200){
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        final String name = responseData['name'];
+        final Map<String, String> header = response.headers;
+
+        storage.write(key: 'idx', value: responseData['idx'].toString());
+        storage.write(key: 'email', value: responseData['email']);
+        storage.write(key: 'name', value: responseData['name']);
+        storage.write(key: 'profile', value: responseData['profile']);
+        storage.write(key: 'accToken', value: header['authorization']);
+        storage.write(key: 'refToken', value: header['x-refresh-token']);
+
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('로그인'),
-              content: Text(name + '님 환영합니다.'),
+              content: Text(responseData['name'] + '님 환영합니다.'),
               actions: [
                 TextButton(
                   onPressed: () {
