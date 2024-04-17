@@ -94,7 +94,6 @@ class _FindPwState extends State<FindPw2> {
         );
       }).toList(),
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.flag),
         border: OutlineInputBorder(),
       ),
     );

@@ -89,7 +89,6 @@ class _FindIdState extends State<FindId> {
         );
       }).toList(),
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.flag),
         border: OutlineInputBorder(),
       ),
     );

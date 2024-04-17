@@ -5,12 +5,10 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:widget_to_marker/widget_to_marker.dart';
 import 'models/expense.dart';
 import 'widgets/my_marker.dart';
-import 'share_map.dart';
-import 'my_map.dart';
 import 'my.dart';
 import 'book.dart';
-import 'map.dart';
 import 'home_setting.dart';
+import 'map_plus.dart';
 
 final List<Expense> expenses = [];
 
@@ -20,6 +18,8 @@ class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
 }
+
+  bool isBottomBarVisible = false;
 
 class _HomeState extends State<Home> {
   late GoogleMapController _mapController;
@@ -131,7 +131,7 @@ class _HomeState extends State<Home> {
           CameraPosition(
             target:
                 LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-            zoom: 15,
+            zoom: 19,
           ),
         ),
       );
@@ -191,11 +191,11 @@ class _HomeState extends State<Home> {
                   ? CameraPosition(
                       target: LatLng(_currentPosition!.latitude,
                           _currentPosition!.longitude),
-                      zoom: 15,
+                      zoom: 17,
                     )
                   : const CameraPosition(
                       target: LatLng(37.006547, 127.226156),
-                      zoom: 15,
+                      zoom: 17,
                     ),
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
@@ -363,50 +363,74 @@ class _HomeState extends State<Home> {
         child: SizedBox(
           height: 60,
           child: BottomAppBar(
-            shape: const CircularNotchedRectangle(),
+            shape: const CircularNotchedRectangle(),  
             notchMargin: 8.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.home),
+                Expanded(
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.home),
+                  ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyMap()),
-                    );
-                  },
-                  icon: const Icon(Icons.map),
+                /// 나의 맵 하단바
+               Expanded(
+                  child: Container(
+                    alignment: Alignment.bottomCenter,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _showSlidingPanel(context);
+                        setState(() {
+                          isBottomBarVisible = !isBottomBarVisible;
+                        });
+                      },
+                      child: Icon(Icons.map,color: Colors.black),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent), 
+                        elevation: MaterialStateProperty.all<double>(0), 
+                      ),
+                    ),
+                  ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ShareMap()),
-                    );
-                  },
-                  icon: const Icon(Icons.map),
+                /// 공유맵 하단바
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.bottomCenter,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _showSlidingPanel2(context);
+                        setState(() {
+                          isBottomBarVisible = !isBottomBarVisible;
+                        });
+                      },
+                      child: Icon(Icons.circle,color: Colors.black),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent), 
+                        elevation: MaterialStateProperty.all<double>(0), 
+                      ),
+                    ),
+                  ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyPage()),
+                Expanded(
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyPage()),
                     );
                   },
                   icon: const Icon(Icons.person),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
-      extendBody: true,
-    );
-  }
+    ),
+    extendBody: true,
+  );
+}
 
   Widget _slidingPanel() {
     return Container(
@@ -485,3 +509,106 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+/// 나의 맵 하단바 
+void _showSlidingPanel(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (context) => SlidingUpPanel(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20.0),
+        topRight: Radius.circular(20.0),
+      ),
+      minHeight: 1500,
+      maxHeight: MediaQuery.of(context).size.height * 0.7,
+      panel: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded( 
+                  child: Text('나의맵', textAlign: TextAlign.center, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// 공유맵 하단바
+void _showSlidingPanel2(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (context) => Scaffold(
+      backgroundColor: Colors.transparent,
+      body: SlidingUpPanel(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0),
+        ),
+        minHeight: 1500,
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        panel: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded( 
+                    child: Text(
+                      '공유맵',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 5.0),
+              Center(
+                child: Text(
+                  '친구들과 함께 지도를 작성해보세요!',
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+           Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MapPlus()),
+          );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.white,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    ),
+  );
+}
+
+
+
