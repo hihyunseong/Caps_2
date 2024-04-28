@@ -25,6 +25,7 @@ mixin _$Expense {
   String get content => throw _privateConstructorUsedError;
   String get memo => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
+  String? get imagePath => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -41,7 +42,8 @@ abstract class $ExpenseCopyWith<$Res> {
       Category category,
       String content,
       String memo,
-      DateTime date});
+      DateTime date,
+      String? imagePath});
 }
 
 /// @nodoc
@@ -62,6 +64,7 @@ class _$ExpenseCopyWithImpl<$Res, $Val extends Expense>
     Object? content = null,
     Object? memo = null,
     Object? date = null,
+    Object? imagePath = freezed,
   }) {
     return _then(_value.copyWith(
       amount: null == amount
@@ -84,6 +87,10 @@ class _$ExpenseCopyWithImpl<$Res, $Val extends Expense>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      imagePath: freezed == imagePath
+          ? _value.imagePath
+          : imagePath // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -100,7 +107,8 @@ abstract class _$$ExpenseImplCopyWith<$Res> implements $ExpenseCopyWith<$Res> {
       Category category,
       String content,
       String memo,
-      DateTime date});
+      DateTime date,
+      String? imagePath});
 }
 
 /// @nodoc
@@ -119,6 +127,7 @@ class __$$ExpenseImplCopyWithImpl<$Res>
     Object? content = null,
     Object? memo = null,
     Object? date = null,
+    Object? imagePath = freezed,
   }) {
     return _then(_$ExpenseImpl(
       amount: null == amount
@@ -141,6 +150,10 @@ class __$$ExpenseImplCopyWithImpl<$Res>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      imagePath: freezed == imagePath
+          ? _value.imagePath
+          : imagePath // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -153,7 +166,8 @@ class _$ExpenseImpl implements _Expense {
       required this.category,
       required this.content,
       required this.memo,
-      required this.date});
+      required this.date,
+      this.imagePath});
 
   factory _$ExpenseImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExpenseImplFromJson(json);
@@ -168,10 +182,12 @@ class _$ExpenseImpl implements _Expense {
   final String memo;
   @override
   final DateTime date;
+  @override
+  final String? imagePath;
 
   @override
   String toString() {
-    return 'Expense(amount: $amount, category: $category, content: $content, memo: $memo, date: $date)';
+    return 'Expense(amount: $amount, category: $category, content: $content, memo: $memo, date: $date, imagePath: $imagePath)';
   }
 
   @override
@@ -184,13 +200,15 @@ class _$ExpenseImpl implements _Expense {
                 other.category == category) &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.memo, memo) || other.memo == memo) &&
-            (identical(other.date, date) || other.date == date));
+            (identical(other.date, date) || other.date == date) &&
+            (identical(other.imagePath, imagePath) ||
+                other.imagePath == imagePath));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, amount, category, content, memo, date);
+  int get hashCode => Object.hash(
+      runtimeType, amount, category, content, memo, date, imagePath);
 
   @JsonKey(ignore: true)
   @override
@@ -212,7 +230,8 @@ abstract class _Expense implements Expense {
       required final Category category,
       required final String content,
       required final String memo,
-      required final DateTime date}) = _$ExpenseImpl;
+      required final DateTime date,
+      final String? imagePath}) = _$ExpenseImpl;
 
   factory _Expense.fromJson(Map<String, dynamic> json) = _$ExpenseImpl.fromJson;
 
@@ -226,6 +245,8 @@ abstract class _Expense implements Expense {
   String get memo;
   @override
   DateTime get date;
+  @override
+  String? get imagePath;
   @override
   @JsonKey(ignore: true)
   _$$ExpenseImplCopyWith<_$ExpenseImpl> get copyWith =>

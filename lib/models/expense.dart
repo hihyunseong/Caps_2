@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'category.dart';
 part 'expense.freezed.dart';
 part 'expense.g.dart';
@@ -11,6 +12,7 @@ class Expense with _$Expense {
     required String content,
     required String memo,
     required DateTime date,
+    String? imagePath,
   }) = _Expense;
 
   factory Expense.fromJson(Map<String, dynamic> json) =>

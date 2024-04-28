@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 import 'home.dart';
 import 'models/category.dart';
 import 'models/expense.dart';
-
 
 class Book2 extends StatefulWidget {
   final double amount;
@@ -24,6 +26,7 @@ class _Book2State extends State<Book2> {
   final _contentController = TextEditingController();
   final _recordController = TextEditingController();
   final _additionalInfoController = TextEditingController();
+  XFile? _image;
 
   String _recordText = '20xx-xx-xx의 기록';
 
@@ -207,6 +210,14 @@ class _Book2State extends State<Book2> {
                   ),
                 ),
               ),
+              if (_image != null)
+                Expanded(
+                  child: Image.file(
+                    File(_image!.path),
+                    width: 100,
+                    height: 100,
+                  ),
+                ),
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
@@ -237,6 +248,7 @@ class _Book2State extends State<Book2> {
       content: _contentController.text,
       memo: _additionalInfoController.text,
       date: _selectedDate ?? DateTime.now(),
+      imagePath: _image?.path,
     );
 
     expenses.add(expense);
@@ -318,7 +330,7 @@ class _Book2State extends State<Book2> {
       },
     );
   }
-  
+
   void _showImagePickerDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -330,15 +342,34 @@ class _Book2State extends State<Book2> {
               children: <Widget>[
                 GestureDetector(
                   child: const Text('갤러리에서 선택'),
-                  onTap: () {
-                    // 선택된 이미지를 처리하거나 저장하는 로직을 추가
+                  onTap: () async {
+                    final ImagePicker picker = ImagePicker();
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.gallery,
+                    );
+                    if (image != null) {
+                      
+                      setState(() {
+                        _image = image;
+                      });
+                    }
+                    Navigator.of(context).pop(); 
                   },
                 ),
                 const SizedBox(height: 10.0),
                 GestureDetector(
                   child: const Text('카메라로 촬영'),
-                  onTap: () {
-                    Navigator.of(context).pop();
+                  onTap: () async {
+                    final ImagePicker picker = ImagePicker();
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.camera,
+                    );
+                    if (image != null) {
+                      setState(() {
+                        _image = image;
+                      });
+                    }
+                    Navigator.of(context).pop(); 
                   },
                 ),
               ],

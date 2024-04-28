@@ -7,6 +7,7 @@ _$ExpenseImpl _$$ExpenseImplFromJson(Map<String, dynamic> json) =>
       content: json['content'] as String,
       memo: json['memo'] as String,
       date: DateTime.parse(json['date'] as String),
+      imagePath: json['imagePath'] as String?,
     );
 
 Map<String, dynamic> _$$ExpenseImplToJson(_$ExpenseImpl instance) =>
@@ -16,6 +17,7 @@ Map<String, dynamic> _$$ExpenseImplToJson(_$ExpenseImpl instance) =>
       'content': instance.content,
       'memo': instance.memo,
       'date': instance.date.toIso8601String(),
+      'imagePath': instance.imagePath,
     };
 
 const _$CategoryEnumMap = {

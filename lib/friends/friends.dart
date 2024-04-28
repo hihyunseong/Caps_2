@@ -89,7 +89,7 @@ class _FriendsState extends State<Friends> {
                           },
                         ),
                       ),
-                      Text('신현성',
+                      Text('홍길동',
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,

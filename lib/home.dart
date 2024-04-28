@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,6 +11,8 @@ import 'my.dart';
 import 'book.dart';
 import 'home_setting.dart';
 import 'map_plus.dart';
+import 'map/my_map.dart';
+import 'map/share_map.dart';
 
 final List<Expense> expenses = [];
 
@@ -19,7 +23,7 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-  bool isBottomBarVisible = false;
+bool isBottomBarVisible = false;
 
 class _HomeState extends State<Home> {
   late GoogleMapController _mapController;
@@ -89,14 +93,11 @@ class _HomeState extends State<Home> {
   }
 
   void _onMapTap(LatLng position) {
-    if (_showPinButton) {
-     
-    }
+    if (_showPinButton) {}
   }
 
   void _onMarkerTapped(LatLng position) {
-    setState(() {
-    });
+    setState(() {});
   }
 
   Future<void> _addPin(LatLng pinLocation) async {
@@ -177,7 +178,7 @@ class _HomeState extends State<Home> {
       body: SlidingUpPanel(
         panel: _slidingPanel(),
         border: Border.all(color: Colors.grey),
-        borderRadius: const BorderRadius.only(  
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(24.0),
           topRight: Radius.circular(24.0),
         ),
@@ -194,7 +195,7 @@ class _HomeState extends State<Home> {
                       zoom: 17,
                     )
                   : const CameraPosition(
-                      target: LatLng(37.006547, 127.226156),
+                      target: LatLng(35.43, 127.269311),
                       zoom: 17,
                     ),
               myLocationEnabled: true,
@@ -289,11 +290,12 @@ class _HomeState extends State<Home> {
                 color: Colors.transparent,
                 shape: const CircleBorder(),
                 child: IconButton(
-                  onPressed: () {Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeSetting()),
-                  );
-                },
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeSetting()),
+                    );
+                  },
                   icon: const Icon(Icons.settings,
                       color: Colors.black, size: 28.0),
                 ),
@@ -349,7 +351,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-          
+
             // 고정 핀 이미지
             Positioned(
               top: MediaQuery.of(context).size.height * 0.5 - 70,
@@ -363,7 +365,7 @@ class _HomeState extends State<Home> {
         child: SizedBox(
           height: 60,
           child: BottomAppBar(
-            shape: const CircularNotchedRectangle(),  
+            shape: const CircularNotchedRectangle(),
             notchMargin: 8.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -374,8 +376,9 @@ class _HomeState extends State<Home> {
                     icon: const Icon(Icons.home),
                   ),
                 ),
+
                 /// 나의 맵 하단바
-               Expanded(
+                Expanded(
                   child: Container(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
@@ -385,14 +388,16 @@ class _HomeState extends State<Home> {
                           isBottomBarVisible = !isBottomBarVisible;
                         });
                       },
-                      child: Icon(Icons.map,color: Colors.black),
+                      child: Icon(Icons.map, color: Colors.black),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent), 
-                        elevation: MaterialStateProperty.all<double>(0), 
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        elevation: MaterialStateProperty.all<double>(0),
                       ),
                     ),
                   ),
                 ),
+
                 /// 공유맵 하단바
                 Expanded(
                   child: Container(
@@ -404,10 +409,11 @@ class _HomeState extends State<Home> {
                           isBottomBarVisible = !isBottomBarVisible;
                         });
                       },
-                      child: Icon(Icons.circle,color: Colors.black),
+                      child: Icon(Icons.circle, color: Colors.black),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent), 
-                        elevation: MaterialStateProperty.all<double>(0), 
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        elevation: MaterialStateProperty.all<double>(0),
                       ),
                     ),
                   ),
@@ -418,26 +424,25 @@ class _HomeState extends State<Home> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => MyPage()),
-                    );
-                  },
-                  icon: const Icon(Icons.person),
+                      );
+                    },
+                    icon: const Icon(Icons.person),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ),
-    extendBody: true,
-  );
-}
+      extendBody: true,
+    );
+  }
 
   Widget _slidingPanel() {
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          
           Container(
             width: 40,
             height: 4,
@@ -474,32 +479,43 @@ class _HomeState extends State<Home> {
               itemBuilder: (context, index) {
                 final expense = expenses[index];
 
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.grey[200],
-                    child: Icon(expense.category.icon),
-                  ),
-                  title: Text(
-                    expense.content,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                return Column(
+                  children: [
+                    ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.grey[200],
+                        child: Icon(expense.category.icon),
+                      ),
+                      title: Text(
+                        expense.content,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        expense.memo,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: Text(
+                        '${expense.amount.toInt()} 원',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    expense.memo,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  trailing: Text(
-                    '${expense.amount.toInt()} 원',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                    expense.imagePath != null
+                        ? Image.file(
+                            File(expense.imagePath!),
+                            width: 100,
+                            height: 100,
+                          )
+                        : const SizedBox.shrink(),
+                  ],
                 );
               },
             ),
@@ -510,7 +526,7 @@ class _HomeState extends State<Home> {
   }
 }
 
-/// 나의 맵 하단바 
+/// 나의 맵 하단바
 void _showSlidingPanel(BuildContext context) {
   showModalBottomSheet(
     context: context,
@@ -529,8 +545,12 @@ void _showSlidingPanel(BuildContext context) {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded( 
-                  child: Text('나의맵', textAlign: TextAlign.center, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                Expanded(
+                  child: Text(
+                    '나의맵',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                 ),
                 IconButton(
@@ -540,6 +560,30 @@ void _showSlidingPanel(BuildContext context) {
                   },
                 ),
               ],
+            ),
+            SizedBox(height: 20),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyMap()),
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.purple[100],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    '기본맵',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -569,11 +613,12 @@ void _showSlidingPanel2(BuildContext context) {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded( 
+                  Expanded(
                     child: Text(
                       '공유맵',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold),
                     ),
                   ),
                   IconButton(
@@ -591,13 +636,38 @@ void _showSlidingPanel2(BuildContext context) {
                   style: TextStyle(fontSize: 16.0),
                 ),
               ),
+              SizedBox(height: 20), // 새로 추가된 부분
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ShareMap()),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.purple[100],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      '기본맵',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-           Navigator.push(
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => MapPlus()),
           );
@@ -609,6 +679,3 @@ void _showSlidingPanel2(BuildContext context) {
     ),
   );
 }
-
-
-

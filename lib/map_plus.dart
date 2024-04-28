@@ -22,6 +22,12 @@ class _MapPlusState extends State<MapPlus> {
         selectedDate = picked;
       });
   }
+  void _navigateToMapPlus(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => MapPlus()),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +213,7 @@ class _MapPlusState extends State<MapPlus> {
               child: SizedBox(
                 child: ElevatedButton(
                   onPressed: () {
+                    _navigateToMapPlus(context);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 100.0), 
