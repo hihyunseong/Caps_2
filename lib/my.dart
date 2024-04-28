@@ -2,20 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-<<<<<<< HEAD
 import 'package:image_picker/image_picker.dart';
-=======
->>>>>>> 2a06014e4fc2630229c467b31b64023e4121e6d5
 import 'login.dart';
 import 'friends/friends.dart';
 import 'home.dart';
 
-<<<<<<< HEAD
 class MyPage extends StatefulWidget {
-=======
-class MyPage extends StatelessWidget {
-
->>>>>>> 2a06014e4fc2630229c467b31b64023e4121e6d5
   static final storage = FlutterSecureStorage();
 
   static String? idx;
@@ -24,11 +16,7 @@ class MyPage extends StatelessWidget {
   static String? accToken;
   static String? refToken;
 
-<<<<<<< HEAD
   static void UserInfo() async {
-=======
-  static void UserInfo() async{
->>>>>>> 2a06014e4fc2630229c467b31b64023e4121e6d5
     idx = await storage.read(key: 'idx');
     email = await storage.read(key: 'email');
     name = await storage.read(key: 'name');
@@ -36,7 +24,6 @@ class MyPage extends StatelessWidget {
     refToken = await storage.read(key: 'refToken');
   }
 
-<<<<<<< HEAD
   @override
   State<MyPage> createState() => _MyPageState();
 }
@@ -44,11 +31,8 @@ class MyPage extends StatelessWidget {
 class _MyPageState extends State<MyPage> {
   XFile? _image;
 
-=======
->>>>>>> 2a06014e4fc2630229c467b31b64023e4121e6d5
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -124,19 +108,13 @@ class _MyPageState extends State<MyPage> {
               ),
             ),
             TextButton(
-<<<<<<< HEAD
               onPressed: () {
                 MyPage.UserInfo();
-=======
-              onPressed: (){
-                UserInfo();
->>>>>>> 2a06014e4fc2630229c467b31b64023e4121e6d5
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text('사용자 정보'),
-<<<<<<< HEAD
                       content: Text('idx :' +
                           MyPage.idx.toString() +
                           "\n" +
@@ -155,19 +133,6 @@ class _MyPageState extends State<MyPage> {
                     );
                   },
                 );
-=======
-                      content: Text(
-                        'idx :' + idx.toString() + "\n"+
-                        '이름 :' + name.toString() + "\n"+
-                        '이메일 :' + email.toString() + "\n"+
-                        '엑세스 토큰 :' + accToken.toString() + "\n"+
-                        '리프레시 토큰 :' + refToken.toString() + "\n"
-                      ),
-                    );
-                  },
-                );
-
->>>>>>> 2a06014e4fc2630229c467b31b64023e4121e6d5
               },
               child: Text(
                 '버전',

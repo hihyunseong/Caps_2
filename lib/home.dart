@@ -195,7 +195,7 @@ class _HomeState extends State<Home> {
                       zoom: 17,
                     )
                   : const CameraPosition(
-                      target: LatLng(35.43, 127.269311),
+                      target: LatLng(37.006547, 127.226156),
                       zoom: 17,
                     ),
               myLocationEnabled: true,
