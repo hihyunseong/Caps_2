@@ -1,14 +1,109 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:caps_2/my.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+
+
 
 class Friends extends StatefulWidget {
+
+  static final storage = FlutterSecureStorage();
+
+  static String? idx;
+  static String? email;
+  static String? name;
+  static String? accToken;
+  static String? refToken;
+
+  static void _read() async{
+    idx = await storage.read(key: 'idx');
+    email = await storage.read(key: 'email');
+    name = await storage.read(key: 'name');
+    accToken = await storage.read(key: 'accToken');
+    refToken = await storage.read(key: 'refToken');
+  }
+
   @override
   _FriendsState createState() => _FriendsState();
 }
 
 class _FriendsState extends State<Friends> {
   bool isBottomBarVisible = false;
+
+  static final String memberUrl = "43.202.127.16:8080";
+  static final String friendUrl = "43.202.127.16:8081";
+
+  static Future<http.Response> _searchFriend(String email) async{
+    final url = Uri.http(memberUrl,'/api/v1/members/'+email);
+
+    final response = await http.get(
+      url,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json',
+      }
+    );
+
+    return response;
+  }
+
+  static Future<http.Response> _getFriendsList() async{
+    final url = Uri.http(friendUrl,'/api/v1/friends/list');
+
+    final response = await http.get(
+        url,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          'Content-Type': 'application/json',
+        }
+    );
+
+    return response;
+  }
+
+  static Future<http.Response> _getFriendRequest() async{
+    final url = Uri.http(friendUrl,'/api/v1/friends/request');
+
+    final response = await http.get(
+        url,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          'Content-Type': 'application/json',
+        }
+    );
+
+    return response;
+  }
+
+  static Future<http.Response> _acceptFriend(String friendIdx) async {
+    final url = Uri.http(friendUrl, '/api/v1/members/accept' + friendIdx);
+
+    final response = await http.get(
+        url,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          'Content-Type': 'application/json',
+        }
+    );
+    return response;
+  }
+
+  static Future<http.Response> _declineFriend(String friendIdx) async {
+    final url = Uri.http(friendUrl,'/api/v1/members/decline/' + friendIdx);
+
+    final response = await http.get(
+        url,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          'Content-Type': 'application/json',
+        }
+    );
+    return response;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +222,7 @@ class _FriendsState extends State<Friends> {
 
 /// 친구추가 하단바
 void _showSlidingPanel(BuildContext context) {
+  final TextEditingController _emailController = TextEditingController();
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
@@ -175,7 +271,9 @@ void _showSlidingPanel(BuildContext context) {
                 ),
                 SizedBox(width: 10.0),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // _FriendsState._searchFriend()
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),

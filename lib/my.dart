@@ -16,7 +16,7 @@ class MyPage extends StatefulWidget {
   static String? accToken;
   static String? refToken;
 
-  static void UserInfo() async {
+  static void _read() async{
     idx = await storage.read(key: 'idx');
     email = await storage.read(key: 'email');
     name = await storage.read(key: 'name');
@@ -30,6 +30,11 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   XFile? _image;
+
+  @override
+  void initState(){
+    MyPage._read();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,8 +113,7 @@ class _MyPageState extends State<MyPage> {
               ),
             ),
             TextButton(
-              onPressed: () {
-                MyPage.UserInfo();
+              onPressed: () async{
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {

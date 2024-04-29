@@ -23,26 +23,28 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isObscure = true;
 
+  void _write(Map<String, dynamic> responseData, Map<String, String> header){
+    storage.write(key: 'idx', value: responseData['idx'].toString());
+    storage.write(key: 'email', value: responseData['email']);
+    storage.write(key: 'name', value: responseData['name']);
+    storage.write(key: 'profile', value: responseData['profile']);
+    storage.write(key: 'accToken', value: header['authorization']);
+    storage.write(key: 'refToken', value: header['x-refresh-token']);
+  }
+
   void Login(BuildContext context) {
     _loginUser().then((response) {
       print(response.body);
       if(response.statusCode == 200){
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         final Map<String, String> header = response.headers;
-
-        storage.write(key: 'idx', value: responseData['idx'].toString());
-        storage.write(key: 'email', value: responseData['email']);
-        storage.write(key: 'name', value: responseData['name']);
-        storage.write(key: 'profile', value: responseData['profile']);
-        storage.write(key: 'accToken', value: header['authorization']);
-        storage.write(key: 'refToken', value: header['x-refresh-token']);
-
+        _write(responseData, header);// write  data
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('로그인'),
-              content: Text(responseData['name'] + '님 환영합니다.'),
+              content: Text(responseData['name']! + '님 환영합니다.'),
               actions: [
                 TextButton(
                   onPressed: () {
