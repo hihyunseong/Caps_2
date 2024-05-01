@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:caps_2/vo/FriendInfo.dart';
+import 'package:caps_2/vo/FriendRequest.dart';
 import 'package:flutter/material.dart';
 import 'package:caps_2/my.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -11,34 +13,37 @@ import 'package:flutter/material.dart';
 
 class Friends extends StatefulWidget {
 
+  @override
+  _FriendsState createState() => _FriendsState();
+}
+
+
+class _FriendsState extends State<Friends> {
+  bool isBottomBarVisible = false;
+
+  static final String memberUrl = "43.202.127.16:8080";   /// 멤버 서비스 API
+  static final String friendUrl = "43.202.127.16:8081";   /// 친구 서비스 API
+
+  static String friendEmail = "";       /// 검색한 유저 이메일
+  static String friendName = "";        /// 검색한 유저 이름
+  static List<FriendInfo> friendList = []; /// 친구 목록
+  static List<FriendRequest> requestList = []; /// 친구 요청 목록
+
   static final storage = FlutterSecureStorage();
 
-  static String? idx;
-  static String? email;
-  static String? name;
-  static String? accToken;
-  static String? refToken;
+  String? idx;
+  String? email;
+  String? name;
+  String? accToken;
+  String? refToken;
 
-  static void _read() async{
+  void _read() async{
     idx = await storage.read(key: 'idx');
     email = await storage.read(key: 'email');
     name = await storage.read(key: 'name');
     accToken = await storage.read(key: 'accToken');
     refToken = await storage.read(key: 'refToken');
   }
-
-  @override
-  _FriendsState createState() => _FriendsState();
-}
-
-class _FriendsState extends State<Friends> {
-  bool isBottomBarVisible = false;
-
-  static final String memberUrl = "43.202.127.16:8080";
-  static final String friendUrl = "43.202.127.16:8081";
-
-  static String friendEmail = "";
-  static String friendName = "";
 
   void _updateFriend(String email, String name){
     setState(() {
@@ -47,7 +52,27 @@ class _FriendsState extends State<Friends> {
     });
   }
 
-  void _searchFriend(String email) async{
+  void _showMessage(String message){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _searchFriend(String email) async{         ///   친구 추가하기 위해서 이메일로 멤버 검색하는 함수
     final url = Uri.http(memberUrl,'/api/v1/members/search/'+email);
 
     final response = await http.get(
@@ -55,6 +80,7 @@ class _FriendsState extends State<Friends> {
       headers: {
         "Access-Control-Allow-Origin": "*",
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + accToken.toString(),
       }
     );
     if(response.statusCode == 200){
@@ -63,12 +89,13 @@ class _FriendsState extends State<Friends> {
       _updateFriend(responseData['email'], responseData['name']);
     }else{
       print(response.body);
+      _showMessage(response.body);
       _updateFriend("", "");
     }
     print(friendName + " " + friendEmail);
   }
 
-  static Future<http.Response> _getFriendsList() async{
+  void _getFriendsList() async{
     final url = Uri.http(friendUrl,'/api/v1/friends/list');
 
     final response = await http.get(
@@ -78,11 +105,17 @@ class _FriendsState extends State<Friends> {
           'Content-Type': 'application/json',
         }
     );
-
-    return response;
+    if(response.statusCode == 200){
+      print(response.body);
+      final List<dynamic> responseData = jsonDecode(response.body);
+      friendList = responseData.map((data) => FriendInfo.fromJson(data)).toList();
+    }else{
+      _showMessage(response.body);
+      print(response.body);
+    }
   }
 
-  static Future<http.Response> _getFriendRequest() async{
+  void _getFriendRequest() async{
     final url = Uri.http(friendUrl,'/api/v1/friends/request');
 
     final response = await http.get(
@@ -92,8 +125,14 @@ class _FriendsState extends State<Friends> {
           'Content-Type': 'application/json',
         }
     );
-
-    return response;
+    if(response == 200){
+      print(response.body);
+      final List<dynamic> responseData = jsonDecode(response.body);
+      requestList = responseData.map((data) => FriendRequest.fromJson(data)).toList();
+    }else{
+      print(response.body);
+      _showMessage(response.body);
+    }
   }
 
   static Future<http.Response> _acceptFriend(String friendIdx) async {
@@ -120,6 +159,11 @@ class _FriendsState extends State<Friends> {
         }
     );
     return response;
+  }
+
+  @override
+  void initState(){
+    _getFriendsList();
   }
 
   @override

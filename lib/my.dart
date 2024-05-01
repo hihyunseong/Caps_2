@@ -8,21 +8,6 @@ import 'friends/friends.dart';
 import 'home.dart';
 
 class MyPage extends StatefulWidget {
-  static final storage = FlutterSecureStorage();
-
-  static String? idx;
-  static String? email;
-  static String? name;
-  static String? accToken;
-  static String? refToken;
-
-  static void _read() async{
-    idx = await storage.read(key: 'idx');
-    email = await storage.read(key: 'email');
-    name = await storage.read(key: 'name');
-    accToken = await storage.read(key: 'accToken');
-    refToken = await storage.read(key: 'refToken');
-  }
 
   @override
   State<MyPage> createState() => _MyPageState();
@@ -30,10 +15,33 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   XFile? _image;
+  static final storage = FlutterSecureStorage();
+
+  String? idx;
+  String? email;
+  String? name;
+  String? accToken;
+  String? refToken;
 
   @override
   void initState(){
-    MyPage._read();
+    _loadFromStorage();
+  }
+
+  void _loadFromStorage()async{
+    final loadIdx = await storage.read(key: 'idx');
+    final loadEmail = await storage.read(key: 'email');
+    final loadName = await storage.read(key: 'name');
+    final loadAccToken = await storage.read(key: 'accToken');
+    final loadRefToken = await storage.read(key: 'refToken');
+
+    setState(() {
+      idx = loadIdx;
+      email = loadEmail;
+      name = loadName;
+      accToken = loadAccToken;
+      refToken = loadRefToken;
+    });
   }
 
   @override
@@ -120,19 +128,19 @@ class _MyPageState extends State<MyPage> {
                     return AlertDialog(
                       title: Text('사용자 정보'),
                       content: Text('idx :' +
-                          MyPage.idx.toString() +
+                          idx.toString() +
                           "\n" +
                           '이름 :' +
-                          MyPage.name.toString() +
+                          name.toString() +
                           "\n" +
                           '이메일 :' +
-                          MyPage.email.toString() +
+                          email.toString() +
                           "\n" +
                           '엑세스 토큰 :' +
-                          MyPage.accToken.toString() +
+                          accToken.toString() +
                           "\n" +
                           '리프레시 토큰 :' +
-                          MyPage.refToken.toString() +
+                          refToken.toString() +
                           "\n"),
                     );
                   },
