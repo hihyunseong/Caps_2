@@ -1,4 +1,10 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
 part of 'expense.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
 
 _$ExpenseImpl _$$ExpenseImplFromJson(Map<String, dynamic> json) =>
     _$ExpenseImpl(
@@ -8,6 +14,8 @@ _$ExpenseImpl _$$ExpenseImplFromJson(Map<String, dynamic> json) =>
       memo: json['memo'] as String,
       date: DateTime.parse(json['date'] as String),
       imagePath: json['imagePath'] as String?,
+      latitude: (json['latitude'] as num).toDouble(),
+      longitude: (json['longitude'] as num).toDouble(),
     );
 
 Map<String, dynamic> _$$ExpenseImplToJson(_$ExpenseImpl instance) =>
@@ -18,6 +26,8 @@ Map<String, dynamic> _$$ExpenseImplToJson(_$ExpenseImpl instance) =>
       'memo': instance.memo,
       'date': instance.date.toIso8601String(),
       'imagePath': instance.imagePath,
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
     };
 
 const _$CategoryEnumMap = {

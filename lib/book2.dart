@@ -1,18 +1,25 @@
 import 'dart:io';
 
+import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'home.dart';
 import 'models/category.dart';
 import 'models/expense.dart';
 
 class Book2 extends StatefulWidget {
   final double amount;
+  final LatLng location;
+  final DateTime date;
 
   const Book2({
     super.key,
     required this.amount,
+    required this.location,
+    required this.date,
   });
 
   @override
@@ -21,7 +28,7 @@ class Book2 extends StatefulWidget {
 
 class _Book2State extends State<Book2> {
   Category? _selectedCategory;
-  DateTime? _selectedDate = DateTime.now();
+  DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   final _contentController = TextEditingController();
   final _recordController = TextEditingController();
@@ -29,6 +36,13 @@ class _Book2State extends State<Book2> {
   XFile? _image;
 
   String _recordText = '20xx-xx-xx의 기록';
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectedDate = widget.date;
+  }
 
   @override
   void dispose() {
@@ -42,7 +56,7 @@ class _Book2State extends State<Book2> {
   @override
   Widget build(BuildContext context) {
     String formattedDateTime =
-        DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
+        DateFormat('yyyy-MM-dd HH:mm').format(_selectedDate!);
     String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate!);
     String formattedTime = _selectedTime != null
         ? _selectedTime!.format(context)
@@ -242,16 +256,30 @@ class _Book2State extends State<Book2> {
   }
 
   void _addExpense() {
+    // 날짜와 시간을 합친다.
+    final date = _selectedDate ?? DateTime.now();
+    final time = _selectedTime ?? TimeOfDay.now();
+
+    final dateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
+
     final expense = Expense(
       amount: widget.amount,
       category: _selectedCategory ?? Category.etc,
       content: _contentController.text,
       memo: _additionalInfoController.text,
-      date: _selectedDate ?? DateTime.now(),
+      date: dateTime,
       imagePath: _image?.path,
+      latitude: widget.location.latitude,
+      longitude: widget.location.longitude,
     );
 
-    expenses.add(expense);
+    context.read<MapProvider>().addExpense(expense);
   }
 
   Widget _buildIconButton(IconData icon, String label, Category category) {
@@ -348,12 +376,14 @@ class _Book2State extends State<Book2> {
                       source: ImageSource.gallery,
                     );
                     if (image != null) {
-                      
+                      // 이미지가 선택된 경우 이를 처리하는 로직을 작성
+                      // 예를 들어, 이미지를 보여주거나 업로드하는 등의 작업을 수행
+                      // image 변수에 선택된 이미지 파일이 저장됩니다.
                       setState(() {
                         _image = image;
                       });
                     }
-                    Navigator.of(context).pop(); 
+                    Navigator.of(context).pop(); // 다이얼로그 닫기
                   },
                 ),
                 const SizedBox(height: 10.0),
@@ -369,7 +399,7 @@ class _Book2State extends State<Book2> {
                         _image = image;
                       });
                     }
-                    Navigator.of(context).pop(); 
+                    Navigator.of(context).pop(); // 다이얼로그 닫기
                   },
                 ),
               ],
