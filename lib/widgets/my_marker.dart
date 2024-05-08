@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class MyMarker extends StatelessWidget {
   final int index;
   final IconData icon;
+  final String? imagePath;
 
   const MyMarker({
     super.key,
     required this.index,
     required this.icon,
+    this.imagePath,
   });
 
   @override
@@ -26,10 +30,21 @@ class MyMarker extends StatelessWidget {
             ),
           ),
           child: Center(
-            child: Icon(
-              icon,
-              color: Colors.black,
-            ),
+            // 이미지 파일이 있으면 원형이미지로 표시
+            child: imagePath != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: Image.file(
+                      File(imagePath!),
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Icon(
+                    icon,
+                    color: Colors.black,
+                  ),
           ),
         ),
         Positioned(

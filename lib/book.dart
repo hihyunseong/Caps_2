@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'book2.dart';
 
 class Book extends StatefulWidget {
-  const Book({super.key});
+  final LatLng location;
+  final DateTime date;
+
+  const Book({
+    super.key,
+    required this.location,
+    required this.date,
+  });
 
   @override
   State<Book> createState() => _BookState();
@@ -129,6 +137,8 @@ class _BookState extends State<Book> {
                   MaterialPageRoute(
                     builder: (context) => Book2(
                       amount: double.parse(_inputValue.replaceAll(',', '')),
+                      location: widget.location,
+                      date: widget.date,
                     ),
                   ),
                 );

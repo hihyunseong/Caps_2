@@ -3,18 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:widget_to_marker/widget_to_marker.dart';
 import 'models/expense.dart';
+import 'provider/map_provider.dart';
+import 'widgets/map_tile.dart';
 import 'widgets/my_marker.dart';
 import 'my.dart';
 import 'book.dart';
-import 'home_setting.dart';
 import 'map_plus.dart';
 import 'map/my_map.dart';
 import 'map/share_map.dart';
-
-final List<Expense> expenses = [];
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -28,18 +28,11 @@ bool isBottomBarVisible = false;
 class _HomeState extends State<Home> {
   late GoogleMapController _mapController;
   Position? _currentPosition;
-  final List<Marker> _markers = [];
+
   bool _showPinButton = true;
   bool _showExpenseButton = false;
   int _selectedIndex = 0;
   DateTime _selectedDate = DateTime.now();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _getCurrentLocation();
-  }
 
   @override
   void dispose() {
@@ -48,35 +41,35 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-  void _getCurrentLocation() async {
+  Future<Position?> _getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return;
+      return null;
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.deniedForever) {
-      return;
+      return null;
     }
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
-        return;
+        return null;
       }
     }
 
-    Position position = await Geolocator.getCurrentPosition(
+    final Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    setState(() {
-      _currentPosition = position;
-    });
+    _currentPosition = position;
+
+    return position;
   }
 
   Marker _createMarker(double lat, double lng) {
@@ -101,8 +94,11 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _addPin(LatLng pinLocation) async {
+    final markers = context.read<MapProvider>().markers;
+    final expenses = context.read<MapProvider>().expenses;
+
     final marker = Marker(
-        markerId: MarkerId('marker_id_${_markers.length}'),
+        markerId: MarkerId('marker_id_${markers.length}'),
         position: LatLng(
           pinLocation.latitude,
           pinLocation.longitude,
@@ -114,15 +110,18 @@ class _HomeState extends State<Home> {
               ),
             ),
         icon: await MyMarker(
-          index: _markers.length + 1,
+          index: markers.length + 1,
           icon: expenses.isNotEmpty
               ? expenses.last.category.icon
               : Icons.account_balance_wallet,
+          imagePath: expenses.isNotEmpty ? expenses.last.imagePath : null,
         ).toBitmapDescriptor());
 
-    setState(() {
-      _markers.add(marker);
-    });
+    _addMarker(marker);
+  }
+
+  Future<void> _addMarker(Marker marker) async {
+    await context.read<MapProvider>().addMarker(marker);
   }
 
   void _goToCurrentLocation() {
@@ -186,25 +185,44 @@ class _HomeState extends State<Home> {
         body: Stack(
           alignment: Alignment.center,
           children: [
-            GoogleMap(
-              onMapCreated: (controller) => _onMapCreated(controller),
-              initialCameraPosition: _currentPosition != null
-                  ? CameraPosition(
-                      target: LatLng(_currentPosition!.latitude,
-                          _currentPosition!.longitude),
-                      zoom: 17,
-                    )
-                  : const CameraPosition(
-                      target: LatLng(37.006547, 127.226156),
-                      zoom: 17,
-                    ),
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-              zoomControlsEnabled: false,
-              onTap: _onMapTap,
-              markers: Set<Marker>.of(_markers),
-              onCameraMove: (position) {},
+            FutureBuilder<Position?>(
+              future: _getCurrentLocation(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final Position? position = snapshot.data;
+
+                  final markers = context.watch<MapProvider>().markers;
+                  final polylines = context.watch<MapProvider>().polylines;
+
+                  return GoogleMap(
+                    onMapCreated: (controller) => _onMapCreated(controller),
+                    initialCameraPosition: position != null
+                        ? CameraPosition(
+                            target: LatLng(
+                              position.latitude,
+                              position.longitude,
+                            ),
+                            zoom: 17,
+                          )
+                        : const CameraPosition(
+                            target: LatLng(35.43, 127.269311),
+                            zoom: 17,
+                          ),
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: false,
+                    zoomControlsEnabled: false,
+                    onTap: _onMapTap,
+                    markers: Set<Marker>.of(markers),
+                    polylines: Set<Polyline>.of(polylines),
+                    onCameraMove: (position) {},
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
             ),
+
             if (_showPinButton)
               Positioned(
                 bottom: 160.0,
@@ -213,6 +231,20 @@ class _HomeState extends State<Home> {
                 child: Center(
                   child: ElevatedButton(
                     onPressed: () {
+                      
+                      final mapModel = context.read<MapProvider>().mapModel;
+
+                      if (mapModel == null) {
+             
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('맵을 선택해주세요'),
+                          ),
+                        );
+
+                        return;
+                      }
+
                       setState(() {
                         _showExpenseButton = true;
                       });
@@ -258,7 +290,12 @@ class _HomeState extends State<Home> {
 
                       await Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const Book()),
+                        MaterialPageRoute(
+                          builder: (context) => Book(
+                            location: pinLocation,
+                            date: _selectedDate,
+                          ),
+                        ),
                       );
 
                       await _addPin(pinLocation);
@@ -282,25 +319,7 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-            Positioned(
-              top: 16.0,
-              right: 16.0,
-              child: Material(
-                elevation: 0,
-                color: Colors.transparent,
-                shape: const CircleBorder(),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeSetting()),
-                    );
-                  },
-                  icon: const Icon(Icons.settings,
-                      color: Colors.black, size: 28.0),
-                ),
-              ),
-            ),
+           
             Positioned(
               bottom: 160.0,
               right: 16.0,
@@ -439,6 +458,8 @@ class _HomeState extends State<Home> {
   }
 
   Widget _slidingPanel() {
+    final expenses = context.watch<MapProvider>().expenses;
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -529,67 +550,88 @@ class _HomeState extends State<Home> {
 /// 나의 맵 하단바
 void _showSlidingPanel(BuildContext context) {
   showModalBottomSheet(
-    context: context,
-    backgroundColor: Colors.transparent,
-    builder: (context) => SlidingUpPanel(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(20.0),
-        topRight: Radius.circular(20.0),
-      ),
-      minHeight: 1500,
-      maxHeight: MediaQuery.of(context).size.height * 0.7,
-      panel: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    '나의맵',
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        final mapProvider = context.watch<MapProvider>();
+
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SlidingUpPanel(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
             ),
-            SizedBox(height: 20),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyMap()),
-                );
-              },
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.purple[100],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    '기본맵',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            minHeight: 1500,
+            maxHeight: MediaQuery.of(context).size.height * 0.7,
+            panel: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '나의맵',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20.0, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
                   ),
-                ),
+                  SizedBox(height: 20),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyMap()),
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.purple[100],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          '기본맵',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ...mapProvider.myMapList.map((e) => MapTile(mapModel: e)),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    ),
-  );
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MapPlus(),
+                ),
+              );
+            },
+            child: Icon(Icons.add),
+            backgroundColor: Colors.white,
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        );
+      });
 }
 
 /// 공유맵 하단바
@@ -597,85 +639,94 @@ void _showSlidingPanel2(BuildContext context) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
-    builder: (context) => Scaffold(
-      backgroundColor: Colors.transparent,
-      body: SlidingUpPanel(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(20.0),
-        ),
-        minHeight: 1500,
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
-        panel: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      '공유맵',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
+    builder: (context) {
+      final mapProvider = context.watch<MapProvider>();
+
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SlidingUpPanel(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+          minHeight: 1500,
+          maxHeight: MediaQuery.of(context).size.height * 0.7,
+          panel: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '공유맵',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 20.0, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 5.0),
-              Center(
-                child: Text(
-                  '친구들과 함께 지도를 작성해보세요!',
-                  style: TextStyle(fontSize: 16.0),
+                    IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(height: 20), // 새로 추가된 부분
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ShareMap()),
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.purple[100],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      '기본맵',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
+                SizedBox(height: 5.0),
+                Center(
+                  child: Text(
+                    '친구들과 함께 지도를 작성해보세요!',
+                    style: TextStyle(fontSize: 16.0),
                   ),
                 ),
-              ),
-            ],
+                SizedBox(height: 20), // 새로 추가된 부분
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ShareMap()),
+                    );
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.purple[100],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        '기본맵',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ),
+                ...mapProvider.sharedMapList.map((e) => MapTile(mapModel: e)),
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MapPlus()),
-          );
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.white,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-    ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MapPlus(
+                  isSharedMap: true,
+                ),
+              ),
+            );
+          },
+          child: Icon(Icons.add),
+          backgroundColor: Colors.white,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      );
+    },
   );
 }

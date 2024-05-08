@@ -26,6 +26,8 @@ mixin _$Expense {
   String get memo => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
   String? get imagePath => throw _privateConstructorUsedError;
+  double get latitude => throw _privateConstructorUsedError;
+  double get longitude => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,7 +45,9 @@ abstract class $ExpenseCopyWith<$Res> {
       String content,
       String memo,
       DateTime date,
-      String? imagePath});
+      String? imagePath,
+      double latitude,
+      double longitude});
 }
 
 /// @nodoc
@@ -65,6 +69,8 @@ class _$ExpenseCopyWithImpl<$Res, $Val extends Expense>
     Object? memo = null,
     Object? date = null,
     Object? imagePath = freezed,
+    Object? latitude = null,
+    Object? longitude = null,
   }) {
     return _then(_value.copyWith(
       amount: null == amount
@@ -91,6 +97,14 @@ class _$ExpenseCopyWithImpl<$Res, $Val extends Expense>
           ? _value.imagePath
           : imagePath // ignore: cast_nullable_to_non_nullable
               as String?,
+      latitude: null == latitude
+          ? _value.latitude
+          : latitude // ignore: cast_nullable_to_non_nullable
+              as double,
+      longitude: null == longitude
+          ? _value.longitude
+          : longitude // ignore: cast_nullable_to_non_nullable
+              as double,
     ) as $Val);
   }
 }
@@ -108,7 +122,9 @@ abstract class _$$ExpenseImplCopyWith<$Res> implements $ExpenseCopyWith<$Res> {
       String content,
       String memo,
       DateTime date,
-      String? imagePath});
+      String? imagePath,
+      double latitude,
+      double longitude});
 }
 
 /// @nodoc
@@ -128,6 +144,8 @@ class __$$ExpenseImplCopyWithImpl<$Res>
     Object? memo = null,
     Object? date = null,
     Object? imagePath = freezed,
+    Object? latitude = null,
+    Object? longitude = null,
   }) {
     return _then(_$ExpenseImpl(
       amount: null == amount
@@ -154,6 +172,14 @@ class __$$ExpenseImplCopyWithImpl<$Res>
           ? _value.imagePath
           : imagePath // ignore: cast_nullable_to_non_nullable
               as String?,
+      latitude: null == latitude
+          ? _value.latitude
+          : latitude // ignore: cast_nullable_to_non_nullable
+              as double,
+      longitude: null == longitude
+          ? _value.longitude
+          : longitude // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -167,7 +193,9 @@ class _$ExpenseImpl implements _Expense {
       required this.content,
       required this.memo,
       required this.date,
-      this.imagePath});
+      this.imagePath,
+      required this.latitude,
+      required this.longitude});
 
   factory _$ExpenseImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExpenseImplFromJson(json);
@@ -184,10 +212,14 @@ class _$ExpenseImpl implements _Expense {
   final DateTime date;
   @override
   final String? imagePath;
+  @override
+  final double latitude;
+  @override
+  final double longitude;
 
   @override
   String toString() {
-    return 'Expense(amount: $amount, category: $category, content: $content, memo: $memo, date: $date, imagePath: $imagePath)';
+    return 'Expense(amount: $amount, category: $category, content: $content, memo: $memo, date: $date, imagePath: $imagePath, latitude: $latitude, longitude: $longitude)';
   }
 
   @override
@@ -202,13 +234,17 @@ class _$ExpenseImpl implements _Expense {
             (identical(other.memo, memo) || other.memo == memo) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.imagePath, imagePath) ||
-                other.imagePath == imagePath));
+                other.imagePath == imagePath) &&
+            (identical(other.latitude, latitude) ||
+                other.latitude == latitude) &&
+            (identical(other.longitude, longitude) ||
+                other.longitude == longitude));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, amount, category, content, memo, date, imagePath);
+  int get hashCode => Object.hash(runtimeType, amount, category, content, memo,
+      date, imagePath, latitude, longitude);
 
   @JsonKey(ignore: true)
   @override
@@ -231,7 +267,9 @@ abstract class _Expense implements Expense {
       required final String content,
       required final String memo,
       required final DateTime date,
-      final String? imagePath}) = _$ExpenseImpl;
+      final String? imagePath,
+      required final double latitude,
+      required final double longitude}) = _$ExpenseImpl;
 
   factory _Expense.fromJson(Map<String, dynamic> json) = _$ExpenseImpl.fromJson;
 
@@ -247,6 +285,10 @@ abstract class _Expense implements Expense {
   DateTime get date;
   @override
   String? get imagePath;
+  @override
+  double get latitude;
+  @override
+  double get longitude;
   @override
   @JsonKey(ignore: true)
   _$$ExpenseImplCopyWith<_$ExpenseImpl> get copyWith =>

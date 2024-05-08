@@ -4,78 +4,208 @@ import 'package:caps_2/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class SignupPage extends StatelessWidget {
+class SignupPage extends StatefulWidget {
   @override
+  _SignupPageState createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  bool _allChecked = false; // 전체동의 체크 상태
+  bool _ageChecked = false; // 만 14세 이상입니다 체크 상태
+  bool _serviceChecked = false; // 서비스 이용 체크 상태
+  bool _privacyChecked = false; // 개인정보 체크 상태 
+  bool _marketingChecked = false; // 마케팅 체크 상태
+  @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('회원가입'),
+        title: Center(child: Text('약관동의')),
       ),
-      body: Container(
+      body: SingleChildScrollView(
+      child: Container(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              '회원가입을 위해 약관에 동의해주세요.',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
+            Text.rich(
+              TextSpan(
+                text: '핀콕 서비스 이용을 위해 \n',
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: '이용약관',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '에 동의해주세요.',
+                  ),
+                ],
               ),
             ),
             SizedBox(height: 20.0),
-            Text(
-              '약관 내용.',
-              style: TextStyle(fontSize: 16.0),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                border: Border.all(color: Colors.grey),
+              ),
+              padding: EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _allChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _allChecked = value ?? false;
+                            _ageChecked = _allChecked;
+                            _serviceChecked = _allChecked; 
+                            _privacyChecked = _allChecked;
+                          
+                          });
+                        },
+                        checkColor: Colors.white,
+                        activeColor: Color(0xFFFF6F61),
+                      ),
+                      Text(
+                        '전체동의',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _ageChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _ageChecked = value ?? false;
+                            if (!_ageChecked && _allChecked) {
+                              _allChecked = false; // 개별 체크 해제 시 전체동의 체크 해제
+                            }
+                          });
+                        },
+                        checkColor: Colors.white,
+                        activeColor: Color(0xFFFF6F61),
+                      ),
+                      Text(
+                        '만 14세 이상입니다. (필수)',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                   Row(
+                    children: [
+                      Checkbox(
+                        value: _serviceChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _serviceChecked = value ?? false;
+                            if (!_serviceChecked && _allChecked) {
+                              _allChecked = false; // 개별 체크 해제 시 전체동의 체크 해제
+                            }
+                          });
+                        },
+                        checkColor: Colors.white,
+                        activeColor: Color(0xFFFF6F61),
+                      ),
+                      Text(
+                        '서비스 이용약관 동의(필수)',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _privacyChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _privacyChecked = value ?? false;
+                            if (!_privacyChecked && _allChecked) {
+                              _allChecked = false; // 개별 체크 해제 시 전체동의 체크 해제
+                            }
+                          });
+                        },
+                        checkColor: Colors.white,
+                        activeColor: Color(0xFFFF6F61),
+                      ),
+                      Text(
+                        '개인정보 수집 및 이용 동의 (필수)',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _marketingChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _marketingChecked = value ?? false;
+                            if (!_marketingChecked && _allChecked) {
+                              _marketingChecked = true; // 개별 체크 해제 시 전체동의 체크 해제
+                            }
+                          });
+                        },
+                        checkColor: Colors.white,
+                        activeColor: Color(0xFFFF6F61), 
+                      ),
+                      Text(
+                        '앱 푸시 및 마케팅/이벤트 수신 동의(선택)',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                // 사용자가 약관에 동의하면 회원가입 절차를 진행
-                _showConfirmationDialog(context);
-              },
-              child: Text('약관에 동의합니다'),
+            SizedBox(height: 200.0),
+          ElevatedButton(
+            onPressed:  _ageChecked && _serviceChecked && _privacyChecked ? () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SignupFormPage()),
+              );
+            } : null, // 필수 약관을 모두 동의한 경우에만 버튼 활성화
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0), 
+              ),
+              backgroundColor: Color(0xFFFF6F61),
+              foregroundColor: Colors.white,
             ),
-            SizedBox(height: 10.0),
-            ElevatedButton(
-              onPressed: () {
-                // 사용자가 약관에 동의하지 않으면 이전 페이지로 돌아감
-                Navigator.pop(context);
-              },
-              child: Text('약관에 동의하지 않습니다'),
+            child: Text('다음'),
             ),
           ],
         ),
       ),
-    );
+    ),
+  );
   }
+}
 
-  void _showConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('약관 동의 확인'),
-          content: Text('약관에 동의하시겠습니까?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _completeSignup(context);
-              },
-              child: Text('동의'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('취소'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   void _completeSignup(BuildContext context) {
     Navigator.push(
@@ -83,7 +213,7 @@ class SignupPage extends StatelessWidget {
       MaterialPageRoute(builder: (context) => SignupFormPage()),
     );
   }
-}
+
 
 class SignupFormPage extends StatefulWidget {
   @override
@@ -106,55 +236,6 @@ class _SignupFormPageState extends State<SignupFormPage> {
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
-  void _completeSignup(BuildContext context) {
-    _registerUser().then((response) {
-      print(response.body);
-      if(response.statusCode == 200){
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        final String name = responseData['name'];
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('회원가입 성공'),
-              content: Text(name + '님 회원가입을 축하합니다. 로그인 페이지로 이동합니다.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                    );
-                  },
-                  child: Text('확인'),
-                ),
-              ],
-            );
-          },
-        );
-
-      }else{
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text(response.body),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-      }
-    });
-  }
 
   Future<http.Response> _registerUser() async {
     final url = Uri.http('43.202.127.16:8080','/api/v1/members/register');
