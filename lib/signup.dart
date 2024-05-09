@@ -10,6 +10,7 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+
   bool _allChecked = false; // 전체동의 체크 상태
   bool _ageChecked = false; // 만 14세 이상입니다 체크 상태
   bool _serviceChecked = false; // 서비스 이용 체크 상태

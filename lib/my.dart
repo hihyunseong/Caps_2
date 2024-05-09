@@ -11,11 +11,12 @@ class MyPage extends StatefulWidget {
 
   @override
   State<MyPage> createState() => _MyPageState();
+
 }
 
 class _MyPageState extends State<MyPage> {
+
   XFile? _image;
-  static final storage = FlutterSecureStorage();
 
   String? idx;
   String? email;
@@ -25,10 +26,13 @@ class _MyPageState extends State<MyPage> {
 
   @override
   void initState(){
+    super.initState();
     _loadFromStorage();
   }
 
-  void _loadFromStorage()async{
+  Future<void> _loadFromStorage() async{
+    final storage = FlutterSecureStorage();
+
     final loadIdx = await storage.read(key: 'idx');
     final loadEmail = await storage.read(key: 'email');
     final loadName = await storage.read(key: 'name');
@@ -88,7 +92,7 @@ class _MyPageState extends State<MyPage> {
               child: TextFormField(
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
-                  hintText: '사용자',
+                  hintText: name,
                   border: InputBorder.none,
                 ),
               ),
@@ -165,6 +169,8 @@ class _MyPageState extends State<MyPage> {
             ),
             TextButton(
               onPressed: () {
+                const storage = FlutterSecureStorage();
+                storage.deleteAll();
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => LoginPage()),
