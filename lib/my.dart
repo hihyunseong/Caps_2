@@ -98,6 +98,7 @@ class _MyPageState extends State<MyPage> {
               ),
             ),
             SizedBox(height: 20.0),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -107,23 +108,26 @@ class _MyPageState extends State<MyPage> {
               },
               child: Text(
                 '친구리스트',
-                style: TextStyle(letterSpacing: 1.5),
+                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () {},
               child: Text(
                 '전체지도',
-                style: TextStyle(letterSpacing: 1.5),
+                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () {},
               child: Text(
                 '이용약관',
-                style: TextStyle(letterSpacing: 1.5),
+                style: TextStyle(color: Colors.black,  letterSpacing: 1.5, fontSize: 18),
               ),
             ),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () async{
                 showDialog(
@@ -152,9 +156,10 @@ class _MyPageState extends State<MyPage> {
               },
               child: Text(
                 '버전',
-                style: TextStyle(letterSpacing: 1.5),
+                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -164,9 +169,10 @@ class _MyPageState extends State<MyPage> {
               },
               child: Text(
                 '로그아웃',
-                style: TextStyle(letterSpacing: 1.5),
+                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () {
                 const storage = FlutterSecureStorage();
@@ -180,10 +186,11 @@ class _MyPageState extends State<MyPage> {
                 '탈퇴하기',
                 style: TextStyle(
                   letterSpacing: 1.5,
-                  color: Colors.red,
+                  color: Colors.red, fontSize: 18
                 ),
               ),
             ),
+            Divider(color: Colors.grey),
           ],
         ),
       ),

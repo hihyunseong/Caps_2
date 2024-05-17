@@ -149,7 +149,7 @@ class __$$MapModelImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$MapModelImpl implements _MapModel {
+class _$MapModelImpl extends _MapModel {
   _$MapModelImpl(
       {required this.mapName,
       required final List<String> friends,
@@ -157,7 +157,8 @@ class _$MapModelImpl implements _MapModel {
       required this.selectedDate,
       required final List<Expense> expenses})
       : _friends = friends,
-        _expenses = expenses;
+        _expenses = expenses,
+        super._();
 
   factory _$MapModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$MapModelImplFromJson(json);
@@ -227,13 +228,14 @@ class _$MapModelImpl implements _MapModel {
   }
 }
 
-abstract class _MapModel implements MapModel {
+abstract class _MapModel extends MapModel {
   factory _MapModel(
       {required final String mapName,
       required final List<String> friends,
       required final Prediction location,
       required final DateTime selectedDate,
       required final List<Expense> expenses}) = _$MapModelImpl;
+  _MapModel._() : super._();
 
   factory _MapModel.fromJson(Map<String, dynamic> json) =
       _$MapModelImpl.fromJson;

@@ -148,31 +148,9 @@ class _FriendsState extends State<Friends> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyPage()),
-            );
-          },
-        ),
-        title: null,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(60.0),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(width: 20.0),
-                Text(
-                  '친구 리스트',
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
+        title: Align(
+          alignment: FractionalOffset(0.4,0), 
+          child: Text('친구 리스트'),
         ),
       ),
       body: Column(

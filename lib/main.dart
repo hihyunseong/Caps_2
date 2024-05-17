@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'login.dart';
 import 'home.dart';
 import 'map_plus.dart';
-import 'signup.dart';
 void main() {
   runApp(
     MultiProvider(
@@ -26,7 +25,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pinkok',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

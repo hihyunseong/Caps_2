@@ -16,7 +16,7 @@ class MapPlus extends StatefulWidget {
   });
 
   @override
-  _MapPlusState createState() => _MapPlusState();
+  State<MapPlus> createState() => _MapPlusState();
 }
 
 class _MapPlusState extends State<MapPlus> {
@@ -49,20 +49,28 @@ class _MapPlusState extends State<MapPlus> {
   }
 
   @override
+  void dispose() {
+    _friendController.dispose();
+    _locationController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         title: null,
-        bottom: PreferredSize(
+        bottom: const PreferredSize(
           preferredSize: Size.fromHeight(60.0),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            padding: EdgeInsets.symmetric(vertical: 10.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -80,31 +88,31 @@ class _MapPlusState extends State<MapPlus> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+            const Padding(
+              padding: EdgeInsets.only(left: 20.0),
               child: Text(
                 '친구들과 함께 \n지도를 추가해보세요!',
                 style: TextStyle(fontSize: 16.0),
               ),
             ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+            const SizedBox(height: 20),
+            const Padding(
+              padding: EdgeInsets.only(left: 20.0),
               child: Text(
                 '맵정보',
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(left: 20.0),
               child: Row(
                 children: [
-                  Text(
+                  const Text(
                     '맵이름',
                     style: TextStyle(fontSize: 16.0),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Container(
                     width: 300,
                     height: 50,
@@ -119,7 +127,7 @@ class _MapPlusState extends State<MapPlus> {
                           mapName = value;
                         });
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
                       ),
@@ -128,17 +136,17 @@ class _MapPlusState extends State<MapPlus> {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (widget.isSharedMap)
               Padding(
                 padding: const EdgeInsets.only(left: 35.0),
                 child: Row(
                   children: [
-                    Text(
+                    const Text(
                       '친구\n추가',
                       style: TextStyle(fontSize: 16.0),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Container(
                       width: 300,
                       height: 50,
@@ -149,7 +157,7 @@ class _MapPlusState extends State<MapPlus> {
                       alignment: Alignment.center,
                       child: TextField(
                         controller: _friendController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
                         ),
@@ -158,31 +166,31 @@ class _MapPlusState extends State<MapPlus> {
                   ],
                 ),
               ),
-            SizedBox(height: 60),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+            const SizedBox(height: 60),
+            const Padding(
+              padding: EdgeInsets.only(left: 20.0),
               child: Text(
                 '지역선택',
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+            const Padding(
+              padding: EdgeInsets.only(left: 20.0),
               child: Text(
                 '지도가 시작될 지역을 선택해주세요',
                 style: TextStyle(fontSize: 12.0),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(left: 35.0),
               child: Row(
                 children: [
-                  Text(
+                  const Text(
                     '지역',
                     style: TextStyle(fontSize: 16.0),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   // LocationSearchField(),
                   Container(
                     width: 300,
@@ -215,73 +223,21 @@ class _MapPlusState extends State<MapPlus> {
                 ],
               ),
             ),
-            SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.only(left: 37.0),
-              child: Row(
-                children: [
-                  Text(
-                    '날짜',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  SizedBox(width: 10),
-                  InkWell(
-                    onTap: () {
-                      _selectDate(context);
-                    },
-                    child: Row(
-                      children: [
-                        Icon(Icons.calendar_today),
-                        SizedBox(width: 5),
-                        Text(
-                          DateFormat('yyyy-MM-dd')
-                              .format(selectedDate), // 선택된 날짜를 텍스트로 표시합니다.
-                          style: TextStyle(fontSize: 16.0),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 80),
+            const SizedBox(height: 40),
+            
+            const SizedBox(height: 80),
             Center(
               child: SizedBox(
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    if (_friendController.text != '') {
-                      friends.add(_friendController.text);
-                    }
-
-                    if (selectedLocation != null) {
-                      final newMap = MapModel(
-                        mapName: mapName,
-                        friends: friends,
-                        location: selectedLocation!,
-                        selectedDate: selectedDate,
-                        expenses: [],
-                      );
-
-                      context.read<MapProvider>().addMapModel(newMap);
-
-                      // if (friends.isEmpty) {
-                      //   친구 없는 경우
-                      //   context.read<MapProvider>().addMyMapList(newMap);
-                      // } else {
-                      //   친구 있는 경우
-                      //   context.read<MapProvider>().addSharedMapList(newMap);
-                      // }
-                    }
-                  },
+                  onPressed: () => _registerMap(),
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: 20.0,
                       horizontal: 100.0,
                     ),
-                    textStyle: TextStyle(fontSize: 18.0),
+                    textStyle: const TextStyle(fontSize: 18.0),
                   ),
-                  child: Text('등록하기'),
+                  child: const Text('등록하기'),
                 ),
               ),
             ),
@@ -289,5 +245,35 @@ class _MapPlusState extends State<MapPlus> {
         ),
       ),
     );
+  }
+
+  void _registerMap() {
+    // 현재는 friend textfield에 글자가 있는 경우 배열에 넣어줘서 처리
+    if (_friendController.text != '') {
+      friends.add(_friendController.text);
+    }
+
+    if (selectedLocation == null) {
+      // 지역이 선택되지 않은 경우, 에러 메시지를 띄워줍니다.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('지역을 선택해주세요.'),
+        ),
+      );
+      return;
+    }
+
+    final newMap = MapModel(
+      mapName: mapName,
+      friends: friends,
+      location: selectedLocation!,
+      selectedDate: selectedDate,
+      expenses: [],
+    );
+
+    final mapProvider = context.read<MapProvider>();
+    mapProvider.addMapModel(newMap);
+
+    Navigator.of(context).pop(newMap);
   }
 }

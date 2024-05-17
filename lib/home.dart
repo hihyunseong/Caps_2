@@ -1,12 +1,14 @@
 import 'dart:io';
 
+import 'package:caps_2/models/daily_expense.dart';
+import 'package:caps_2/models/map_model.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:widget_to_marker/widget_to_marker.dart';
-import 'models/expense.dart';
 import 'provider/map_provider.dart';
 import 'widgets/map_tile.dart';
 import 'widgets/my_marker.dart';
@@ -23,16 +25,21 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-bool isBottomBarVisible = false;
-
 class _HomeState extends State<Home> {
   late GoogleMapController _mapController;
-  Position? _currentPosition;
+  late Position _currentPosition;
+
+  LatLng get _currentLatLng => LatLng(
+        _currentPosition.latitude,
+        _currentPosition.longitude,
+      );
 
   bool _showPinButton = true;
   bool _showExpenseButton = false;
   int _selectedIndex = 0;
   DateTime _selectedDate = DateTime.now();
+
+  bool isBottomBarVisible = false;
 
   @override
   void dispose() {
@@ -121,7 +128,8 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _addMarker(Marker marker) async {
-    await context.read<MapProvider>().addMarker(marker);
+    final mapProvider = context.read<MapProvider>();
+    await mapProvider.addMarker(marker);
   }
 
   void _goToCurrentLocation() {
@@ -181,7 +189,7 @@ class _HomeState extends State<Home> {
           topLeft: Radius.circular(24.0),
           topRight: Radius.circular(24.0),
         ),
-        minHeight: 140,
+        minHeight: 160,
         body: Stack(
           alignment: Alignment.center,
           children: [
@@ -225,26 +233,12 @@ class _HomeState extends State<Home> {
 
             if (_showPinButton)
               Positioned(
-                bottom: 160.0,
+                bottom: 180.0,
                 left: 0,
                 right: 0,
                 child: Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      
-                      final mapModel = context.read<MapProvider>().mapModel;
-
-                      if (mapModel == null) {
-             
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('맵을 선택해주세요'),
-                          ),
-                        );
-
-                        return;
-                      }
-
                       setState(() {
                         _showExpenseButton = true;
                       });
@@ -252,8 +246,8 @@ class _HomeState extends State<Home> {
                     style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all<Color>(Colors.blue),
-                      fixedSize:
-                          MaterialStateProperty.all<Size>(Size(150.0, 50.0)),
+                      fixedSize: MaterialStateProperty.all<Size>(
+                          const Size(150.0, 50.0)),
                     ),
                     child: const Text(
                       '여기에 핀 꽂기',
@@ -288,7 +282,7 @@ class _HomeState extends State<Home> {
                             x: middleX.round(), y: middleY.round()),
                       );
 
-                      await Navigator.push(
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => Book(
@@ -298,7 +292,10 @@ class _HomeState extends State<Home> {
                         ),
                       );
 
-                      await _addPin(pinLocation);
+                      // 지출 입력시에만 핀을 꽂는다. (book2 에서 true 입력)
+                      if (result == true) {
+                        await _addPin(pinLocation);
+                      }
 
                       setState(() {
                         _showExpenseButton = false;
@@ -319,9 +316,8 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-           
             Positioned(
-              bottom: 160.0,
+              top: 120.0,
               right: 16.0,
               child: InkWell(
                 onTap: _goToCurrentLocation,
@@ -339,32 +335,43 @@ class _HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                  child: const Icon(Icons.my_location,
-                      color: Colors.black, size: 28.0),
+                  child: Image.asset('assets/images/loc/Outline/Navigation/Current-location.png', width: 24, height: 24,
+                  ),
                 ),
               ),
             ),
+
             Positioned(
-              left: 16.0,
-              top: 16.0,
+              left: 21.0,
+              top: 50.0,
               child: Container(
-                width: MediaQuery.of(context).size.width * 0.8,
+                width: MediaQuery.of(context).size.width * 0.9,
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    offset: Offset(0, 2), 
+                    blurRadius: 8, 
+                    spreadRadius: 0, 
+                  ),
+                ],
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.search),
-                    SizedBox(width: 8.0),
                     Expanded(
                       child: TextField(
                         decoration: InputDecoration(
-                          hintText: '검색',
+                          hintText: '소비를 기록할 장소를 검색해보세요.',
+                          hintStyle: TextStyle(color: Color(0xFFC4C4C4)),
                           border: InputBorder.none,
                         ),
                       ),
+                    ),
+                    SizedBox(width: 8.0),
+                    Image.asset('assets/images/search/Iconly/Regular/Light/Search.png', width: 24, height: 24,
                     ),
                   ],
                 ),
@@ -380,38 +387,53 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
+      
       bottomNavigationBar: SafeArea(
         child: SizedBox(
-          height: 60,
+          height: 80,
           child: BottomAppBar(
+            color: Colors.white,
             shape: const CircularNotchedRectangle(),
             notchMargin: 8.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Expanded(
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.home),
+                  child: InkWell(
+                    onTap: () {
+                    },
+                    child: Image.asset('assets/images/home/home1.png', width: 24, height: 24,
                   ),
                 ),
+              ),
 
                 /// 나의 맵 하단바
                 Expanded(
                   child: Container(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
-                      onPressed: () {
-                        _showSlidingPanel(context);
-                        setState(() {
-                          isBottomBarVisible = !isBottomBarVisible;
-                        });
+                      onPressed: () async {
+                        final result = await _showSlidingPanel(context);
+                        // setState(() {
+                        //   isBottomBarVisible = !isBottomBarVisible;
+                        // });
+
+                        // 새로 맵을 만든경우 해당 위치로 이동
+                        if (result == true) {
+                          final mapProvider = context.read<MapProvider>();
+                          final mapModel = mapProvider.mapModel;
+
+                          await _gotoMapPosition(mapModel!.latLng);
+                        }
                       },
-                      child: Icon(Icons.map, color: Colors.black),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Colors.transparent),
-                        elevation: MaterialStateProperty.all<double>(0),
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent), 
+                        elevation: MaterialStateProperty.all<double>(0), 
+                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero), 
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap, 
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))),
+                      ),
+                      child: Image.asset('assets/images/mymap/mymap1.png',width: 24, height: 24,
                       ),
                     ),
                   ),
@@ -422,30 +444,40 @@ class _HomeState extends State<Home> {
                   child: Container(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
-                      onPressed: () {
-                        _showSlidingPanel2(context);
-                        setState(() {
-                          isBottomBarVisible = !isBottomBarVisible;
-                        });
+                      onPressed: () async {
+                        final result = await _showSlidingPanel2(context);
+                        // setState(() {
+                        //   isBottomBarVisible = !isBottomBarVisible;
+                        // });
+
+                        // 맵의 위치로 이동
+                        if (result == true) {
+                          final mapProvider = context.read<MapProvider>();
+                          final mapModel = mapProvider.mapModel;
+
+                          await _gotoMapPosition(mapModel!.latLng);
+                        }
                       },
-                      child: Icon(Icons.circle, color: Colors.black),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
                             Colors.transparent),
                         elevation: MaterialStateProperty.all<double>(0),
                       ),
+                      child: Image.asset('assets/images/sharemap/sharemap1.png',width: 24, height: 24,
+                      ),
                     ),
                   ),
                 ),
+
+                // 마이 페이지
                 Expanded(
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyPage()),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => MyPage()),
                       );
                     },
-                    icon: const Icon(Icons.person),
+                    child: Image.asset('assets/images/user/user1.png', width: 24, height: 24,
+                    ),
                   ),
                 ),
               ],
@@ -458,7 +490,12 @@ class _HomeState extends State<Home> {
   }
 
   Widget _slidingPanel() {
-    final expenses = context.watch<MapProvider>().expenses;
+    final mapProvider = context.watch<MapProvider>();
+    final currentIndex = mapProvider.currentIndex;
+
+    final DailyExpense? dailyExpense = mapProvider.dailyExpenses.isEmpty
+        ? null
+        : mapProvider.dailyExpenses[currentIndex];
 
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -477,79 +514,95 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
-                onPressed: _decreaseDate,
+                onPressed: () {
+                  final LatLng? latLng = mapProvider.decrementIndex();
+                  if (dailyExpense != null && latLng != null) {
+                    _gotoMapPosition(latLng);
+                  }
+                },
                 icon: const Icon(Icons.arrow_back),
               ),
               TextButton(
-                onPressed: _showDatePickerDialog,
+                onPressed: null,
                 child: Text(
-                  '${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}',
+                  dailyExpense == null
+                      ? DateFormat('yyyy-MM-dd').format(DateTime.now())
+                      : DateFormat('yyyy-MM-dd').format(dailyExpense.tourDay),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               IconButton(
-                onPressed: _increaseDate,
+                onPressed: () {
+                  final LatLng? latLng = mapProvider.incrementIndex();
+                  if (dailyExpense != null && latLng != null) {
+                    _gotoMapPosition(latLng);
+                  }
+                },
                 icon: const Icon(Icons.arrow_forward),
               ),
             ],
           ),
 
           // 가계부 데이터
-          Expanded(
-            child: ListView.builder(
-              itemCount: expenses.length,
-              itemBuilder: (context, index) {
-                final expense = expenses[index];
+          if (dailyExpense != null)
+            Expanded(
+              child: ListView.builder(
+                itemCount: dailyExpense.expenses.length,
+                itemBuilder: (context, index) {
+                  final expense = dailyExpense.expenses[index];
 
-                return Column(
-                  children: [
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.grey[200],
-                        child: Icon(expense.category.icon),
-                      ),
-                      title: Text(
-                        expense.content,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                  return Column(
+                    children: [
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey[200],
+                          child: Icon(expense.category.icon),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Text(
-                        expense.memo,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      trailing: Text(
-                        '${expense.amount.toInt()} 원',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                        title: Text(
+                          expense.content,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(
+                          expense.memo,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        trailing: Text(
+                          '${expense.amount.toInt()} 원',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    expense.imagePath != null
-                        ? Image.file(
-                            File(expense.imagePath!),
-                            width: 100,
-                            height: 100,
-                          )
-                        : const SizedBox.shrink(),
-                  ],
-                );
-              },
+                      expense.imagePath != null
+                          ? Image.file(
+                              File(expense.imagePath!),
+                              width: 100,
+                              height: 100,
+                            )
+                          : const SizedBox.shrink(),
+                    ],
+                  );
+                },
+              ),
             ),
-          ),
         ],
       ),
     );
   }
-}
 
-/// 나의 맵 하단바
-void _showSlidingPanel(BuildContext context) {
-  showModalBottomSheet(
+  /// 나의 맵 하단바
+  Future<bool?> _showSlidingPanel(BuildContext context) async {
+    final result = await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) {
@@ -558,7 +611,7 @@ void _showSlidingPanel(BuildContext context) {
         return Scaffold(
           backgroundColor: Colors.transparent,
           body: SlidingUpPanel(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20.0),
               topRight: Radius.circular(20.0),
             ),
@@ -571,7 +624,7 @@ void _showSlidingPanel(BuildContext context) {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           '나의맵',
                           textAlign: TextAlign.center,
@@ -580,14 +633,12 @@ void _showSlidingPanel(BuildContext context) {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.close),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   InkWell(
                     onTap: () {
                       Navigator.push(
@@ -597,12 +648,12 @@ void _showSlidingPanel(BuildContext context) {
                     },
                     child: Container(
                       width: double.infinity,
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: Colors.purple[100],
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Align(
+                      child: const Align(
                         alignment: Alignment.topLeft,
                         child: Text(
                           '기본맵',
@@ -612,121 +663,167 @@ void _showSlidingPanel(BuildContext context) {
                       ),
                     ),
                   ),
-                  ...mapProvider.myMapList.map((e) => MapTile(mapModel: e)),
+                  ...mapProvider.myMapList.map(
+                    (e) => MapTile(
+                      mapModel: e,
+                      gotoLocation: (LatLng? latLng) =>
+                          _gotoMapPosition(latLng),
+                      changeDate: (date) {
+                        _selectedDate = date;
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MapPlus(),
-                ),
-              );
-            },
-            child: Icon(Icons.add),
+            onPressed: () => _registerMyMap(),
             backgroundColor: Colors.white,
+            child: const Icon(Icons.add),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         );
-      });
-}
+      },
+    );
 
-/// 공유맵 하단바
-void _showSlidingPanel2(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    backgroundColor: Colors.transparent,
-    builder: (context) {
-      final mapProvider = context.watch<MapProvider>();
+    return result;
+  }
 
-      return Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SlidingUpPanel(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.0),
-            topRight: Radius.circular(20.0),
-          ),
-          minHeight: 1500,
-          maxHeight: MediaQuery.of(context).size.height * 0.7,
-          panel: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '공유맵',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 20.0, fontWeight: FontWeight.bold),
+  /// 공유맵 하단바
+  Future<bool?> _showSlidingPanel2(BuildContext context) async {
+    final result = await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        final mapProvider = context.watch<MapProvider>();
+
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SlidingUpPanel(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
+            minHeight: 1500,
+            maxHeight: MediaQuery.of(context).size.height * 0.7,
+            panel: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          '공유맵',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20.0, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5.0),
+                  const Center(
+                    child: Text(
+                      '친구들과 함께 지도를 작성해보세요!',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                  const SizedBox(height: 20), // 새로 추가된 부분
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ShareMap()),
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.purple[100],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          '기본맵',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () {
-                        Navigator.pop(context);
+                  ),
+                  ...mapProvider.sharedMapList.map(
+                    (e) => MapTile(
+                      mapModel: e,
+                      gotoLocation: (LatLng? latLng) =>
+                          _gotoMapPosition(latLng),
+                      changeDate: (date) {
+                        _selectedDate = date;
                       },
                     ),
-                  ],
-                ),
-                SizedBox(height: 5.0),
-                Center(
-                  child: Text(
-                    '친구들과 함께 지도를 작성해보세요!',
-                    style: TextStyle(fontSize: 16.0),
                   ),
-                ),
-                SizedBox(height: 20), // 새로 추가된 부분
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ShareMap()),
-                    );
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.purple[100],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        '기본맵',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ),
-                ...mapProvider.sharedMapList.map((e) => MapTile(mapModel: e)),
-              ],
+                ],
+              ),
             ),
           ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _registerMyMap(isSharedMap: true),
+            backgroundColor: Colors.white,
+            child: const Icon(Icons.add),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        );
+      },
+    );
+
+    return result;
+  }
+
+  Future<void> _registerMyMap({
+    bool isSharedMap = false,
+  }) async {
+    final newMap = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapPlus(
+          isSharedMap: isSharedMap,
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MapPlus(
-                  isSharedMap: true,
-                ),
-              ),
-            );
-          },
-          child: Icon(Icons.add),
-          backgroundColor: Colors.white,
+      ),
+    );
+
+    if (newMap != null) {
+      _changeMapModel(newMap as MapModel);
+    }
+  }
+
+  void _changeMapModel(MapModel mapModel) {
+    final mapProvider = context.read<MapProvider>();
+    mapProvider.changeMapModel(mapModel);
+    mapProvider.saveMapModel();
+
+    Navigator.pop(context, true);
+    // 날짜변경
+    setState(() {
+      _selectedDate = mapModel.selectedDate;
+    });
+  }
+
+  Future<void> _gotoMapPosition(LatLng? latLng) async {
+    await _mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: latLng ?? _currentLatLng,
+          zoom: 17,
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      );
-    },
-  );
+      ),
+    );
+  }
 }

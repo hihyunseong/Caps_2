@@ -1,39 +1,49 @@
-import 'dart:convert';
 import 'dart:io';
 
+import 'package:caps_2/models/daily_expense.dart';
 import 'package:caps_2/models/expense.dart';
 import 'package:caps_2/models/map_model.dart';
+import 'package:caps_2/provider/api_service.dart';
 import 'package:caps_2/widgets/my_marker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:path/path.dart' as p;
 import 'package:widget_to_marker/widget_to_marker.dart';
 
+import 'package:path/path.dart' as p;
+
 class MapProvider extends ChangeNotifier {
-  late Directory _appDir;
+  late ApiService apiService;
+
+  late Directory _mapDir;
 
   MapProvider() {
     _init();
   }
 
   Future<void> _init() async {
-    _appDir = await getApplicationDocumentsDirectory();
-
     // load all map models
-    final mapDir = Directory(p.join(_appDir.path, 'maps'));
+    final appDir = await getApplicationDocumentsDirectory();
+    _mapDir = Directory(p.join(appDir.path, 'maps'));
 
-    if (!await mapDir.exists()) {
-      await mapDir.create();
+    if (!_mapDir.existsSync()) {
+      await _mapDir.create();
     }
+    apiService = ApiService(mapDirPath: _mapDir.path);
 
+    await _loadAllMap();
+  }
+
+  Future<void> _loadAllMap() async {
     final List<MapModel> mapModels = [];
 
-    final mapFiles = await mapDir.list().toList();
+    final mapFiles = await _mapDir.list().toList();
+
     for (final map in mapFiles) {
       if (map is File) {
-        final mapModel = await loadMapModel(map.path.split('/').last);
+        final mapModel =
+            await apiService.loadMapModel(map.path.split('/').last);
         mapModels.add(mapModel!);
       }
     }
@@ -51,8 +61,11 @@ class MapProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // 나의 맵
   List<MapModel> get myMapList =>
       mapList.where((element) => element.friends.isEmpty).toList();
+
+  // 공유 맵
   List<MapModel> get sharedMapList =>
       mapList.where((element) => element.friends.isNotEmpty).toList();
 
@@ -63,18 +76,58 @@ class MapProvider extends ChangeNotifier {
   Future<void> addMarker(Marker marker) async {
     _markers.add(marker);
 
-    await saveMapModel();
+    // map 이 선택되어 있을때만 저장햐야 함
+    if (_mapModel != null) {
+      await saveMapModel();
+    }
 
     _getPolylines();
 
     notifyListeners();
   }
 
-  Future<void> loadMarkers() async {
+  Future<void> saveMapModel() async {
+    // 지출내역을 업데이트 하여 저장
+    final updatedMapModel = _mapModel!.copyWith(
+      expenses: _expenses,
+    );
+    await apiService.saveMapModel(
+      mapModel: updatedMapModel,
+    );
+  }
+
+  Future<void> loadMapModel(MapModel mapModel) async {
+    final filename = 'map_${mapModel.mapName}.json';
+    final loadedMapModel = await apiService.loadMapModel(filename);
+
+    if (loadedMapModel != null) {
+      _mapModel = loadedMapModel;
+      _setExpenses(loadedMapModel.expenses);
+      _setMarkers();
+      _getPolylines();
+    }
+  }
+
+  Future<void> deleteMapModel(MapModel mapModel) async {
+    await apiService.deleteMapModel(mapModel.mapName);
+    _mapList.removeWhere((element) => element.mapName == mapModel.mapName);
+
+    // 현재 사용중인 mapModel 이 삭제되었을 경우
+    if (_mapModel?.mapName == mapModel.mapName) {
+      _mapModel = null;
+      _expenses.clear();
+      _markers.clear();
+      _polylines.clear();
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> _setMarkers() async {
     final List<Marker> myMarkers = [];
 
-    for (var i = 0; i < expenses.length; i++) {
-      final expense = expenses[i];
+    for (var i = 0; i < tourExpenses.length; i++) {
+      final expense = tourExpenses[i];
 
       final marker = Marker(
           markerId: MarkerId('marker_id_$i'),
@@ -95,8 +148,6 @@ class MapProvider extends ChangeNotifier {
     _markers.clear();
     _markers.addAll(myMarkers);
 
-    _getPolylines();
-
     notifyListeners();
   }
 
@@ -107,7 +158,7 @@ class MapProvider extends ChangeNotifier {
   void _getPolylines() {
     final List<LatLng> points = [];
 
-    for (final expense in expenses) {
+    for (final expense in tourExpenses) {
       points.add(LatLng(expense.latitude, expense.longitude));
     }
 
@@ -128,65 +179,92 @@ class MapProvider extends ChangeNotifier {
 
   void addExpense(Expense expense) {
     _expenses.add(expense);
+
     notifyListeners();
   }
 
-  void changeExpenses(MapModel mapModel) {
-    final expenses = mapModel.expenses;
-
+  void _setExpenses(List<Expense> expenses) {
     _expenses.clear();
     _expenses.addAll(expenses);
+  }
+
+  List<Expense> get tourExpenses =>
+      dailyExpenses.isEmpty ? [] : dailyExpenses[_currentIndex].expenses;
+
+  // 지출을 날짜별로 그룹핑
+  List<DailyExpense> get dailyExpenses {
+    final Map<DateTime, List<Expense>> grouped = {};
+
+    for (final expense in expenses) {
+      final key = expense.tourDay;
+
+      if (grouped.containsKey(key)) {
+        grouped[key]!.add(expense);
+      } else {
+        grouped[key] = [expense];
+      }
+    }
+
+    final List<DailyExpense> dailyExpenses = [];
+
+    grouped.forEach((key, value) {
+      dailyExpenses.add(DailyExpense(expenses: value));
+    });
+
+    // 날짜별로 정렬
+    dailyExpenses.sort((a, b) => a.tourDay.compareTo(b.tourDay));
+
+    return dailyExpenses;
+  }
+
+  int _currentIndex = 0;
+  int get currentIndex => _currentIndex;
+
+  LatLng? incrementIndex() {
+    // ddailyExpenses.length 보다 커지지 않도록
+    if (_currentIndex < dailyExpenses.length - 1) {
+      _currentIndex++;
+
+      _updateMarker();
+    }
+
+    notifyListeners();
+
+    final LatLng? latLng =
+        tourExpenses.isEmpty ? null : tourExpenses.first.latLng;
+    return latLng;
+  }
+
+  LatLng? decrementIndex() {
+    // 0 보다 작아지지 않도록
+    if (_currentIndex > 0) {
+      _currentIndex--;
+      _updateMarker();
+    }
+
+    notifyListeners();
+
+    final LatLng? latLng =
+        tourExpenses.isEmpty ? null : tourExpenses.first.latLng;
+    return latLng;
   }
 
   // map model
   MapModel? _mapModel;
   MapModel? get mapModel => _mapModel;
 
-  void setMapModel(MapModel mapModel) {
+  void changeMapModel(MapModel mapModel) {
+    _currentIndex = 0;
     _mapModel = mapModel;
-  }
-
-  // save map model
-  Future<void> saveMapModel() async {
-    // 지출내역을 추가하여 저장
-    final updatedMapModel = _mapModel!.copyWith(
-      expenses: _expenses,
-    );
-
-    final mapDir = Directory(p.join(_appDir.path, 'maps'));
-
-    final filename = 'map_${updatedMapModel.mapName}.json';
-    final file = File(p.join(mapDir.path, filename));
-
-    final Map<String, dynamic> mapModelJson = updatedMapModel.toJson();
-    await file.writeAsString(jsonEncode(mapModelJson));
-  }
-
-  // load map model
-  Future<MapModel?> loadMapModel(String filename) async {
-    final mapDir = Directory(p.join(_appDir.path, 'maps'));
-
-    final file = File(p.join(mapDir.path, filename));
-
-    if (file.existsSync()) {
-      final mapModelJson = jsonDecode(await file.readAsString());
-      return MapModel.fromJson(mapModelJson);
-    }
-
-    return null;
-  }
-
-  // delete map model from local storage
-  Future<void> deleteMapModel(String mapName) async {
-    final mapDir = Directory(p.join(_appDir.path, 'maps'));
-
-    final filename = 'map_$mapName.json';
-    final file = File(p.join(mapDir.path, filename));
-
-    await file.delete();
-
-    _mapList.removeWhere((element) => element.mapName == mapName);
+    _setExpenses(mapModel.expenses);
+    _setMarkers();
+    _getPolylines();
 
     notifyListeners();
+  }
+
+  Future<void> _updateMarker() async {
+    await _setMarkers();
+    _getPolylines();
   }
 }

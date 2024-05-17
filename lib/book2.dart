@@ -35,13 +35,14 @@ class _Book2State extends State<Book2> {
   final _additionalInfoController = TextEditingController();
   XFile? _image;
 
-  String _recordText = '20xx-xx-xx의 기록';
+  late String _recordText;
 
   @override
   void initState() {
     super.initState();
 
     _selectedDate = widget.date;
+    _recordText = DateFormat('yyyy-MM-dd').format(widget.date);
   }
 
   @override
@@ -241,7 +242,7 @@ class _Book2State extends State<Book2> {
                       _addExpense();
                       // 홈 화면으로 이동
                       Navigator.pop(context);
-                      Navigator.pop(context);
+                      Navigator.pop(context, true);
                     },
                     child: const Text('등록하기'),
                   ),
@@ -279,7 +280,8 @@ class _Book2State extends State<Book2> {
       longitude: widget.location.longitude,
     );
 
-    context.read<MapProvider>().addExpense(expense);
+    final mapProvider = context.read<MapProvider>();
+    mapProvider.addExpense(expense);
   }
 
   Widget _buildIconButton(IconData icon, String label, Category category) {
@@ -300,20 +302,21 @@ class _Book2State extends State<Book2> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: DateTime(2015, 8),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
-      setState(() {
-        _selectedDate = picked;
-      });
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: _selectedDate ?? DateTime.now(),
+    firstDate: DateTime(2015, 8),
+    lastDate: DateTime(2101),
+  );
+  if (picked != null) {
+    setState(() {
+      _selectedDate = picked;
+      _recordText = DateFormat('yyyy-MM-dd').format(picked);
+    });
 
-      _selectTime(context);
-    }
+    _selectTime(context);
   }
+}
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -327,7 +330,7 @@ class _Book2State extends State<Book2> {
     }
   }
 
-//클릭하면 20xx-xx-xx의 기록 제목변경
+// 클릭하면 20xx-xx-xx의 기록 제목변경
   void _editRecord() {
     showDialog(
       context: context,
