@@ -6,131 +6,93 @@ class FindId extends StatefulWidget {
 }
 
 class _FindIdState extends State<FindId> {
-  String _selectedCountryCode = '+82'; 
+  String _selectedCountryCode = '+82';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('아이디 찾기'),
+        title: Align(
+          alignment: FractionalOffset(0.4, 0),
+          child: Text('아이디 찾기'),
+        ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildNameField(),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: _buildCountryCodeDropdown(),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text.rich(
+                TextSpan(
+                  text: '가입 시 등록한 \n',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: '휴대폰 번호',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: '를 입력해 주세요.',
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.2, // 드롭다운 버튼의 너비를 조정합니다.
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedCountryCode,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedCountryCode = value!;
+                      });
+                    },
+                    items: <String>['+82', '+1', '+86', '+91']
+                        .map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
                 ),
                 SizedBox(width: 10),
-                Expanded(
-                  flex: 2,
-                  child: _buildPhoneNumberField(),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  flex: 1,
-                  child: _buildVerificationButton(context),
+                Flexible(
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: '휴대폰 번호 (- 제외)',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.phone,
+                  ),
                 ),
               ],
             ),
-            SizedBox(height: 10),
-            _buildVerificationCodeField(),
-            SizedBox(height: 20),
+            SizedBox(height: 420),
             ElevatedButton(
-              onPressed: () {
-                
-              },
+              onPressed: () {},
+              child: Text('아이디 찾기', style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                backgroundColor: Color(0xFFFF6F61),
                 ),
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text('확인'),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildNameField() {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: '이름',
-        prefixIcon: Icon(Icons.person),
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
-
-  Widget _buildCountryCodeDropdown() {
-    return DropdownButtonFormField<String>(
-      value: _selectedCountryCode,
-      onChanged: (value) {
-        setState(() {
-          _selectedCountryCode = value!;
-        });
-      },
-      items: <String>['+82', '+1', '+86', '+91']
-          .map((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
-
-  Widget _buildPhoneNumberField() {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: '휴대폰 번호',
-        prefixIcon: Icon(Icons.phone),
-        border: OutlineInputBorder(),
-      ),
-      keyboardType: TextInputType.phone,
-    );
-  }
-
-  Widget _buildVerificationButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // 인증 기능 구현
-      },
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 16),
-        child: Text('인증'),
-      ),
-    );
-  }
-
-  Widget _buildVerificationCodeField() {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: '인증번호 숫자 6자리',
-        prefixIcon: Icon(Icons.lock),
-        border: OutlineInputBorder(),
-      ),
-      keyboardType: TextInputType.number,
-      maxLength: 6,
     );
   }
 }

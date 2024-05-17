@@ -1,9 +1,9 @@
 class FriendInfo{
-  String? idx;
-  String? email;
-  String? name;
-  String? profile;
-  String? createdAt;
+  String idx;
+  String email;
+  String name;
+  String profile;
+  String createdAt;
 
   FriendInfo({required this.idx, required this.email, required this.name, required this.profile, required this.createdAt});
 

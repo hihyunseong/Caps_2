@@ -11,11 +11,12 @@ class MyPage extends StatefulWidget {
 
   @override
   State<MyPage> createState() => _MyPageState();
+
 }
 
 class _MyPageState extends State<MyPage> {
+
   XFile? _image;
-  static final storage = FlutterSecureStorage();
 
   String? idx;
   String? email;
@@ -25,10 +26,13 @@ class _MyPageState extends State<MyPage> {
 
   @override
   void initState(){
+    super.initState();
     _loadFromStorage();
   }
 
-  void _loadFromStorage()async{
+  Future<void> _loadFromStorage() async{
+    final storage = FlutterSecureStorage();
+
     final loadIdx = await storage.read(key: 'idx');
     final loadEmail = await storage.read(key: 'email');
     final loadName = await storage.read(key: 'name');
@@ -88,12 +92,13 @@ class _MyPageState extends State<MyPage> {
               child: TextFormField(
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
-                  hintText: '사용자',
+                  hintText: name,
                   border: InputBorder.none,
                 ),
               ),
             ),
             SizedBox(height: 20.0),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -103,23 +108,26 @@ class _MyPageState extends State<MyPage> {
               },
               child: Text(
                 '친구리스트',
-                style: TextStyle(letterSpacing: 1.5),
+                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () {},
               child: Text(
                 '전체지도',
-                style: TextStyle(letterSpacing: 1.5),
+                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () {},
               child: Text(
                 '이용약관',
-                style: TextStyle(letterSpacing: 1.5),
+                style: TextStyle(color: Colors.black,  letterSpacing: 1.5, fontSize: 18),
               ),
             ),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () async{
                 showDialog(
@@ -148,9 +156,10 @@ class _MyPageState extends State<MyPage> {
               },
               child: Text(
                 '버전',
-                style: TextStyle(letterSpacing: 1.5),
+                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -160,11 +169,14 @@ class _MyPageState extends State<MyPage> {
               },
               child: Text(
                 '로그아웃',
-                style: TextStyle(letterSpacing: 1.5),
+                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
+            Divider(color: Colors.grey),
             TextButton(
               onPressed: () {
+                const storage = FlutterSecureStorage();
+                storage.deleteAll();
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => LoginPage()),
@@ -174,10 +186,11 @@ class _MyPageState extends State<MyPage> {
                 '탈퇴하기',
                 style: TextStyle(
                   letterSpacing: 1.5,
-                  color: Colors.red,
+                  color: Colors.red, fontSize: 18
                 ),
               ),
             ),
+            Divider(color: Colors.grey),
           ],
         ),
       ),

@@ -208,7 +208,7 @@ Widget _inputField(context) {
         decoration: InputDecoration(
           hintText: "아이디(이메일)",
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4),
             borderSide: BorderSide(color: Colors.grey),
           ),
           fillColor: Colors.white,
@@ -224,14 +224,14 @@ Widget _inputField(context) {
         decoration: InputDecoration(
           hintText: "비밀번호",
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4),
             borderSide: BorderSide(color: Colors.grey),
           ),
           fillColor: Colors.white,
           filled: true,
           suffixIcon: IconButton(
             icon: Icon(
-              _isObscure ? Icons.visibility : Icons.visibility_off,
+              _isObscure ? Icons.visibility_off : Icons.visibility,
             ),
             onPressed: () {
               setState(() {
@@ -253,12 +253,11 @@ Widget _inputField(context) {
               }
             : null, // 입력되지 않은 경우 버튼을 비활성화
         child: Text(
-          "로그인",
-          style: TextStyle(fontSize: 20, color: Colors.white),
+          "로그인", style: TextStyle(fontSize: 20, color: Colors.white),
         ),
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4),
           ),
           padding: EdgeInsets.symmetric(vertical: 16),
           backgroundColor: _idEntered && _passwordEntered

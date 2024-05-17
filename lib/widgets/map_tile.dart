@@ -1,15 +1,21 @@
+import 'package:caps_2/bottom_sheets/my_map_sheet.dart';
 import 'package:caps_2/map/my_map.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class MapTile extends StatelessWidget {
   final MapModel mapModel;
+  final Function(LatLng? latLng) gotoLocation;
+  final Function(DateTime date) changeDate;
 
   const MapTile({
     super.key,
     required this.mapModel,
+    required this.gotoLocation,
+    required this.changeDate,
   });
 
   @override
@@ -17,27 +23,7 @@ class MapTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: InkWell(
-        onTap: () async {
-          // map model 변경
-          final filename = 'map_${mapModel.mapName}.json';
-
-          // 맵이 존재하는지
-
-          final updatedMapModel =
-              await context.read<MapProvider>().loadMapModel(filename);
-
-          if (updatedMapModel == null) {
-            context.read<MapProvider>().setMapModel(mapModel);
-            context.read<MapProvider>().changeExpenses(mapModel);
-            await context.read<MapProvider>().loadMarkers();
-          } else {
-            context.read<MapProvider>().setMapModel(updatedMapModel);
-            context.read<MapProvider>().changeExpenses(updatedMapModel);
-            await context.read<MapProvider>().loadMarkers();
-          }
-
-
-        },
+        onTap: () => _changeMapModel(context),
         onLongPress: () {
           showDialog(
             context: context,
@@ -54,9 +40,8 @@ class MapTile extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () async {
-                      await context
-                          .read<MapProvider>()
-                          .deleteMapModel(mapModel.mapName);
+                      final mapProvider = context.read<MapProvider>();
+                      await mapProvider.deleteMapModel(mapModel);
 
                       Navigator.of(context).pop();
 
@@ -159,6 +144,53 @@ class MapTile extends StatelessWidget {
             // ),
             ),
       ),
+    );
+  }
+
+  Future<void> _changeMapModel(BuildContext context) async {
+    // map model 변경
+    final mapProvider = context.read<MapProvider>();
+
+    // 현재 사용중이면 변경하지 않음
+    if (mapProvider.mapModel?.mapName == mapModel.mapName) {
+      // 현재 사용중 알림 스낵바
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('현재 사용중인 지도입니다.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      return;
+    }
+
+    await mapProvider.loadMapModel(mapModel);
+
+    // 지도 위치 이동
+    final LatLng? latLng = mapProvider.tourExpenses.isEmpty
+        ? mapModel.latLng
+        : mapProvider.tourExpenses.first.latLng;
+
+    await gotoLocation(latLng);
+    changeDate(mapModel.selectedDate);
+
+    Navigator.of(context).pop();
+
+    _showMyMapBottomSheet(context);
+  }
+
+  void _showMyMapBottomSheet(BuildContext context) {
+    final mapModel = context.read<MapProvider>().mapModel!;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      builder: (context) {
+        return MyMapSheet(
+          mapModel: mapModel,
+        );
+      },
     );
   }
 }

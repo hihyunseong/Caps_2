@@ -7,31 +7,69 @@ class FindPw extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('아이디 입력'),
+        title: Align(
+          alignment: FractionalOffset(0.4,0), 
+          child: Text('비밀번호 찾기'),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+     body: SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Text.rich(
+              TextSpan(
+                text: '가입하신 \n',
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: '이메일 주소',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '를 입력해 주세요.',
+                  ),
+                ],
+              ),
+            ),  
             SizedBox(height: 40), 
-            Center(
-              child: Text(
-                '비밀번호를 찾고자 하는\n아이디를 입력해주세요.',
-                style: TextStyle(fontSize: 20),
-                textAlign: TextAlign.center, 
+            Container(
+            padding: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: Colors.grey),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'pinkok@email.com',
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: GestureDetector(
+                      onTap: () {
+                      },
+                      child: Text(
+                        '인증요청',
+                        style: TextStyle(color: Color(0xFFFF6F61), fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 20), 
-            TextField( 
-              decoration: InputDecoration(
-                labelText: '아이디', 
-                prefixIcon: Icon(Icons.lock),
-                border: OutlineInputBorder(), 
-              ),
-            ),
-            SizedBox(height: 20), 
+
+            SizedBox(height: 400), 
             Container(
               width: double.infinity,
               child: ElevatedButton( 
@@ -41,50 +79,27 @@ class FindPw extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => FindPw2()), 
                   );
                 },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), 
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.0), 
-                    ),
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4.0),
                   ),
-                ),
+              
+                  backgroundColor: Color(0xFFFF6F61) 
+                ),           
                 child: Container(
                   alignment: Alignment.center, 
                   width: double.infinity,
                   child: Text(
-                    '다음',
-                    style: TextStyle(fontSize: 16),
+                    '비밀번호 찾기',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 10),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FindId()),
-                );
-              },
-              splashColor: Colors.transparent,
-              child: Text.rich( 
-                TextSpan(
-                  text: '아이디를 잊으셨나요? ',
-                  style: TextStyle(fontSize: 12),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: '아이디 찾기',
-                      style: TextStyle(fontSize: 12, color: Colors.blue), 
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
+            ),        
           ],
         ),
       ),
+     ),
     );
   }
 }

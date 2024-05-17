@@ -9,18 +9,23 @@ class SignupPage extends StatefulWidget {
   _SignupPageState createState() => _SignupPageState();
 }
 
+  bool _isObscure = true;
+
 class _SignupPageState extends State<SignupPage> {
   bool _allChecked = false; // 전체동의 체크 상태
   bool _ageChecked = false; // 만 14세 이상입니다 체크 상태
   bool _serviceChecked = false; // 서비스 이용 체크 상태
   bool _privacyChecked = false; // 개인정보 체크 상태 
   bool _marketingChecked = false; // 마케팅 체크 상태
+  
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('약관동의')),
+        title: Align(
+          alignment: FractionalOffset(0.4,0), 
+          child: Text('약관동의'),
+        ),
       ),
       body: SingleChildScrollView(
       child: Container(
@@ -51,7 +56,7 @@ class _SignupPageState extends State<SignupPage> {
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(6.0),
                 border: Border.all(color: Colors.grey),
               ),
               padding: EdgeInsets.all(12.0),
@@ -68,7 +73,7 @@ class _SignupPageState extends State<SignupPage> {
                             _ageChecked = _allChecked;
                             _serviceChecked = _allChecked; 
                             _privacyChecked = _allChecked;
-                          
+                            _marketingChecked = _allChecked;
                           });
                         },
                         checkColor: Colors.white,
@@ -162,7 +167,7 @@ class _SignupPageState extends State<SignupPage> {
                           setState(() {
                             _marketingChecked = value ?? false;
                             if (!_marketingChecked && _allChecked) {
-                              _marketingChecked = true; // 개별 체크 해제 시 전체동의 체크 해제
+                              _marketingChecked = false; // 개별 체크 해제 시 전체동의 체크 해제
                             }
                           });
                         },
@@ -181,7 +186,7 @@ class _SignupPageState extends State<SignupPage> {
                 ],
               ),
             ),
-            SizedBox(height: 200.0),
+          SizedBox(height: 220.0),
           ElevatedButton(
             onPressed:  _ageChecked && _serviceChecked && _privacyChecked ? () {
               Navigator.push(
@@ -191,7 +196,7 @@ class _SignupPageState extends State<SignupPage> {
             } : null, // 필수 약관을 모두 동의한 경우에만 버튼 활성화
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0), 
+                borderRadius: BorderRadius.circular(4.0), 
               ),
               backgroundColor: Color(0xFFFF6F61),
               foregroundColor: Colors.white,
@@ -205,7 +210,6 @@ class _SignupPageState extends State<SignupPage> {
   );
   }
 }
-
 
   void _completeSignup(BuildContext context) {
     Navigator.push(
@@ -221,14 +225,11 @@ class SignupFormPage extends StatefulWidget {
 }
 
 class _SignupFormPageState extends State<SignupFormPage> {
-  String _selectedCountry = '대한민국'; // 초기값은 대한민국으로 설정
-  String _selectedGender = ''; // 선택된 성별 초기값은 없음
+  String _selectedCountryCode = '+82';
 
-  Map<String, String> _countryCodes = {
-    '대한민국': '+82',
-    '미국': '+1',
-    '영국': '+44',
-  };
+  // Map<String, String> _countryCodes = {
+  
+  // };
 
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -257,198 +258,451 @@ class _SignupFormPageState extends State<SignupFormPage> {
     return response;
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Align(
+          alignment: FractionalOffset(0.4,0), 
+          child: Text('본인 인증'),
+        ),
+      ),
+      body: SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text.rich(
+              TextSpan(
+                text: '본인 확인을 위해 \n',
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: '인증',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '을 진행해 주세요.',
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20), 
+            TextField(
+              decoration: InputDecoration(
+                hintText: "이름",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(4),
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+                fillColor: Colors.white,
+                filled: true,
+              ),
+              onChanged: (value) {
+              },
+            ),
+            SizedBox(height: 20), 
+            Row(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 0.4,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: '주민등록번호 앞자리',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number, 
+                ),
+              ),
+              SizedBox(width: 10), 
+              Text(
+                '-', style: TextStyle(fontSize: 20), 
+              ),
+              SizedBox(width: 10), 
+              Container(
+                width: MediaQuery.of(context).size.width * 0.1,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number, 
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20), 
+            Row(
+                children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.2, 
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedCountryCode,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedCountryCode = value!;
+                      });
+                    },
+                    items: <String>['+82', '+1', '+86', '+91']
+                        .map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Flexible(
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: '휴대폰 번호 (- 제외)',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.phone,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 252),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                    MaterialPageRoute(builder: (context) => InformationPage()),
+                );
+              },
+              child: Text('다음', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                backgroundColor: Color(0xFFFF6F61),
+                ),
+              ),
+            ],
+          ), 
+        ),
+      ),
+    );
+  }
+}
+
+// 회원 정보 입력
+class InformationPage extends StatefulWidget {
+  @override
+  _InformationPageState createState() => _InformationPageState();
+}
+
+class _InformationPageState extends State<InformationPage> {
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
+  bool _obscureTextPassword = true;
+  bool _obscureTextConfirmPassword = true;
+
+  void _toggleVisibilityPassword() {
+    setState(() {
+      _obscureTextPassword = !_obscureTextPassword;
+    });
+  }
+
+  void _toggleVisibilityConfirmPassword() {
+    setState(() {
+      _obscureTextConfirmPassword = !_obscureTextConfirmPassword;
+    });
+  }
+
+  void _register() {
+    String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+
+    if (password == confirmPassword) {
+      // 비밀번호와 비밀번호 재확인이 일치하는 경우
+      // 여기에 회원가입 로직을 추가하세요
+      // 예를 들어, 다음 단계로 이동하거나 회원가입 API를 호출할 수 있습니다.
+      // 여기서는 간단히 다이얼로그를 띄워보겠습니다.
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("가입 성공",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold, 
+              ),
+              textAlign: TextAlign.center, 
+            ),
+            contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text("핀콕 가입을 축하드립니다!",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.center, 
+                ),
+                SizedBox(height: 10), 
+              ],
+            ),  
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Container(   
+                  alignment: Alignment.center,     
+                  child: Text("확인",
+                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // 비밀번호와 비밀번호 재확인이 일치하지 않는 경우
+      // 사용자에게 알려줄 수 있도록 경고 메시지를 표시하거나 다른 방법을 사용하세요.
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("가입 실패",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold, 
+              ),
+              textAlign: TextAlign.center, 
+            ),
+            contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 1),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text("비밀번호가 일치하지 않습니다.",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.center, 
+                ),
+                SizedBox(height: 10), 
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Text("확인",
+                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pinkok'),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _inputBox(context, [
-              _inputField(context, _idController, Icons.person, '아이디'),
-              SizedBox(height: 8.0),
-              Divider(height: 2, color: Colors.grey),
-              _inputField(context, _passwordController, Icons.lock, '비밀번호', isPassword: true),
-            ]),
-            SizedBox(height: 8.0),
-            _inputBox(context, [
-              _inputField(context, _nameController, Icons.person_outline, '이름'),
-              SizedBox(height: 8.0),
-              Divider(height: 2, color: Colors.grey),
-              _inputField(context, _dobController, Icons.calendar_today, '생년월일 8자리'),
-              SizedBox(height: 8.0),
-              Divider(height: 2, color: Colors.grey),
-              _genderSelection(context),
-              SizedBox(height: 10.0),
-              Divider(height: 2, color: Colors.grey),
-              _countryCodeDropdown(context),
-              SizedBox(height: 8.0),
-              _inputField(context, _phoneController, Icons.phone, '휴대전화번호'),
-            ]),
-            SizedBox(height: 8.0),
-            ElevatedButton(
-              onPressed: () {
-                // 회원가입 절차를 완료하고 다음 단계로 진행
-                // 회원가입 정보를 서버에 전송하고 홈 화면으로 이동
-              },
-              child: Text('인증요청'),
-            ),
-            SizedBox(height: 10.0),
-            ElevatedButton(
-              onPressed: () {
-                // 회원가입 버튼이 클릭되었을 때의 동작을 정의
-                _completeSignup(context);
-              },
-              child: Text('회원가입'),
-            ),
-          ],
+        title: Align(
+          alignment: FractionalOffset(0.4, 0),
+          child: Text('회원 정보 입력'),
         ),
       ),
-    );
-  }
-
-  Widget _inputBox(BuildContext context, List<Widget> children) {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.transparent),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children,
-      ),
-    );
-  }
-
-  Widget _inputField(BuildContext context, TextEditingController controller, IconData icon, String hintText, {bool isPassword = false}) {
-    return TextField(
-      controller: controller,
-      obscureText: isPassword,
-      decoration: InputDecoration(
-        hintText: hintText,
-        prefixIcon: Icon(icon),
-        border: InputBorder.none,
-      ),
-    );
-  }
-
-  Widget _genderSelection(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 1.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _GenderOption(
-            gender: '남자',
-            onSelect: (selectedGender) {
-              setState(() {
-                _selectedGender = selectedGender;
-              });
-            },
-            isSelected: _selectedGender == '남자',
-          ),
-          _GenderOption(
-            gender: '여자',
-            onSelect: (selectedGender) {
-              setState(() {
-                _selectedGender = selectedGender;
-              });
-            },
-            isSelected: _selectedGender == '여자',
-          ),
-          _GenderOption(
-            gender: '선택안함',
-            onSelect: (selectedGender) {
-              setState(() {
-                _selectedGender = selectedGender;
-              });
-            },
-            isSelected: _selectedGender == '선택안함',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _countryCodeDropdown(BuildContext context) {
-    return DropdownButtonFormField<String>(
-      value: _selectedCountry,
-      onChanged: (String? newValue) {
-        setState(() {
-          _selectedCountry = newValue!;
-        });
-      },
-      items: _countryCodes.keys.map((String country) {
-        return DropdownMenuItem<String>(
-          value: country,
-          child: Row(
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(country),
-              SizedBox(width: 8.0),
-              Text(
-                _countryCodes[country]!,
-                style: TextStyle(color: Colors.grey),
+              Text.rich(
+                TextSpan(
+                  text: '가입을 위해 \n',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: '정보',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: '를 입력해 주세요.',
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: "아이디(이메일)",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                ),
+                onChanged: (value) {},
+              ),
+              SizedBox(height: 15),
+              TextField(
+                controller: _passwordController,
+                obscureText: _obscureTextPassword,
+                decoration: InputDecoration(
+                  hintText: '비밀번호(8자리 이상)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureTextPassword ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: _toggleVisibilityPassword,
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+              TextField(
+                controller: _confirmPasswordController,
+                obscureText: _obscureTextConfirmPassword,
+                decoration: InputDecoration(
+                  hintText: '비밀번호 재확인',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureTextConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: _toggleVisibilityConfirmPassword,
+                  ),
+                ),
+              ),
+              SizedBox(height: 260),
+              ElevatedButton(
+                onPressed: _register,
+                child: Text('회원가입', style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4.0),
+                  ),
+                  backgroundColor: Color(0xFFFF6F61),
+                ),
               ),
             ],
           ),
-        );
-      }).toList(),
-    );
-  }
-}
-
-class _GenderOption extends StatefulWidget {
-  final String gender;
-  final Function(String) onSelect;
-  final bool isSelected;
-
-  const _GenderOption({
-    required this.gender,
-    required this.onSelect,
-    required this.isSelected,
-  });
-
-  @override
-  _GenderOptionState createState() => _GenderOptionState();
-}
-
-class _GenderOptionState extends State<_GenderOption> {
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        widget.onSelect(widget.gender);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          color: widget.isSelected ? Colors.transparent : Colors.transparent,
-          border: Border.all(
-            color: widget.isSelected ? Colors.black : Colors.transparent,
-          ),
-        ),
-        child: Text(
-          widget.gender,
-          style: TextStyle(
-            color: widget.isSelected ? Colors.black : Colors.grey,
-            fontWeight: FontWeight.bold,
-          ),
         ),
       ),
     );
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: SignupPage(),
-  ));
-}
+
+
+
+
+
+ //     body: Container(
+  //       padding: EdgeInsets.all(10.0),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.stretch,
+  //         children: [
+  //           _inputBox(context, [
+  //             _inputField(context, _idController, Icons.person, '아이디'),
+  //             SizedBox(height: 8.0),
+  //             Divider(height: 2, color: Colors.grey),
+  //             _inputField(context, _passwordController, Icons.lock, '비밀번호', isPassword: true),
+  //           ]),
+  //           SizedBox(height: 8.0),
+  //           _inputBox(context, [
+  //             _inputField(context, _nameController, Icons.person_outline, '이름'),
+  //             SizedBox(height: 8.0),
+  //             Divider(height: 2, color: Colors.grey),
+  //             _inputField(context, _dobController, Icons.calendar_today, '생년월일 8자리'),
+  //             SizedBox(height: 8.0),
+  //             Divider(height: 2, color: Colors.grey),
+  //             _genderSelection(context),
+  //             SizedBox(height: 10.0),
+  //             Divider(height: 2, color: Colors.grey),
+  //             _countryCodeDropdown(context),
+  //             SizedBox(height: 8.0),
+  //             _inputField(context, _phoneController, Icons.phone, '휴대전화번호'),
+  //           ]),
+  //           SizedBox(height: 8.0),
+  //           ElevatedButton(
+  //             onPressed: () {
+  //               // 회원가입 절차를 완료하고 다음 단계로 진행
+  //               // 회원가입 정보를 서버에 전송하고 홈 화면으로 이동
+  //             },
+  //             child: Text('인증요청'),
+  //           ),
+  //           SizedBox(height: 10.0),
+  //           ElevatedButton(
+  //             onPressed: () {
+  //               // 회원가입 버튼이 클릭되었을 때의 동작을 정의
+  //               _completeSignup(context);
+  //             },
+  //             child: Text('회원가입'),
+
+  
+  
+
+
+  // Widget _countryCodeDropdown(BuildContext context) {
+  //   return DropdownButtonFormField<String>(
+  //     value: _selectedCountry,
+  //     onChanged: (String? newValue) {
+  //       setState(() {
+  //         _selectedCountry = newValue!;
+  //       });
+  //     },
+  //     items: _countryCodes.keys.map((String country) {
+  //       return DropdownMenuItem<String>(
+  //         value: country,
+  //         child: Row(
+  //           children: [
+  //             Text(country),
+  //             SizedBox(width: 8.0),
+  //             Text(
+  //               _countryCodes[country]!,
+  //               style: TextStyle(color: Colors.grey),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     }).toList(),
+  //   );
+  // }
+
+
+
+
+// void main() {
+//   runApp(MaterialApp(
+//     home: SignupPage(),
+//   ));
+// }

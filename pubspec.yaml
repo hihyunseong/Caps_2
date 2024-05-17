@@ -84,6 +84,21 @@ flutter:
     - assets/images/location_pin.png
     - assets/images/frame.png
     - assets/images/pinkok.png
+    - assets/images/home/home1.png
+    - assets/images/home/home2.png
+    - assets/images/home/home3.png
+    - assets/images/mymap/mymap1.png
+    - assets/images/mymap/mymap2.png
+    - assets/images/mymap/mymap3.png
+    - assets/images/sharemap/sharemap1.png
+    - assets/images/sharemap/sharemap2.png
+    - assets/images/sharemap/sharemap3.png
+    - assets/images/user/user1.png
+    - assets/images/user/user2.png
+    - assets/images/user/user3.png
+    - assets/images/loc/Outline/Navigation/Current-location.png
+    - assets/images/search/Iconly/Regular/Light/Search.png
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
