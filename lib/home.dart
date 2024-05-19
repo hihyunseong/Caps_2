@@ -245,13 +245,13 @@ class _HomeState extends State<Home> {
                     },
                     style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.blue),
+                          MaterialStateProperty.all<Color>(Color(0xFFFF6F61)),
                       fixedSize: MaterialStateProperty.all<Size>(
-                          const Size(150.0, 50.0)),
+                          const Size(185, 52)),
                     ),
                     child: const Text(
                       '여기에 핀 꽂기',
-                      style: TextStyle(fontSize: 14.0, color: Colors.white),
+                      style: TextStyle(fontFamily: 'NanumSquareNeo' ,fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),
@@ -381,8 +381,8 @@ class _HomeState extends State<Home> {
             // 고정 핀 이미지
             Positioned(
               top: MediaQuery.of(context).size.height * 0.5 - 70,
-              child: Image.asset('assets/images/location_pin.png',
-                  width: 50, height: 50),
+              child: Image.asset('/images/pin.png',
+                  width: 32, height: 80),
             ),
           ],
         ),

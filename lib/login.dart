@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;import 'package:flutter/material.dart';
 import 'home.dart';
@@ -81,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<http.Response> _loginUser() async {
-    final url = Uri.http('43.202.127.16:8080','/api/v1/members/login');
+    final url = Uri.http( '${UrlUtil.url}:8080','/api/v1/members/login');
 
     final response = await http.post(
       url,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:caps_2/login.dart';
+import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -240,7 +241,7 @@ class _SignupFormPageState extends State<SignupFormPage> {
 
 
   Future<http.Response> _registerUser() async {
-    final url = Uri.http('43.202.127.16:8080','/api/v1/members/register');
+    final url = Uri.http('${UrlUtil.url}:8080','/api/v1/members/register');
 
     final response = await http.post(
       url,

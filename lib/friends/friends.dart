@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:caps_2/vo/FriendInfo.dart';
 import 'package:caps_2/vo/FriendRequest.dart';
+import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:caps_2/my.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -21,8 +22,8 @@ class Friends extends StatefulWidget {
 class _FriendsState extends State<Friends> {
   bool isBottomBarVisible = false;
 
-  final String memberUrl = "43.202.127.16:8080";   /// 멤버 서비스 API
-  final String friendUrl = "43.202.127.16:8081";   /// 친구 서비스 API
+  final String memberUrl = "${UrlUtil.url}:8080";   /// 멤버 서비스 API
+  final String friendUrl = "${UrlUtil.url}:8081";   /// 친구 서비스 API
   final storage = FlutterSecureStorage();
 
   String searchFriendEmail = "";       /// 검색한 유저 이메일
@@ -111,7 +112,7 @@ class _FriendsState extends State<Friends> {
   }
 
   Future<http.Response> _acceptFriend(String friendIdx) async {
-    final url = Uri.http(friendUrl, '/api/v1/members/accept' + friendIdx);
+    final url = Uri.http(friendUrl, '/api/v1/members/accept/' + friendIdx);
 
     final response = await http.get(
         url,

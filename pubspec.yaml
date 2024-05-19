@@ -53,7 +53,6 @@ dependencies:
   provider: ^6.1.2
   
   google_places_flutter:
-    path: libraries/Google-AutoComplete-TextField-Flutter
 
   # support
   path: ^1.8.3
@@ -131,6 +130,11 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+  #fonts
+  fonts:
+    - family: NanumSquareNeo
+      fonts:
+      -  asset: assets/fonts/NanumSquareNeo-Variable.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
