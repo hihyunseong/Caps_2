@@ -8,14 +8,13 @@ import 'friends/friends.dart';
 import 'home.dart';
 
 class MyPage extends StatefulWidget {
+  const MyPage({super.key});
 
   @override
   State<MyPage> createState() => _MyPageState();
-
 }
 
 class _MyPageState extends State<MyPage> {
-
   XFile? _image;
 
   String? idx;
@@ -25,12 +24,12 @@ class _MyPageState extends State<MyPage> {
   String? refToken;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _loadFromStorage();
   }
 
-  Future<void> _loadFromStorage() async{
+  Future<void> _loadFromStorage() async {
     final storage = FlutterSecureStorage();
 
     final loadIdx = await storage.read(key: 'idx');
@@ -50,18 +49,15 @@ class _MyPageState extends State<MyPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => Home()),
-            );
-          },
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
       ),
-      body: Center(
+      child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -71,34 +67,23 @@ class _MyPageState extends State<MyPage> {
               },
               child: _image == null
                   ? CircleAvatar(
-                      radius: 50.0,
+                      radius: 40.0,
                       backgroundColor: Colors.grey[200],
                       child: Icon(
                         Icons.person,
-                        size: 50.0,
+                        size: 40.0,
                         color: Colors.grey[600],
                       ),
                     )
                   : CircleAvatar(
-                      radius: 50.0,
+                      radius: 40.0,
                       backgroundImage: FileImage(
                         File(_image!.path),
                       ),
                     ),
             ),
-            SizedBox(height: 10.0),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.0),
-              child: TextFormField(
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  hintText: name,
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-            SizedBox(height: 20.0),
-            Divider(color: Colors.grey),
+            const SizedBox(height: 10.0),
+            const Divider(color: Colors.grey),
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -106,35 +91,38 @@ class _MyPageState extends State<MyPage> {
                   MaterialPageRoute(builder: (context) => Friends()),
                 );
               },
-              child: Text(
+              child: const Text(
                 '친구리스트',
-                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
+                style: TextStyle(
+                    color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
-            Divider(color: Colors.grey),
+            const Divider(color: Colors.grey),
             TextButton(
               onPressed: () {},
-              child: Text(
+              child: const Text(
                 '전체지도',
-                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
+                style: TextStyle(
+                    color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
-            Divider(color: Colors.grey),
+            const Divider(color: Colors.grey),
             TextButton(
               onPressed: () {},
-              child: Text(
+              child: const Text(
                 '이용약관',
-                style: TextStyle(color: Colors.black,  letterSpacing: 1.5, fontSize: 18),
+                style: TextStyle(
+                    color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
-            Divider(color: Colors.grey),
+            const Divider(color: Colors.grey),
             TextButton(
-              onPressed: () async{
+              onPressed: () async {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('사용자 정보'),
+                      title: const Text('사용자 정보'),
                       content: Text('idx :' +
                           idx.toString() +
                           "\n" +
@@ -154,25 +142,27 @@ class _MyPageState extends State<MyPage> {
                   },
                 );
               },
-              child: Text(
+              child: const Text(
                 '버전',
-                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
+                style: TextStyle(
+                    color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
-            Divider(color: Colors.grey),
+            const Divider(color: Colors.grey),
             TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
               },
-              child: Text(
+              child: const Text(
                 '로그아웃',
-                style: TextStyle(color: Colors.black, letterSpacing: 1.5, fontSize: 18),
+                style: TextStyle(
+                    color: Colors.black, letterSpacing: 1.5, fontSize: 18),
               ),
             ),
-            Divider(color: Colors.grey),
+            const Divider(color: Colors.grey),
             TextButton(
               onPressed: () {
                 const storage = FlutterSecureStorage();
@@ -182,15 +172,16 @@ class _MyPageState extends State<MyPage> {
                   MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               },
-              child: Text(
+              child: const Text(
                 '탈퇴하기',
                 style: TextStyle(
-                  letterSpacing: 1.5,
-                  color: Colors.red, fontSize: 18
-                ),
+                    letterSpacing: 1.5, color: Colors.red, fontSize: 18),
               ),
             ),
-            Divider(color: Colors.grey),
+            const Divider(color: Colors.grey),
+            const SizedBox(
+              height: 50.0,
+            ),
           ],
         ),
       ),
@@ -208,7 +199,7 @@ class _MyPageState extends State<MyPage> {
               children: <Widget>[
                 GestureDetector(
                   child: Text('갤러리에서 선택'),
-                  onTap: () async {    
+                  onTap: () async {
                     final ImagePicker picker = ImagePicker();
                     final XFile? image = await picker.pickImage(
                       source: ImageSource.gallery,
@@ -223,7 +214,6 @@ class _MyPageState extends State<MyPage> {
                 GestureDetector(
                   child: Text('카메라로 촬영'),
                   onTap: () async {
-                 
                     final ImagePicker picker = ImagePicker();
                     final XFile? image = await picker.pickImage(
                       source: ImageSource.camera,

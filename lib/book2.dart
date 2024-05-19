@@ -66,7 +66,10 @@ class _Book2State extends State<Book2> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('가계부'),
+        title: Align(
+          alignment: FractionalOffset(0.4, 0),
+          child: Text('소비 기록'),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -99,34 +102,58 @@ class _Book2State extends State<Book2> {
                 ),
               ),
               const SizedBox(height: 20.0),
-              Row(
+              
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    formattedDate,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.grey,
-                    ),
+                  const Text('제목', textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(width: 5.0),
-                  Text(
-                    formattedTime,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.grey,
+                ),
+                
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: _contentController,
+                    decoration: InputDecoration(
+                      hintText: '제목을 입력해 주세요.', hintStyle: TextStyle(color: Color(0xFFC4C4C4),
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xFFC4C4C4),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20.0),
+              SizedBox(height: 20.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('결제수단', textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                
+                  SizedBox(height: 10),
+                //결제수단 넣어야함 ㅅㄱ
+                ],
+              ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text('카테고리', textAlign: TextAlign.left),
+                    const Text('카테고리', textAlign: TextAlign.left,
+                    style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    ),
+                  ),
                     const SizedBox(width: 3.0),
                     _buildIconButton(Icons.hotel, '숙소', Category.sleep),
                     const SizedBox(width: 3.0),
@@ -154,23 +181,7 @@ class _Book2State extends State<Book2> {
                 ),
               ),
               const SizedBox(height: 40.0),
-              Row(
-                children: [
-                  const Text('내용', textAlign: TextAlign.left),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      controller: _contentController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: '내용을 입력하세요',
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 10.0),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              
               const SizedBox(height: 40.0),
               const Row(
                 children: [
