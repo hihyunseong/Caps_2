@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class FindPw2 extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class _FindPw2State extends State<FindPw2> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
   bool _passwordsMatch = true;
+  bool _isPasswordLongEnough = true;
 
   void _toggleVisibilityPassword() {
     setState(() {
@@ -28,52 +30,74 @@ class _FindPw2State extends State<FindPw2> {
     setState(() {
       _passwordsMatch =
           _passwordController.text == _confirmPasswordController.text;
+      _isPasswordLongEnough = _passwordController.text.length >= 8;
     });
-    if (_passwordsMatch) {
-      // 비밀번호 재설정 성공 창을 띄우는 코드를 여기에 추가합니다.
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("비밀번호 재설정 성공",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold, 
-              ),
-              textAlign: TextAlign.center, 
-            ),
-            contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text("비밀번호를 재설정하였습니다.",
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
-                  textAlign: TextAlign.center, 
-                ),
-                SizedBox(height: 10), 
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  child: Text("확인",
-                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
+
+    if (!_passwordsMatch) {
+      _showDialog(
+        title: "비밀번호 재설정 실패",
+        content: "비밀번호가 일치하지 않습니다.",
+      );
+    } else if (!_isPasswordLongEnough) {
+      _showDialog(
+        title: "비밀번호 재설정 실패",
+        content: "비밀번호는 8자리 이상이어야 합니다.",
+      );
+    } else {
+      _showDialog(
+        title: "비밀번호 재설정 성공",
+        content: "비밀번호를 재설정하였습니다.",
       );
     }
+  }
+
+  void _showDialog({required String title, required String content}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                content,
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 5),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Container(
+                alignment: Alignment.center,
+                child: Text(
+                  "확인",
+                  style: TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -159,12 +183,6 @@ class _FindPw2State extends State<FindPw2> {
                 ),
               ),
               SizedBox(height: 10),
-              if (!_passwordsMatch)
-                Text(
-                  '비밀번호가 일치하지 않습니다.',
-                  style: TextStyle(color: Colors.red),
-                  textAlign: TextAlign.center, 
-                ),
             ],
           ),
         ),

@@ -1,26 +1,22 @@
 import 'dart:io';
 
-import 'package:caps_2/bottom_sheets/expense_details_sheet.dart';
-import 'package:caps_2/models/expense.dart';
-import 'package:caps_2/models/map_model.dart';
+import 'package:caps_2/enums/map_status.dart';
+import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class MapDetailsSheet extends StatelessWidget {
-  final MapModel mapModel;
-
-  const MapDetailsSheet({
-    super.key,
-    required this.mapModel,
-  });
-
-  List<Expense> get expenses => mapModel.expenses;
+class MapDetailsPanel extends StatelessWidget {
+  const MapDetailsPanel({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final mapProvider = Provider.of<MapProvider>(context, listen: false);
+    final mapModel = context.read<MapProvider>().mapModel!;
+    final expenses = mapModel.expenses;
+
     return Container(
       padding: const EdgeInsets.all(20),
-      height: MediaQuery.of(context).size.height * 0.5,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -31,13 +27,41 @@ class MapDetailsSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            mapModel.mapName,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: const Color(0xFFC4C4C4),
+              borderRadius: BorderRadius.circular(8.0),
             ),
           ),
+          const SizedBox(height: 10.0),
+
+          // title
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                onPressed: mapModel.isSharedMap
+                    ? () => mapProvider.changeShareMapStatus(MapStatus.expenses)
+                    : () => mapProvider.changeMyMapStatus(MapStatus.expenses),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              Text(
+                mapModel.mapName,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const IconButton(
+                onPressed: null,
+                icon: Icon(Icons.more_vert, color: Colors.transparent),
+              ),
+            ],
+          ),
+
+          // expenses list
           Expanded(
             child: Container(
               padding: const EdgeInsets.only(top: 20, bottom: 20),
@@ -51,8 +75,12 @@ class MapDetailsSheet extends StatelessWidget {
                       ListTile(
                         leading: InkWell(
                           onTap: () {
-                            // expense details sheet
-                            _showExpenseDetailsSheet(context, expense);
+                            mapProvider.setExpense(expense);
+                            mapModel.isSharedMap
+                                ? mapProvider.changeShareMapStatus(
+                                    MapStatus.expenseDetails)
+                                : mapProvider.changeMyMapStatus(
+                                    MapStatus.expenseDetails);
                           },
                           child: CircleAvatar(
                             backgroundColor: Colors.grey[200],
@@ -107,22 +135,6 @@ class MapDetailsSheet extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  void _showExpenseDetailsSheet(
-    BuildContext context,
-    Expense expense,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return ExpenseDetailsSheet(
-          mapModel: mapModel,
-          expense: expense,
-        );
-      },
     );
   }
 }

@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<http.Response> _loginUser() async {
-    final url = Uri.http('43.202.127.16:8080','/api/v1/members/login');
+    final url = Uri.http('43.201.118.1:8080','/api/v1/members/login');
 
     final response = await http.post(
       url,

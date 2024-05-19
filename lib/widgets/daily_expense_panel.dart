@@ -1,25 +1,23 @@
 import 'dart:io';
 
-import 'package:caps_2/models/daily_expense.dart';
-import 'package:caps_2/models/map_model.dart';
+import 'package:caps_2/enums/map_status.dart';
+import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class ExpensesSheet extends StatelessWidget {
-  final MapModel mapModel;
-  final DailyExpense dailyExpense;
-
-  const ExpensesSheet({
-    super.key,
-    required this.mapModel,
-    required this.dailyExpense,
-  });
+class DailyExpensePanel extends StatelessWidget {
+  const DailyExpensePanel({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final mapProvider = Provider.of<MapProvider>(context, listen: false);
+    final mapModel = context.read<MapProvider>().mapModel!;
+    final dailyExpense = context.read<MapProvider>().dailyExpense!;
+
     return Container(
       padding: const EdgeInsets.all(20),
-      height: MediaQuery.of(context).size.height * 0.5,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -33,12 +31,39 @@ class ExpensesSheet extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                mapModel.mapName,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFC4C4C4),
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
+              ),
+              const SizedBox(height: 10.0),
+
+              // title
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                      onPressed: mapModel.isSharedMap
+                          ? () => mapProvider
+                              .changeShareMapStatus(MapStatus.expenses)
+                          : () =>
+                              mapProvider.changeMyMapStatus(MapStatus.expenses),
+                      icon: const Icon(Icons.arrow_back)),
+                  Text(
+                    mapModel.mapName,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const IconButton(
+                    onPressed: null,
+                    icon: Icon(Icons.more_vert, color: Colors.transparent),
+                  ),
+                ],
               ),
               Text(
                 DateFormat('yyyy년 M월 d일').format(dailyExpense.tourDay),

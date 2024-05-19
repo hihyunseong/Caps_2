@@ -30,4 +30,6 @@ class MapModel with _$MapModel {
 
   int get totalExpenses => expenses.fold<int>(
       0, (previousValue, element) => previousValue + element.amount.toInt());
+
+  bool get isSharedMap => friends.isNotEmpty;
 }

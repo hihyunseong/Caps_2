@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:caps_2/enums/map_status.dart';
 import 'package:caps_2/models/daily_expense.dart';
 import 'package:caps_2/models/expense.dart';
 import 'package:caps_2/models/map_model.dart';
@@ -74,13 +75,12 @@ class MapProvider extends ChangeNotifier {
   List<Marker> get markers => _markers;
 
   Future<void> addMarker(Marker marker) async {
-    _markers.add(marker);
-
     // map 이 선택되어 있을때만 저장햐야 함
     if (_mapModel != null) {
       await saveMapModel();
     }
 
+    _setMarkers();
     _getPolylines();
 
     notifyListeners();
@@ -99,6 +99,9 @@ class MapProvider extends ChangeNotifier {
   Future<void> loadMapModel(MapModel mapModel) async {
     final filename = 'map_${mapModel.mapName}.json';
     final loadedMapModel = await apiService.loadMapModel(filename);
+
+    // 인덱스 초기화
+    _currentIndex = 0;
 
     if (loadedMapModel != null) {
       _mapModel = loadedMapModel;
@@ -140,7 +143,9 @@ class MapProvider extends ChangeNotifier {
             index: i + 1,
             icon: expense.category.icon,
             imagePath: expense.imagePath,
-          ).toBitmapDescriptor());
+          ).toBitmapDescriptor(
+            logicalSize: const Size(400, 400),
+          ));
 
       myMarkers.add(marker);
     }
@@ -266,5 +271,42 @@ class MapProvider extends ChangeNotifier {
   Future<void> _updateMarker() async {
     await _setMarkers();
     _getPolylines();
+  }
+
+  // map status
+  MapStatus _myMapStatus = MapStatus.mapList;
+  MapStatus get myMapStatus => _myMapStatus;
+
+  void changeMyMapStatus(MapStatus status) {
+    _myMapStatus = status;
+    _shareMapStatus = MapStatus.mapList;
+
+    notifyListeners();
+  }
+
+  MapStatus _shareMapStatus = MapStatus.mapList;
+  MapStatus get shareMapStatus => _shareMapStatus;
+
+  void changeShareMapStatus(MapStatus status) {
+    _myMapStatus = MapStatus.mapList;
+    _shareMapStatus = status;
+
+    notifyListeners();
+  }
+
+  // daily Expense
+  DailyExpense? _dailyExpense;
+  DailyExpense? get dailyExpense => _dailyExpense;
+
+  void setDailyExpense(DailyExpense dailyExpense) {
+    _dailyExpense = dailyExpense;
+  }
+
+  // expense
+  Expense? _expense;
+  Expense? get expense => _expense;
+
+  void setExpense(Expense expense) {
+    _expense = expense;
   }
 }

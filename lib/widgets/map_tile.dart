@@ -1,4 +1,4 @@
-import 'package:caps_2/bottom_sheets/my_map_sheet.dart';
+import 'package:caps_2/enums/map_status.dart';
 import 'package:caps_2/map/my_map.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:caps_2/provider/map_provider.dart';
@@ -151,19 +151,6 @@ class MapTile extends StatelessWidget {
     // map model 변경
     final mapProvider = context.read<MapProvider>();
 
-    // 현재 사용중이면 변경하지 않음
-    if (mapProvider.mapModel?.mapName == mapModel.mapName) {
-      // 현재 사용중 알림 스낵바
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('현재 사용중인 지도입니다.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-
-      return;
-    }
-
     await mapProvider.loadMapModel(mapModel);
 
     // 지도 위치 이동
@@ -174,23 +161,8 @@ class MapTile extends StatelessWidget {
     await gotoLocation(latLng);
     changeDate(mapModel.selectedDate);
 
-    Navigator.of(context).pop();
-
-    _showMyMapBottomSheet(context);
-  }
-
-  void _showMyMapBottomSheet(BuildContext context) {
-    final mapModel = context.read<MapProvider>().mapModel!;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      isDismissible: false,
-      builder: (context) {
-        return MyMapSheet(
-          mapModel: mapModel,
-        );
-      },
-    );
+    mapModel.isSharedMap
+        ? mapProvider.changeShareMapStatus(MapStatus.expenses)
+        : mapProvider.changeMyMapStatus(MapStatus.expenses);
   }
 }
