@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;import 'package:flutter/material.dart';
 import 'home.dart';
@@ -17,17 +18,17 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _idController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  static final storage = FlutterSecureStorage();
+  final storage = FlutterSecureStorage();
 
   bool _isObscure = true;
 
-  void _write(Map<String, dynamic> responseData, Map<String, String> header){
-    storage.write(key: 'idx', value: responseData['idx'].toString());
-    storage.write(key: 'email', value: responseData['email']);
-    storage.write(key: 'name', value: responseData['name']);
-    storage.write(key: 'profile', value: responseData['profile']);
-    storage.write(key: 'accToken', value: header['authorization']);
-    storage.write(key: 'refToken', value: header['x-refresh-token']);
+  Future<void> _write(Map<String, dynamic> responseData, Map<String, String> header) async{
+    await storage.write(key: 'idx', value: responseData['idx'].toString());
+    await storage.write(key: 'email', value: responseData['email']);
+    await storage.write(key: 'name', value: responseData['name']);
+    await storage.write(key: 'profile', value: responseData['profile']);
+    await storage.write(key: 'accToken', value: header['authorization']);
+    await storage.write(key: 'refToken', value: header['x-refresh-token']);
   }
 
   void Login(BuildContext context) {
@@ -36,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
       if(response.statusCode == 200){
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         final Map<String, String> header = response.headers;
-        _write(responseData, header);// write  data
+        _write(responseData, header).then((_){// write  data
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -57,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
               ],
             );
           },
-        );
+        );});
       }else{
         showDialog(
           context: context,
@@ -81,7 +82,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<http.Response> _loginUser() async {
-    final url = Uri.http('43.201.118.1:8080','/api/v1/members/login');
+
+    final url = Uri.http( '${UrlUtil.url}:8080','/api/v1/members/login');
 
     final response = await http.post(
       url,

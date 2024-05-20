@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:caps_2/vo/FriendInfo.dart';
 import 'package:caps_2/vo/FriendRequest.dart';
+import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:caps_2/my.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -21,15 +22,15 @@ class Friends extends StatefulWidget {
 class _FriendsState extends State<Friends> {
   bool isBottomBarVisible = false;
 
-  static final String memberUrl = "43.202.127.16:8080";   /// 멤버 서비스 API
-  static final String friendUrl = "43.202.127.16:8081";   /// 친구 서비스 API
+  final String memberUrl = "${UrlUtil.url}:8080";   /// 멤버 서비스 API
+  final String friendUrl = "${UrlUtil.url}:8081";   /// 친구 서비스 API
+  final storage = FlutterSecureStorage();
 
-  static String friendEmail = "";       /// 검색한 유저 이메일
-  static String friendName = "";        /// 검색한 유저 이름
-  static List<FriendInfo> friendList = []; /// 친구 목록
-  static List<FriendRequest> requestList = []; /// 친구 요청 목록
-
-  static final storage = FlutterSecureStorage();
+  String searchFriendEmail = "";       /// 검색한 유저 이메일
+  String searchFriendName = "";        /// 검색한 유저 이름
+  String searchFriendIndex = "";        /// 검색한 유저 이름
+  List<FriendInfo> friendList = []; /// 친구 목록
+  List<FriendRequest> requestList = []; /// 친구 요청 목록
 
   String? idx;
   String? email;
@@ -45,12 +46,6 @@ class _FriendsState extends State<Friends> {
     refToken = await storage.read(key: 'refToken');
   }
 
-  void _updateFriend(String email, String name){
-    setState(() {
-      friendEmail = email;
-      friendName = name;
-    });
-  }
 
   void _showMessage(String message){
     showDialog(
@@ -72,43 +67,24 @@ class _FriendsState extends State<Friends> {
     );
   }
 
-  void _searchFriend(String email) async{         ///   친구 추가하기 위해서 이메일로 멤버 검색하는 함수
-    final url = Uri.http(memberUrl,'/api/v1/members/search/'+email);
 
-    final response = await http.get(
-      url,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + accToken.toString(),
-      }
-    );
-    if(response.statusCode == 200){
-      print(response.body);
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      _updateFriend(responseData['email'], responseData['name']);
-    }else{
-      print(response.body);
-      _showMessage(response.body);
-      _updateFriend("", "");
-    }
-    print(friendName + " " + friendEmail);
-  }
 
   void _getFriendsList() async{
     final url = Uri.http(friendUrl,'/api/v1/friends/list');
-
     final response = await http.get(
         url,
         headers: {
           "Access-Control-Allow-Origin": "*",
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + accToken.toString(),
         }
     );
     if(response.statusCode == 200){
       print(response.body);
       final List<dynamic> responseData = jsonDecode(response.body);
-      friendList = responseData.map((data) => FriendInfo.fromJson(data)).toList();
+      setState(() {
+        friendList = responseData.map((data) => FriendInfo.fromJson(data)).toList();
+      });
     }else{
       _showMessage(response.body);
       print(response.body);
@@ -135,8 +111,8 @@ class _FriendsState extends State<Friends> {
     }
   }
 
-  static Future<http.Response> _acceptFriend(String friendIdx) async {
-    final url = Uri.http(friendUrl, '/api/v1/members/accept' + friendIdx);
+  Future<http.Response> _acceptFriend(String friendIdx) async {
+    final url = Uri.http(friendUrl, '/api/v1/members/accept/' + friendIdx);
 
     final response = await http.get(
         url,
@@ -148,7 +124,7 @@ class _FriendsState extends State<Friends> {
     return response;
   }
 
-  static Future<http.Response> _declineFriend(String friendIdx) async {
+  Future<http.Response> _declineFriend(String friendIdx) async {
     final url = Uri.http(friendUrl,'/api/v1/members/decline/' + friendIdx);
 
     final response = await http.get(
@@ -161,9 +137,12 @@ class _FriendsState extends State<Friends> {
     return response;
   }
 
+
   @override
-  void initState(){
-    _getFriendsList();
+  void initState() {
+    _read().then((_){
+      _getFriendsList();
+    });
   }
 
   @override
@@ -209,29 +188,35 @@ class _FriendsState extends State<Friends> {
               child: Row(
                 children: [
                   SizedBox(width: 20.0),
-                  Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 30.0,
-                        backgroundColor: Colors.pink,
-                        child: GestureDetector(
-                          onTap: () {
-                            _showSlidingPanel2(context);
-                            setState(() {
-                              isBottomBarVisible = !isBottomBarVisible;
-                            });
-                          },
-                        ),
-                      ),
-                      Text('홍길동',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
+                  ListView.builder(
+                    itemCount: friendList.length, // 여기에 리스트의 길이를 넣어줍니다.
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 30.0,
+                            backgroundColor: Colors.pink,
+                            child: GestureDetector(
+                              onTap: () {
+                                _showSlidingPanel2(context);
+                                setState(() {
+                                  isBottomBarVisible = !isBottomBarVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          Text(
+                            friendList[index].name, // 친구의 이름을 표시합니다.
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  )
                 ],
               ),
             ),
@@ -260,58 +245,158 @@ class _FriendsState extends State<Friends> {
 
   /// 친구추가 하단바
   void _showSlidingPanel(BuildContext context) {
-    final TextEditingController _emailController = TextEditingController();
+    TextEditingController _emailController = TextEditingController();
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (context) => SlidingUpPanel(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(20.0),
-        ),
-        minHeight: 1500,
-        maxHeight: MediaQuery.of(context).size.height* 0.7,
-        panel: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      builder: (context) => StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+
+
+          void _searchFriend(String email) async{         ///   친구 추가하기 위해서 이메일로 멤버 검색하는 함수
+            final url = Uri.http(memberUrl,'/api/v1/members/search/'+email);
+
+            final response = await http.get(
+                url,
+                headers: {
+                  "Access-Control-Allow-Origin": "*",
+                  'Content-Type': 'application/json',
+                }
+            );
+            if(response.statusCode == 200){
+              final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+              final String email = responseData['email'];
+              final String name = responseData['name'];
+              final String index = responseData['idx'].toString();
+
+              setState(() {
+                searchFriendName = name;
+                searchFriendEmail = email;
+                searchFriendIndex = index;
+              });
+
+            }else{
+              _showMessage(response.body);
+
+              setState(() {
+                searchFriendEmail = "";
+                searchFriendName = "";
+                searchFriendIndex = "";
+              });
+
+            }
+          }
+
+          void _requestFriend(String index) async{         ///   친구 추가하기 위해서 이메일로 멤버 검색하는 함수
+            final url = Uri.http(friendUrl,'/api/v1/friends/request');
+
+            final response = await http.post(
+                url,
+                headers: {
+                  "Access-Control-Allow-Origin": "*",
+                  'Content-Type': 'application/json',
+                  "Authorization" : "Bearer " + accToken.toString(),
+                },
+              body: json.encode({
+                  "toUser" : index
+              })
+            );
+            if(response.statusCode == 200){
+              print(response.body);
+              final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+
+
+              setState(() {
+                searchFriendName = "";
+                searchFriendEmail = "";
+                searchFriendIndex = "";
+              });
+
+              _showMessage("친구 요청을 전송하였습니다.");
+
+            }else{
+              print(response.body);
+              _showMessage(response.body);
+            }
+          }
+
+          return SlidingUpPanel(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
+            minHeight: 1500,
+            maxHeight: MediaQuery.of(context).size.height* 0.7,
+            panel: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '친구 추가',
-                    style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 5.0),
-              Text(
-                '이메일로 친구를 추가해보세요!',
-                style: TextStyle(fontSize: 16.0),
-              ),
-              SizedBox(height: 10.0),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: '이메일 작성',
-                        border: OutlineInputBorder(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '친구 추가',
+                        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                       ),
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 5.0),
+                  Text(
+                    '이메일로 친구를 추가해보세요!',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  SizedBox(height: 10.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            labelText: '이메일 작성',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          _searchFriend(_emailController.text);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          backgroundColor: Colors.black,
+                        ),
+                        child: Text(
+                          '검색',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 30.0),
+                  Text(
+                    searchFriendName,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
                   SizedBox(width: 10.0),
-                  ElevatedButton(
+                  if(searchFriendEmail!="")ElevatedButton(
                     onPressed: () {
-                      _searchFriend(_emailController.text);
+                      _requestFriend(searchFriendIndex);
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -320,23 +405,15 @@ class _FriendsState extends State<Friends> {
                       backgroundColor: Colors.black,
                     ),
                     child: Text(
-                      '검색',
+                      '친구 요청',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 30.0),
-              Text(friendName,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -169,11 +169,11 @@ class _HomeState extends State<Home> {
         // 홈
         break;
       case 1:
-        // 나의 맵
+        // 마이맵
         _mainPanelController.open();
         break;
       case 2:
-        // 공유 맵
+        // 공유맵
         _mainPanelController.open();
         break;
       case 3:
@@ -251,7 +251,7 @@ class _HomeState extends State<Home> {
             activeIcon: Image.asset(
               'assets/images/mymap/mymap2.png',
             ),
-            label: '나의맵',
+            label: '마이맵',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
@@ -450,7 +450,7 @@ class _HomeState extends State<Home> {
                     icon: Icon(Icons.more_vert, color: Colors.transparent),
                   ),
                   const Text(
-                    '나의맵',
+                    '마이맵',
                     textAlign: TextAlign.center,
                     style:
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
@@ -572,10 +572,7 @@ class _HomeState extends State<Home> {
               ),
               const SizedBox(height: 5.0),
               const Center(
-                child: Text(
-                  '친구들과 함께 지도를 작성해보세요!',
-                  style: TextStyle(fontSize: 16.0),
-                ),
+                
               ),
               // const SizedBox(height: 20), // 새로 추가된 부분
               // InkWell(
@@ -672,6 +669,10 @@ class _HomeState extends State<Home> {
   }
 
   Widget _mapScreen() {
+
+    var screenWidth = MediaQuery.of(context).size.width * 0.5;
+    var screenHeight = MediaQuery.of(context).size.height * 0.1;
+
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -727,14 +728,18 @@ class _HomeState extends State<Home> {
                   _addExpense();
                 },
                 style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.blue),
-                      fixedSize: MaterialStateProperty.all<Size>(
-                          const Size(150.0, 50.0)),
+                      backgroundColor: MaterialStateProperty.all<Color>(Color(0xFFFF6F61)),
+                      fixedSize: MaterialStateProperty.all<Size>(const Size(200.0, 52.0)),
                     ),
-                child: const Text(
-                  '여기에 핀 꽂기',
-                  style: TextStyle(fontSize: 14.0, color: Colors.white),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset('assets/images/logo2.png', width: 27, height: 24,
+                    ),
+                    const SizedBox(width: 8),
+                    const Text('여기에 핀 꽂기',style: TextStyle(fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w700),
+                    ),
+                  ],
                 ),
               ),
             ),

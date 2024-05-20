@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:caps_2/login.dart';
+import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -15,6 +16,7 @@ class SignupPage extends StatefulWidget {
 bool _isObscure = true;
 
 class _SignupPageState extends State<SignupPage> {
+
   bool _allChecked = false; // 전체동의 체크 상태
   bool _ageChecked = false; // 만 14세 이상입니다 체크 상태
   bool _serviceChecked = false; // 서비스 이용 체크 상태
@@ -246,7 +248,7 @@ class _SignupFormPageState extends State<SignupFormPage> {
   final TextEditingController _phoneController = TextEditingController();
 
   Future<http.Response> _registerUser() async {
-    final url = Uri.http('43.202.127.16:8080', '/api/v1/members/register');
+    final url = Uri.http('${UrlUtil.url}:8080','/api/v1/members/register');
 
     final response = await http.post(
       url,
