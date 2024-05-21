@@ -221,8 +221,8 @@ class _HomeState extends State<Home> {
           topLeft: Radius.circular(24.0),
           topRight: Radius.circular(24.0),
         ),
-        minHeight: 160,
-        maxHeight: MediaQuery.of(context).size.height * 0.6,
+        minHeight: 150,
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
         body: _mapScreen(),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -430,7 +430,7 @@ class _HomeState extends State<Home> {
       alignment: Alignment.center,
       children: [
         Container(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
               Container(
@@ -442,26 +442,25 @@ class _HomeState extends State<Home> {
                 ),
               ),
               const SizedBox(height: 10.0),
-              Row(
+              Row( //05/21 수정
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const IconButton(
                     onPressed: null,
                     icon: Icon(Icons.more_vert, color: Colors.transparent),
                   ),
-                  const Text(
+                  Expanded(
+                    child: const Text(
                     '마이맵',
                     textAlign: TextAlign.center,
                     style:
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => _mainPanelController.close(),
-                  ),
+                  const SizedBox(width: 48),                
                 ],
               ),
-              // const SizedBox(height: 20),
+              const SizedBox(height: 20),
               // InkWell(
               //   onTap: () {
               //     Navigator.push(
@@ -518,14 +517,35 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        Positioned(
-          bottom: 80,
-          right: 20,
+
+        Positioned( //05/21 수정
+          bottom: 465,
+          right: 320,
+          child: Row(
+            children: [ const Text('맵 목록', style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '${mapProvider.myMapList.length}', 
+              style: const TextStyle(
+                color: Color(0xFFFF6F61),
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+          ),
+        ),
+
+        Positioned( // 05/21 수정
+          bottom: 450,
+          right: 15,
           child: FloatingActionButton(
             heroTag: 'my_map',
             onPressed: () => _registerMyMap(),
-            backgroundColor: Colors.white,
-            child: const Icon(Icons.add),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            child: const Icon(Icons.add,color: Color(0xFFFF6F61)),
           ),
         ),
       ],
@@ -551,23 +571,22 @@ class _HomeState extends State<Home> {
                 ),
               ),
               const SizedBox(height: 10.0),
-              Row(
+              Row( //05/21 수정
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const IconButton(
                     onPressed: null,
                     icon: Icon(Icons.more_vert, color: Colors.transparent),
                   ),
-                  const Text(
+                  Expanded(
+                    child: const Text(
                     '공유맵',
                     textAlign: TextAlign.center,
                     style:
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => _mainPanelController.close(),
-                  ),
+                  const SizedBox(width: 48),                
                 ],
               ),
               const SizedBox(height: 5.0),
@@ -631,14 +650,35 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        Positioned(
-          bottom: 80,
-          right: 20,
+
+        Positioned( //05/21 수정
+          bottom: 465,
+          right: 320,
+          child: Row(
+            children: [ const Text('맵 목록', style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '${mapProvider.myMapList.length}', 
+              style: const TextStyle(
+                color: Color(0xFFFF6F61),
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+          ),
+        ),
+        
+        Positioned( // 05/21 수정
+          bottom: 450,
+          right: 15,
           child: FloatingActionButton(
             heroTag: 'shared_map',
-            onPressed: () => _registerMyMap(isSharedMap: true),
-            backgroundColor: Colors.white,
-            child: const Icon(Icons.add),
+            onPressed: () => _registerMyMap(),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            child: const Icon(Icons.add,color: Color(0xFFFF6F61)),
           ),
         ),
       ],
