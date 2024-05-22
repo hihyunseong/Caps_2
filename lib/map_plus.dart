@@ -60,61 +60,37 @@ class _MapPlusState extends State<MapPlus> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: null,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(60.0),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(width: 20.0),
-                Text(
-                  '맵 추가',
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-        ),
+        title: Align(
+          alignment: FractionalOffset(0.4, 0),
+          child: Text('맵 추가'),
+        )
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 20.0),
-              child: Text(
-                '친구들과 함께 \n지도를 추가해보세요!',
-                style: TextStyle(fontSize: 16.0),
-              ),
-            ),
+          children: [         
             const SizedBox(height: 20),
             const Padding(
               padding: EdgeInsets.only(left: 20.0),
-              child: Text(
-                '맵정보',
+              child: Text.rich(
+                TextSpan(text: '맵 이름',
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: ' *', style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+              padding: const EdgeInsets.only(left: 10.0),
               child: Row(
-                children: [
-                  const Text(
-                    '맵이름',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
+                children: [   
                   const SizedBox(width: 10),
                   Container(
-                    width: 300,
+                    width: 360,
                     height: 50,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -128,8 +104,10 @@ class _MapPlusState extends State<MapPlus> {
                         });
                       },
                       decoration: const InputDecoration(
-                        border: InputBorder.none,
+                        border: InputBorder.none, 
                         contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                        hintText: '맵 이름',hintStyle: TextStyle(fontSize: 16, color: Color(0xFFC4C4C4),
+                        ),
                       ),
                     ),
                   ),
@@ -137,9 +115,60 @@ class _MapPlusState extends State<MapPlus> {
               ),
             ),
             const SizedBox(height: 20),
+            const Padding(
+              padding: EdgeInsets.only(left: 20.0),
+              child: Text.rich(
+                TextSpan(text: '맵 색상 선택',
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: ' *', style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 8.0),
+            Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 20.0),
+                  child: Container(
+                    width: 56.0, 
+                    height: 56.0, 
+                    decoration: BoxDecoration(
+                      color: Color(0xFF61AAFF),
+                      borderRadius: BorderRadius.circular(8.0), 
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0),
+                  child: Container(
+                    width: 56.0, 
+                    height: 56.0, 
+                    decoration: BoxDecoration(
+                      color: Color(0xFFB961FF),
+                      borderRadius: BorderRadius.circular(8.0), 
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0),
+                  child: Container(
+                    width: 56.0, 
+                    height: 56.0, 
+                    decoration: BoxDecoration(
+                      color: Color(0xFF36AE92),
+                      borderRadius: BorderRadius.circular(8.0), 
+                    ),
+                  ),  
+                ),
+              ],
+            ),
             if (widget.isSharedMap)
               Padding(
-                padding: const EdgeInsets.only(left: 35.0),
+                padding: const EdgeInsets.only(left: 35.0), 
                 child: Row(
                   children: [
                     const Text(
@@ -166,34 +195,30 @@ class _MapPlusState extends State<MapPlus> {
                   ],
                 ),
               ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 10),
             const Padding(
               padding: EdgeInsets.only(left: 20.0),
-              child: Text(
-                '지역선택',
+              child: Text.rich(
+                TextSpan(text: '지역 선택',
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 20.0),
-              child: Text(
-                '지도가 시작될 지역을 선택해주세요',
-                style: TextStyle(fontSize: 12.0),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: ' *', style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.only(left: 35.0),
+              padding: const EdgeInsets.only(left: 10.0),
               child: Row(
                 children: [
-                  const Text(
-                    '지역',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
+                  
                   const SizedBox(width: 10),
                   // LocationSearchField(),
                   Container(
-                    width: 300,
+                    width: 360,
                     height: 50,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -212,6 +237,8 @@ class _MapPlusState extends State<MapPlus> {
                       inputDecoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                         hintText: '지도가 시작될 지역을 선택해 주세요',hintStyle: TextStyle(fontSize: 16, color: Color(0xFFC4C4C4),
+                        ),
                       ),
                       itemClick: (prediction) {
                         _locationController.text = prediction.description ?? '';
@@ -225,7 +252,7 @@ class _MapPlusState extends State<MapPlus> {
             ),
             const SizedBox(height: 40),
             
-            const SizedBox(height: 80),
+            const SizedBox(height: 180),
             Center(
               child: SizedBox(
                 child: ElevatedButton(
@@ -236,8 +263,9 @@ class _MapPlusState extends State<MapPlus> {
                       horizontal: 100.0,
                     ),
                     textStyle: const TextStyle(fontSize: 18.0),
+                    backgroundColor: const Color(0xFFFF6F61),
                   ),
-                  child: const Text('등록하기'),
+                  child: const Text('완료',style: TextStyle(color: Colors.white)),
                 ),
               ),
             ),
