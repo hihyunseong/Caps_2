@@ -16,6 +16,7 @@ class Friends extends StatefulWidget {
 
   @override
   _FriendsState createState() => _FriendsState();
+
 }
 
 

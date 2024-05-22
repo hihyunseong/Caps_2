@@ -85,18 +85,23 @@ flutter:
     - assets/images/pinkok.png
     - assets/images/home/home1.png
     - assets/images/home/home2.png
-    - assets/images/home/home3.png
     - assets/images/mymap/mymap1.png
     - assets/images/mymap/mymap2.png
-    - assets/images/mymap/mymap3.png
     - assets/images/sharemap/sharemap1.png
     - assets/images/sharemap/sharemap2.png
-    - assets/images/sharemap/sharemap3.png
     - assets/images/user/user1.png
     - assets/images/user/user2.png
-    - assets/images/user/user3.png
     - assets/images/loc/Outline/Navigation/Current-location.png
     - assets/images/search/Iconly/Regular/Light/Search.png
+    - assets/images/arrow_left/vuesax/linear/arrow_left.png
+    - assets/images/arrow_right/vuesax/linear/arrow_right.png
+    - assets/images/category/beer.png
+    - assets/images/category/coffee.png
+    - assets/images/category/food.png
+    - assets/images/category/gift.png
+    - assets/images/category/photo.png
+    - assets/images/category/shopping.png
+    - assets/images/category/plus.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -132,9 +137,12 @@ flutter:
   #         weight: 700
   #fonts
   fonts:
-    - family: NanumSquareNeo
+    - family: NanumSquareNeo-Regular
       fonts:
-      -  asset: assets/fonts/NanumSquareNeo-Variable.ttf
+      -  asset: assets/fonts/NanumSquareNeo-bRg.ttf
+    - family: NanumSquareNeo-Bold
+      fonts:
+        - asset: assets/fonts/NanumSquareNeo-cBd.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

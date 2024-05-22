@@ -230,8 +230,14 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
-        selectedFontSize: 13,
-        unselectedFontSize: 13,
+        selectedLabelStyle: TextStyle(
+          fontFamily: "NanumSquareNeo-Bold"
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontFamily: "NanumSquareNeo-Bold"
+        ),
+        selectedFontSize: 12,
+        unselectedFontSize: 12,
         selectedItemColor: const Color(0xFFFF6F61),
         unselectedItemColor: Colors.grey,
         currentIndex: _selectedIndex,
@@ -736,7 +742,7 @@ class _HomeState extends State<Home> {
                       backgroundColor:
                           MaterialStateProperty.all<Color>(Color(0xFFFF6F61)),
                       fixedSize: MaterialStateProperty.all<Size>(
-                          Size(200.0, 52.0)),
+                          Size(210.0, 52.0)),
                     ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -746,7 +752,7 @@ class _HomeState extends State<Home> {
                     const SizedBox(width: 8),
                     const Text(
                       '여기에 핀 꼭 찍기',
-                      style: TextStyle(fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w700),
+                      style: TextStyle(fontFamily: "NanumSquareNeo-Bold",fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),
