@@ -170,11 +170,11 @@ class _HomeState extends State<Home> {
         // 홈
         break;
       case 1:
-        // 나의 맵
+        // 마이맵
         _mainPanelController.open();
         break;
       case 2:
-        // 공유 맵
+        // 공유맵
         _mainPanelController.open();
         break;
       case 3:
@@ -223,9 +223,9 @@ class _HomeState extends State<Home> {
           topLeft: Radius.circular(24.0),
           topRight: Radius.circular(24.0),
         ),
-        minHeight: 160,
-        maxHeight: MediaQuery.of(context).size.height * 0.6,
-        body: _mapScreen(context),
+        minHeight: 150,
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
+        body: _mapScreen(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -259,7 +259,7 @@ class _HomeState extends State<Home> {
             activeIcon: Image.asset(
               'assets/images/mymap/mymap2.png',
             ),
-            label: '나의맵',
+            label: '마이맵',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
@@ -438,7 +438,7 @@ class _HomeState extends State<Home> {
       alignment: Alignment.center,
       children: [
         Container(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
               Container(
@@ -450,26 +450,25 @@ class _HomeState extends State<Home> {
                 ),
               ),
               const SizedBox(height: 10.0),
-              Row(
+              Row( //05/21 수정
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const IconButton(
                     onPressed: null,
                     icon: Icon(Icons.more_vert, color: Colors.transparent),
                   ),
-                  const Text(
-                    '나의맵',
+                  Expanded(
+                    child: const Text(
+                    '마이맵',
                     textAlign: TextAlign.center,
                     style:
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => _mainPanelController.close(),
-                  ),
+                  const SizedBox(width: 48),                
                 ],
               ),
-              // const SizedBox(height: 20),
+              const SizedBox(height: 20),
               // InkWell(
               //   onTap: () {
               //     Navigator.push(
@@ -526,14 +525,35 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        Positioned(
-          bottom: 80,
-          right: 20,
+
+        Positioned( //05/21 수정
+          bottom: 465,
+          right: 320,
+          child: Row(
+            children: [ const Text('맵 목록', style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '${mapProvider.myMapList.length}', 
+              style: const TextStyle(
+                color: Color(0xFFFF6F61),
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+          ),
+        ),
+
+        Positioned( // 05/21 수정
+          bottom: 450,
+          right: 15,
           child: FloatingActionButton(
             heroTag: 'my_map',
             onPressed: () => _registerMyMap(),
-            backgroundColor: Colors.white,
-            child: const Icon(Icons.add),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            child: const Icon(Icons.add,color: Color(0xFFFF6F61)),
           ),
         ),
       ],
@@ -559,31 +579,27 @@ class _HomeState extends State<Home> {
                 ),
               ),
               const SizedBox(height: 10.0),
-              Row(
+              Row( //05/21 수정
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const IconButton(
                     onPressed: null,
                     icon: Icon(Icons.more_vert, color: Colors.transparent),
                   ),
-                  const Text(
+                  Expanded(
+                    child: const Text(
                     '공유맵',
                     textAlign: TextAlign.center,
                     style:
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => _mainPanelController.close(),
-                  ),
+                  const SizedBox(width: 48),                
                 ],
               ),
               const SizedBox(height: 5.0),
               const Center(
-                child: Text(
-                  '친구들과 함께 지도를 작성해보세요!',
-                  style: TextStyle(fontSize: 16.0),
-                ),
+                
               ),
               // const SizedBox(height: 20), // 새로 추가된 부분
               // InkWell(
@@ -642,14 +658,35 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        Positioned(
-          bottom: 80,
-          right: 20,
+
+        Positioned( //05/21 수정
+          bottom: 465,
+          right: 320,
+          child: Row(
+            children: [ const Text('맵 목록', style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '${mapProvider.myMapList.length}', 
+              style: const TextStyle(
+                color: Color(0xFFFF6F61),
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+          ),
+        ),
+        
+        Positioned( // 05/21 수정
+          bottom: 450,
+          right: 15,
           child: FloatingActionButton(
             heroTag: 'shared_map',
-            onPressed: () => _registerMyMap(isSharedMap: true),
-            backgroundColor: Colors.white,
-            child: const Icon(Icons.add),
+            onPressed: () => _registerMyMap(),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            child: const Icon(Icons.add,color: Color(0xFFFF6F61)),
           ),
         ),
       ],
@@ -679,8 +716,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _mapScreen(BuildContext context) {
-
+  Widget _mapScreen() {
     var screenWidth = MediaQuery.of(context).size.width * 0.5;
     var screenHeight = MediaQuery.of(context).size.height * 0.1;
 
@@ -739,20 +775,16 @@ class _HomeState extends State<Home> {
                   _addExpense();
                 },
                 style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Color(0xFFFF6F61)),
-                      fixedSize: MaterialStateProperty.all<Size>(
-                          Size(210.0, 52.0)),
+                      backgroundColor: MaterialStateProperty.all<Color>(Color(0xFFFF6F61)),
+                      fixedSize: MaterialStateProperty.all<Size>(const Size(200.0, 52.0)),
                     ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset("/images/logo2.png", width: 27, height: 24),
+                    Image.asset('assets/images/logo2.png', width: 27, height: 24,
+                    ),
                     const SizedBox(width: 8),
-                    const Text(
-                      '여기에 핀 꼭 찍기',
-                      style: TextStyle(fontFamily: "NanumSquareNeo-Bold",fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w700),
+                    const Text('여기에 핀 콕 찍기',style: TextStyle(fontFamily: "",fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),

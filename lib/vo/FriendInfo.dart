@@ -7,13 +7,29 @@ class FriendInfo{
 
   FriendInfo({required this.idx, required this.email, required this.name, required this.profile, required this.createdAt});
 
-  factory FriendInfo.fromJson(Map<String, dynamic> json) {
+  factory FriendInfo.fromJson(Map<Object, dynamic> json) {
     return FriendInfo(
-      idx: json['idx'],
-      email: json['email'],
-      name: json['name'],
-      profile: json['profile'],
-      createdAt: json['createdAt'],
+      idx: json['idx'].toString(),
+      email: json['email'].toString(),
+      name: json['name'].toString(),
+      profile: json['profile'].toString(),
+      createdAt: json['createdAt'].toString(),
     );
+  }
+
+  String getIdx(){
+    return idx;
+  }
+  String getEmail(){
+    return email;
+  }
+  String getName(){
+    return name;
+  }
+  String getProfile(){
+    return profile;
+  }
+  String getCreatedAt(){
+    return createdAt;
   }
 }

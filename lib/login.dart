@@ -33,9 +33,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void Login(BuildContext context) {
     _loginUser().then((response) {
-      print(response.body);
+      print(utf8.decode(response.bodyBytes));
       if(response.statusCode == 200){
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final Map<String, dynamic> responseData = jsonDecode(utf8.decode(response.bodyBytes));
         final Map<String, String> header = response.headers;
         _write(responseData, header).then((_){// write  data
         showDialog(
@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
       url,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
       },
       body: json.encode({
         'email': _idController.text,

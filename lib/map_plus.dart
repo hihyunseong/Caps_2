@@ -60,61 +60,37 @@ class _MapPlusState extends State<MapPlus> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: null,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(60.0),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(width: 20.0),
-                Text(
-                  '맵 추가',
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-        ),
+        title: Align(
+          alignment: FractionalOffset(0.4, 0),
+          child: Text('맵 추가'),
+        )
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 20.0),
-              child: Text(
-                '친구들과 함께 \n지도를 추가해보세요!',
-                style: TextStyle(fontSize: 16.0),
-              ),
-            ),
+          children: [         
             const SizedBox(height: 20),
             const Padding(
               padding: EdgeInsets.only(left: 20.0),
-              child: Text(
-                '맵정보',
+              child: Text.rich(
+                TextSpan(text: '맵 이름',
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: ' *', style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+              padding: const EdgeInsets.only(left: 10.0),
               child: Row(
-                children: [
-                  const Text(
-                    '맵이름',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
+                children: [   
                   const SizedBox(width: 10),
                   Container(
-                    width: 300,
+                    width: 360,
                     height: 50,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
@@ -128,27 +104,89 @@ class _MapPlusState extends State<MapPlus> {
                         });
                       },
                       decoration: const InputDecoration(
-                        border: InputBorder.none,
+                        border: InputBorder.none, 
                         contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                        hintText: '맵 이름',hintStyle: TextStyle(fontSize: 16, color: Color(0xFFC4C4C4),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            if (widget.isSharedMap)
+            const SizedBox(height: 10),
+            const Padding(
+              padding: EdgeInsets.only(left: 20.0),
+              child: Text.rich(
+                TextSpan(text: '맵 색상 선택',
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: ' *', style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 8.0),
+            Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 20.0),
+                  child: Container(
+                    width: 56.0, 
+                    height: 56.0, 
+                    decoration: BoxDecoration(
+                      color: Color(0xFF61AAFF),
+                      borderRadius: BorderRadius.circular(8.0), 
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0),
+                  child: Container(
+                    width: 56.0, 
+                    height: 56.0, 
+                    decoration: BoxDecoration(
+                      color: Color(0xFFB961FF),
+                      borderRadius: BorderRadius.circular(8.0), 
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0),
+                  child: Container(
+                    width: 56.0, 
+                    height: 56.0, 
+                    decoration: BoxDecoration(
+                      color: Color(0xFF36AE92),
+                      borderRadius: BorderRadius.circular(8.0), 
+                    ),
+                  ),  
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 10),
+            // if (widget.isSharedMap)
               Padding(
-                padding: const EdgeInsets.only(left: 35.0),
+                padding: const EdgeInsets.only(left: 20.0), 
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('친구 추가', style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
                 child: Row(
                   children: [
-                    const Text(
-                      '친구\n추가',
-                      style: TextStyle(fontSize: 16.0),
-                    ),
                     const SizedBox(width: 10),
                     Container(
-                      width: 300,
+                      width: 360,
                       height: 50,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
@@ -160,120 +198,120 @@ class _MapPlusState extends State<MapPlus> {
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                            hintText: '초대할 친구 이름을 검색해 주세요.', hintStyle: TextStyle(fontSize: 16, color: Color(0xFFC4C4C4),
+                          ),
                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+               ),
+
+              const SizedBox(height: 10),
+              const Padding(
+                padding: EdgeInsets.only(left: 20.0),
+                child: Text.rich(
+                  TextSpan(text: '지역 선택',
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: ' *', style: TextStyle(color: Colors.red),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: [                  
+                    const SizedBox(width: 10),
+                    // LocationSearchField(),
+                    Container(
+                      width: 360,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignment: Alignment.center,
+                      child: GooglePlaceAutoCompleteTextField(
+                        // focusNode: FocusNode(),
+                        textEditingController: _locationController,
+                        googleAPIKey: 'AIzaSyBS7vyfFibnUZye3oVPwzBaEL4lw7S5iaI',
+                        // countries: ['KR'],
+                        boxDecoration: BoxDecoration(
+                          border: Border.all(color: Colors.transparent),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        inputDecoration: const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                          hintText: '지도가 시작될 지역을 선택해 주세요', hintStyle: TextStyle(fontSize: 16, color: Color(0xFFC4C4C4),
+                          ),
+                        ),
+                        itemClick: (prediction) {
+                          _locationController.text = prediction.description ?? '';
+                          selectedLocation = prediction as Prediction?;
+                        },
+                        showError: false,
                       ),
                     ),
                   ],
                 ),
               ),
-            const SizedBox(height: 60),
-            const Padding(
-              padding: EdgeInsets.only(left: 20.0),
-              child: Text(
-                '지역선택',
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 20.0),
-              child: Text(
-                '지도가 시작될 지역을 선택해주세요',
-                style: TextStyle(fontSize: 12.0),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(left: 35.0),
-              child: Row(
-                children: [
-                  const Text(
-                    '지역',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  const SizedBox(width: 10),
-                  // LocationSearchField(),
-                  Container(
-                    width: 300,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    alignment: Alignment.center,
-                    child: GooglePlaceAutoCompleteTextField(
-                      // focusNode: FocusNode(),
-                      textEditingController: _locationController,
-                      googleAPIKey: 'AIzaSyBS7vyfFibnUZye3oVPwzBaEL4lw7S5iaI',
-                      // countries: ['KR'],
-                      boxDecoration: BoxDecoration(
-                        border: Border.all(color: Colors.transparent),
-                        borderRadius: BorderRadius.circular(8),
+              
+              const SizedBox(height: 150),
+              Center(
+                child: SizedBox(
+                  child: ElevatedButton(
+                    onPressed: () => _registerMap(),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 20.0,
+                        horizontal: 100.0,
                       ),
-                      inputDecoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                      ),
-                      itemClick: (prediction) {
-                        _locationController.text = prediction.description ?? '';
-                        selectedLocation = prediction as Prediction?;
-                      },
-                      showError: false,
+                      textStyle: const TextStyle(fontSize: 18.0),
+                      backgroundColor: const Color(0xFFFF6F61),
                     ),
+                    child: const Text('완료',style: TextStyle(color: Colors.white)),
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 40),
-            
-            const SizedBox(height: 80),
-            Center(
-              child: SizedBox(
-                child: ElevatedButton(
-                  onPressed: () => _registerMap(),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20.0,
-                      horizontal: 100.0,
-                    ),
-                    textStyle: const TextStyle(fontSize: 18.0),
-                  ),
-                  child: const Text('등록하기'),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _registerMap() {
-    // 현재는 friend textfield에 글자가 있는 경우 배열에 넣어줘서 처리
-    if (_friendController.text != '') {
-      friends.add(_friendController.text);
-    }
-
-    if (selectedLocation == null) {
-      // 지역이 선택되지 않은 경우, 에러 메시지를 띄워줍니다.
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('지역을 선택해주세요.'),
+            ],
+          ),
         ),
       );
-      return;
     }
 
-    final newMap = MapModel(
-      mapName: mapName,
-      friends: friends,
-      location: selectedLocation!,
-      selectedDate: selectedDate,
-      expenses: [],
-    );
+    void _registerMap() {
+      // 현재는 friend textfield에 글자가 있는 경우 배열에 넣어줘서 처리
+      if (_friendController.text != '') {
+        friends.add(_friendController.text);
+      }
 
-    final mapProvider = context.read<MapProvider>();
-    mapProvider.addMapModel(newMap);
+      if (selectedLocation == null) {
+        // 지역이 선택되지 않은 경우, 에러 메시지를 띄워줍니다.
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('지역을 선택해주세요.'),
+          ),
+        );
+        return;
+      }
 
-    Navigator.of(context).pop(newMap);
+      final newMap = MapModel(
+        mapName: mapName,
+        friends: friends,
+        location: selectedLocation!,
+        selectedDate: selectedDate,
+        expenses: [],
+      );
+
+      final mapProvider = context.read<MapProvider>();
+      mapProvider.addMapModel(newMap);
+
+      Navigator.of(context).pop(newMap);
+    }
   }
-}
