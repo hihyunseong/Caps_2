@@ -170,8 +170,8 @@ class MapProvider extends ChangeNotifier {
     final polyline = Polyline(
       polylineId: const PolylineId('polyline_id'),
       points: points,
-      color: Colors.blue[300]!,
-      width: 15,
+      color: Color(0xD9FF6F61),
+      width: 7,
     );
 
     _polylines.clear();

@@ -4,11 +4,9 @@ import 'package:caps_2/vo/FriendInfo.dart';
 import 'package:caps_2/vo/FriendRequest.dart';
 import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:flutter/material.dart';
-import 'package:caps_2/my.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 
 
@@ -16,6 +14,7 @@ class Friends extends StatefulWidget {
 
   @override
   _FriendsState createState() => _FriendsState();
+
 }
 
 
@@ -32,12 +31,15 @@ class _FriendsState extends State<Friends> {
   List<FriendInfo> friendList = []; /// 친구 목록
   List<FriendRequest> requestList = []; /// 친구 요청 목록
 
+  ///내 정보
   String? idx;
   String? email;
   String? name;
   String? accToken;
   String? refToken;
+  ///
 
+  ///내 정보 불러오기
   Future<void> _read() async{
     idx = await storage.read(key: 'idx');
     email = await storage.read(key: 'email');
@@ -45,8 +47,7 @@ class _FriendsState extends State<Friends> {
     accToken = await storage.read(key: 'accToken');
     refToken = await storage.read(key: 'refToken');
   }
-
-
+  ///메세지 띄우기
   void _showMessage(String message){
     showDialog(
       context: context,
@@ -66,10 +67,8 @@ class _FriendsState extends State<Friends> {
       },
     );
   }
-
-
-
-  void _getFriendsList() async{
+  ///친구 목록 불러오기
+  Future<void> _getFriendsList() async{
     final url = Uri.http(friendUrl,'/api/v1/friends/list');
     final response = await http.get(
         url,
@@ -80,8 +79,8 @@ class _FriendsState extends State<Friends> {
         }
     );
     if(response.statusCode == 200){
-      print(response.body);
-      final List<dynamic> responseData = jsonDecode(response.body);
+      print(utf8.decode(response.bodyBytes));
+      final List<dynamic> responseData = jsonDecode(utf8.decode(response.bodyBytes));
       setState(() {
         friendList = responseData.map((data) => FriendInfo.fromJson(data)).toList();
       });
@@ -90,8 +89,8 @@ class _FriendsState extends State<Friends> {
       print(response.body);
     }
   }
-
-  void _getFriendRequest() async{
+  ///친구 요청 불러오기
+  Future<void> _getFriendRequest() async{
     final url = Uri.http(friendUrl,'/api/v1/friends/request');
 
     final response = await http.get(
@@ -103,14 +102,14 @@ class _FriendsState extends State<Friends> {
     );
     if(response == 200){
       print(response.body);
-      final List<dynamic> responseData = jsonDecode(response.body);
+      final List<dynamic> responseData = jsonDecode(utf8.decode(response.bodyBytes));
       requestList = responseData.map((data) => FriendRequest.fromJson(data)).toList();
     }else{
       print(response.body);
       _showMessage(response.body);
     }
   }
-
+  ///찬구 요청 수락하기
   Future<http.Response> _acceptFriend(String friendIdx) async {
     final url = Uri.http(friendUrl, '/api/v1/members/accept/' + friendIdx);
 
@@ -123,7 +122,7 @@ class _FriendsState extends State<Friends> {
     );
     return response;
   }
-
+  ///친구 요청 거절하기
   Future<http.Response> _declineFriend(String friendIdx) async {
     final url = Uri.http(friendUrl,'/api/v1/members/decline/' + friendIdx);
 
@@ -141,7 +140,8 @@ class _FriendsState extends State<Friends> {
   @override
   void initState() {
     _read().then((_){
-      _getFriendsList();
+      _getFriendsList().then((_){
+      });
     });
   }
 
@@ -150,7 +150,7 @@ class _FriendsState extends State<Friends> {
     return Scaffold(
       appBar: AppBar(
         title: Align(
-          alignment: FractionalOffset(0.4,0), 
+          alignment: FractionalOffset(0.4, 0),
           child: Text('친구 리스트'),
         ),
       ),
@@ -180,68 +180,67 @@ class _FriendsState extends State<Friends> {
               ],
             ),
           ),
-          
           SizedBox(height: 30.0),
           Expanded(
-            child: Container(
-              alignment: Alignment.topCenter,
-              child: Row(
-                children: [
-                  SizedBox(width: 20.0),
-                  ListView.builder(
-                    itemCount: friendList.length, // 여기에 리스트의 길이를 넣어줍니다.
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 30.0,
-                            backgroundColor: Colors.pink,
-                            child: GestureDetector(
-                              onTap: () {
-                                _showSlidingPanel2(context);
-                                setState(() {
-                                  isBottomBarVisible = !isBottomBarVisible;
-                                });
-                              },
-                            ),
-                          ),
-                          Text(
-                            friendList[index].name, // 친구의 이름을 표시합니다.
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  )
-                ],
-              ),
+            child: ListView.builder(
+              itemCount: friendList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          _showSlidingPanel2(context);
+                          setState(() {
+                            isBottomBarVisible = !isBottomBarVisible;
+                          });
+                        },
+                        child: CircleAvatar(
+                          radius: 30.0,
+                          backgroundColor: Colors.pink,
+                          backgroundImage: friendList[index].profile.isNotEmpty
+                              ? NetworkImage(friendList[index].profile)
+                              : null,
+                          child: friendList[index].profile.isEmpty
+                              ? Icon(Icons.person, size: 30.0, color: Colors.white)
+                              : null,
+                        ),
+                      ),
+                      SizedBox(height: 8.0), // 여백 추가
+                      Text(
+                        friendList[index].getName(),
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
-          
-          Expanded(
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              padding: EdgeInsets.only(bottom: 50.0),
-              child: FloatingActionButton(
-                onPressed: () {
-                  _showSlidingPanel(context);
-                  setState(() {
-                    isBottomBarVisible = !isBottomBarVisible;
-                  });
-                },
-                child: Icon(Icons.add),
-                backgroundColor: Colors.white,
-              ),
+          Container(
+            alignment: Alignment.bottomCenter,
+            padding: EdgeInsets.only(bottom: 50.0),
+            child: FloatingActionButton(
+              onPressed: () {
+                _showSlidingPanel(context);
+                setState(() {
+                  isBottomBarVisible = !isBottomBarVisible;
+                });
+              },
+              child: Icon(Icons.add),
+              backgroundColor: Colors.white,
             ),
           ),
         ],
       ),
     );
   }
+
 
   /// 친구추가 하단바
   void _showSlidingPanel(BuildContext context) {
@@ -264,7 +263,7 @@ class _FriendsState extends State<Friends> {
                 }
             );
             if(response.statusCode == 200){
-              final Map<String, dynamic> responseData = jsonDecode(response.body);
+              final Map<String, dynamic> responseData = jsonDecode(utf8.decode(response.bodyBytes));
 
               final String email = responseData['email'];
               final String name = responseData['name'];

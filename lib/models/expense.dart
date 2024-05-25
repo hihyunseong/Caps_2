@@ -1,3 +1,5 @@
+import 'package:caps_2/enums/pay_method.dart';
+import 'package:caps_2/models/map_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'category.dart';
@@ -8,6 +10,7 @@ part 'expense.g.dart';
 @freezed
 class Expense with _$Expense {
   factory Expense({
+    required String expenseLocationName,
     required double amount,
     required Category category,
     required String content,
@@ -16,6 +19,8 @@ class Expense with _$Expense {
     String? imagePath,
     required double latitude,
     required double longitude,
+    required MapModel map,
+    required PayMethod payMethod,
   }) = _Expense;
 
   factory Expense.fromJson(Map<String, dynamic> json) =>

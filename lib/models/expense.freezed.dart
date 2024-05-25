@@ -20,6 +20,7 @@ Expense _$ExpenseFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Expense {
+  String get expenseLocationName => throw _privateConstructorUsedError;
   double get amount => throw _privateConstructorUsedError;
   Category get category => throw _privateConstructorUsedError;
   String get content => throw _privateConstructorUsedError;
@@ -28,6 +29,8 @@ mixin _$Expense {
   String? get imagePath => throw _privateConstructorUsedError;
   double get latitude => throw _privateConstructorUsedError;
   double get longitude => throw _privateConstructorUsedError;
+  MapModel get map => throw _privateConstructorUsedError;
+  PayMethod get payMethod => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -40,14 +43,19 @@ abstract class $ExpenseCopyWith<$Res> {
       _$ExpenseCopyWithImpl<$Res, Expense>;
   @useResult
   $Res call(
-      {double amount,
+      {String expenseLocationName,
+      double amount,
       Category category,
       String content,
       String memo,
       DateTime date,
       String? imagePath,
       double latitude,
-      double longitude});
+      double longitude,
+      MapModel map,
+      PayMethod payMethod});
+
+  $MapModelCopyWith<$Res> get map;
 }
 
 /// @nodoc
@@ -63,6 +71,7 @@ class _$ExpenseCopyWithImpl<$Res, $Val extends Expense>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? expenseLocationName = null,
     Object? amount = null,
     Object? category = null,
     Object? content = null,
@@ -71,8 +80,14 @@ class _$ExpenseCopyWithImpl<$Res, $Val extends Expense>
     Object? imagePath = freezed,
     Object? latitude = null,
     Object? longitude = null,
+    Object? map = null,
+    Object? payMethod = null,
   }) {
     return _then(_value.copyWith(
+      expenseLocationName: null == expenseLocationName
+          ? _value.expenseLocationName
+          : expenseLocationName // ignore: cast_nullable_to_non_nullable
+              as String,
       amount: null == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
@@ -105,7 +120,23 @@ class _$ExpenseCopyWithImpl<$Res, $Val extends Expense>
           ? _value.longitude
           : longitude // ignore: cast_nullable_to_non_nullable
               as double,
+      map: null == map
+          ? _value.map
+          : map // ignore: cast_nullable_to_non_nullable
+              as MapModel,
+      payMethod: null == payMethod
+          ? _value.payMethod
+          : payMethod // ignore: cast_nullable_to_non_nullable
+              as PayMethod,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $MapModelCopyWith<$Res> get map {
+    return $MapModelCopyWith<$Res>(_value.map, (value) {
+      return _then(_value.copyWith(map: value) as $Val);
+    });
   }
 }
 
@@ -117,14 +148,20 @@ abstract class _$$ExpenseImplCopyWith<$Res> implements $ExpenseCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {double amount,
+      {String expenseLocationName,
+      double amount,
       Category category,
       String content,
       String memo,
       DateTime date,
       String? imagePath,
       double latitude,
-      double longitude});
+      double longitude,
+      MapModel map,
+      PayMethod payMethod});
+
+  @override
+  $MapModelCopyWith<$Res> get map;
 }
 
 /// @nodoc
@@ -138,6 +175,7 @@ class __$$ExpenseImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? expenseLocationName = null,
     Object? amount = null,
     Object? category = null,
     Object? content = null,
@@ -146,8 +184,14 @@ class __$$ExpenseImplCopyWithImpl<$Res>
     Object? imagePath = freezed,
     Object? latitude = null,
     Object? longitude = null,
+    Object? map = null,
+    Object? payMethod = null,
   }) {
     return _then(_$ExpenseImpl(
+      expenseLocationName: null == expenseLocationName
+          ? _value.expenseLocationName
+          : expenseLocationName // ignore: cast_nullable_to_non_nullable
+              as String,
       amount: null == amount
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
@@ -180,6 +224,14 @@ class __$$ExpenseImplCopyWithImpl<$Res>
           ? _value.longitude
           : longitude // ignore: cast_nullable_to_non_nullable
               as double,
+      map: null == map
+          ? _value.map
+          : map // ignore: cast_nullable_to_non_nullable
+              as MapModel,
+      payMethod: null == payMethod
+          ? _value.payMethod
+          : payMethod // ignore: cast_nullable_to_non_nullable
+              as PayMethod,
     ));
   }
 }
@@ -188,19 +240,24 @@ class __$$ExpenseImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ExpenseImpl extends _Expense {
   _$ExpenseImpl(
-      {required this.amount,
+      {required this.expenseLocationName,
+      required this.amount,
       required this.category,
       required this.content,
       required this.memo,
       required this.date,
       this.imagePath,
       required this.latitude,
-      required this.longitude})
+      required this.longitude,
+      required this.map,
+      required this.payMethod})
       : super._();
 
   factory _$ExpenseImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExpenseImplFromJson(json);
 
+  @override
+  final String expenseLocationName;
   @override
   final double amount;
   @override
@@ -217,10 +274,14 @@ class _$ExpenseImpl extends _Expense {
   final double latitude;
   @override
   final double longitude;
+  @override
+  final MapModel map;
+  @override
+  final PayMethod payMethod;
 
   @override
   String toString() {
-    return 'Expense(amount: $amount, category: $category, content: $content, memo: $memo, date: $date, imagePath: $imagePath, latitude: $latitude, longitude: $longitude)';
+    return 'Expense(expenseLocationName: $expenseLocationName, amount: $amount, category: $category, content: $content, memo: $memo, date: $date, imagePath: $imagePath, latitude: $latitude, longitude: $longitude, map: $map, payMethod: $payMethod)';
   }
 
   @override
@@ -228,6 +289,8 @@ class _$ExpenseImpl extends _Expense {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ExpenseImpl &&
+            (identical(other.expenseLocationName, expenseLocationName) ||
+                other.expenseLocationName == expenseLocationName) &&
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.category, category) ||
                 other.category == category) &&
@@ -239,13 +302,27 @@ class _$ExpenseImpl extends _Expense {
             (identical(other.latitude, latitude) ||
                 other.latitude == latitude) &&
             (identical(other.longitude, longitude) ||
-                other.longitude == longitude));
+                other.longitude == longitude) &&
+            (identical(other.map, map) || other.map == map) &&
+            (identical(other.payMethod, payMethod) ||
+                other.payMethod == payMethod));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, amount, category, content, memo,
-      date, imagePath, latitude, longitude);
+  int get hashCode => Object.hash(
+      runtimeType,
+      expenseLocationName,
+      amount,
+      category,
+      content,
+      memo,
+      date,
+      imagePath,
+      latitude,
+      longitude,
+      map,
+      payMethod);
 
   @JsonKey(ignore: true)
   @override
@@ -263,18 +340,23 @@ class _$ExpenseImpl extends _Expense {
 
 abstract class _Expense extends Expense {
   factory _Expense(
-      {required final double amount,
+      {required final String expenseLocationName,
+      required final double amount,
       required final Category category,
       required final String content,
       required final String memo,
       required final DateTime date,
       final String? imagePath,
       required final double latitude,
-      required final double longitude}) = _$ExpenseImpl;
+      required final double longitude,
+      required final MapModel map,
+      required final PayMethod payMethod}) = _$ExpenseImpl;
   _Expense._() : super._();
 
   factory _Expense.fromJson(Map<String, dynamic> json) = _$ExpenseImpl.fromJson;
 
+  @override
+  String get expenseLocationName;
   @override
   double get amount;
   @override
@@ -291,6 +373,10 @@ abstract class _Expense extends Expense {
   double get latitude;
   @override
   double get longitude;
+  @override
+  MapModel get map;
+  @override
+  PayMethod get payMethod;
   @override
   @JsonKey(ignore: true)
   _$$ExpenseImplCopyWith<_$ExpenseImpl> get copyWith =>
