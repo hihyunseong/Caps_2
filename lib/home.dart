@@ -505,7 +505,6 @@ class _HomeState extends State<Home> {
       ),
     );
 
-    // 잘 안지우시는 것 같아서 일부러 남겨둡니다.
     return Stack(
       alignment: Alignment.center,
       children: [
