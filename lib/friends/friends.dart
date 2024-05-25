@@ -404,7 +404,7 @@ class _FriendsState extends State<Friends> {
                       backgroundColor: Colors.black,
                     ),
                     child: Text(
-                      '친구 요청',
+                      '친구요청',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
