@@ -48,145 +48,199 @@ class _MyPageState extends State<MyPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            InkWell(
-              onTap: () {
-                _showImagePickerDialog(context);
-              },
-              child: _image == null
-                  ? CircleAvatar(
-                      radius: 40.0,
-                      backgroundColor: Colors.grey[200],
-                      child: Icon(
-                        Icons.person,
-                        size: 40.0,
-                        color: Colors.grey[600],
-                      ),
-                    )
-                  : CircleAvatar(
-                      radius: 40.0,
-                      backgroundImage: FileImage(
-                        File(_image!.path),
-                      ),
+Widget build(BuildContext context) {
+  return Container(
+    // padding: const EdgeInsets.all(24),
+    // decoration: const BoxDecoration(
+    //   borderRadius: BorderRadius.only(
+    //     topLeft: Radius.circular(20),
+    //     topRight: Radius.circular(20),
+    //   ),
+    // ), 
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFC4C4C4),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                const SizedBox(height: 15), 
+                const Text(
+                  '마이페이지',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              _showImagePickerDialog(context);
+            },
+            child: _image == null
+                ? CircleAvatar(
+                    radius: 35.0,
+                    backgroundColor: Colors.grey[200],
+                    child: Icon(
+                      Icons.person,
+                      size: 35.0,
+                      color: Colors.grey[600],
                     ),
-            ),
-            const SizedBox(height: 10.0),
-            const Divider(color: Colors.grey),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Friends()),
-                );
-              },
-              child: const Text(
-                '친구리스트',
-                style: TextStyle(
-                    color: Colors.black, letterSpacing: 1.5, fontSize: 18),
+                  )
+                : CircleAvatar(
+                    radius: 35.0,
+                    backgroundImage: FileImage(
+                      File(_image!.path),
+                    ),
+                  ),
+          ),
+          const SizedBox(height: 10.0),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Friends()),
+              );
+            },
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: const Text(
+                  '친구',
+                  style: TextStyle(
+                      color: Colors.black, letterSpacing: 1.5, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            )
+          ),
+          const Divider(color: Color(0xFFD9D9D9)),
+          TextButton(
+            onPressed: () {},
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: const Text(
+                  '전체 지도',
+                  style: TextStyle(
+                      color: Colors.black, letterSpacing: 1.5, fontSize: 16, fontWeight: FontWeight.bold ),
+                ),
               ),
             ),
-            const Divider(color: Colors.grey),
-            TextButton(
-              onPressed: () {},
-              child: const Text(
-                '전체지도',
+          ),
+          const Divider(color: Color(0xFFD9D9D9)),
+          TextButton(
+            onPressed: () {},
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+            child: const Text(
+              '이용약관',
                 style: TextStyle(
-                    color: Colors.black, letterSpacing: 1.5, fontSize: 18),
+                    color: Colors.black, letterSpacing: 1.5, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-            const Divider(color: Colors.grey),
-            TextButton(
-              onPressed: () {},
-              child: const Text(
-                '이용약관',
-                style: TextStyle(
-                    color: Colors.black, letterSpacing: 1.5, fontSize: 18),
+          ),
+          const Divider(color: Color(0xFFD9D9D9)),
+          TextButton(
+            onPressed: () async {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('사용자 정보'),
+                    content: Text('idx :' +
+                        idx.toString() +
+                        "\n" +
+                        '이름 :' +
+                        name.toString() +
+                        "\n" +
+                        '이메일 :' +
+                        email.toString() +
+                        "\n" +
+                        '엑세스 토큰 :' +
+                        accToken.toString() +
+                        "\n" +
+                        '리프레시 토큰 :' +
+                        refToken.toString() +
+                        "\n"),
+                  );
+                },
+              );
+            },
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: const Text(
+                  '버전',
+                  style: TextStyle(
+                      color: Colors.black, letterSpacing: 1.5, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-            const Divider(color: Colors.grey),
-            TextButton(
-              onPressed: () async {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('사용자 정보'),
-                      content: Text('idx :' +
-                          idx.toString() +
-                          "\n" +
-                          '이름 :' +
-                          name.toString() +
-                          "\n" +
-                          '이메일 :' +
-                          email.toString() +
-                          "\n" +
-                          '엑세스 토큰 :' +
-                          accToken.toString() +
-                          "\n" +
-                          '리프레시 토큰 :' +
-                          refToken.toString() +
-                          "\n"),
-                    );
-                  },
-                );
-              },
-              child: const Text(
-                '버전',
-                style: TextStyle(
-                    color: Colors.black, letterSpacing: 1.5, fontSize: 18),
+          ),
+          const Divider(color: Color(0xFFD9D9D9)),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            },
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: const Text(
+                  '로그아웃',
+                  style: TextStyle(
+                      color: Colors.black, letterSpacing: 1.5, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-            const Divider(color: Colors.grey),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
-              },
-              child: const Text(
-                '로그아웃',
-                style: TextStyle(
-                    color: Colors.black, letterSpacing: 1.5, fontSize: 18),
+          ),
+          const Divider(color: Color(0xFFD9D9D9)),
+          TextButton(
+            onPressed: () {
+              const storage = FlutterSecureStorage();
+              storage.deleteAll();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              );
+            },
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: const Text(
+                  '탈퇴하기',
+                  style: TextStyle(
+                      letterSpacing: 1.5, color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-            const Divider(color: Colors.grey),
-            TextButton(
-              onPressed: () {
-                const storage = FlutterSecureStorage();
-                storage.deleteAll();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-              },
-              child: const Text(
-                '탈퇴하기',
-                style: TextStyle(
-                    letterSpacing: 1.5, color: Colors.red, fontSize: 18),
-              ),
-            ),
-            const Divider(color: Colors.grey),
-            const SizedBox(
-              height: 50.0,
-            ),
-          ],
-        ),
+          ),
+          const Divider(color: Color(0xFFD9D9D9)),
+          const SizedBox(
+            height: 50.0,
+          ),
+        ],
       ),
     );
   }
+
 
   void _showImagePickerDialog(BuildContext context) {
     showDialog(

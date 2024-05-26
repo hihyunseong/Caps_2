@@ -8,6 +8,7 @@ part of 'expense.dart';
 
 _$ExpenseImpl _$$ExpenseImplFromJson(Map<String, dynamic> json) =>
     _$ExpenseImpl(
+      expenseLocationName: json['expenseLocationName'] as String,
       amount: (json['amount'] as num).toDouble(),
       category: $enumDecode(_$CategoryEnumMap, json['category']),
       content: json['content'] as String,
@@ -16,10 +17,13 @@ _$ExpenseImpl _$$ExpenseImplFromJson(Map<String, dynamic> json) =>
       imagePath: json['imagePath'] as String?,
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
+      map: MapModel.fromJson(json['map'] as Map<String, dynamic>),
+      payMethod: $enumDecode(_$PayMethodEnumMap, json['payMethod']),
     );
 
 Map<String, dynamic> _$$ExpenseImplToJson(_$ExpenseImpl instance) =>
     <String, dynamic>{
+      'expenseLocationName': instance.expenseLocationName,
       'amount': instance.amount,
       'category': _$CategoryEnumMap[instance.category]!,
       'content': instance.content,
@@ -28,12 +32,23 @@ Map<String, dynamic> _$$ExpenseImplToJson(_$ExpenseImpl instance) =>
       'imagePath': instance.imagePath,
       'latitude': instance.latitude,
       'longitude': instance.longitude,
+      'map': instance.map,
+      'payMethod': _$PayMethodEnumMap[instance.payMethod]!,
     };
 
 const _$CategoryEnumMap = {
-  Category.sleep: 'sleep',
-  Category.transport: 'transport',
   Category.food: 'food',
+  Category.cafe: 'cafe',
+  Category.alcohol: 'alcohol',
+  Category.photo: 'photo',
   Category.shopping: 'shopping',
-  Category.etc: 'etc',
+  Category.gift: 'gift',
+  Category.plus: 'plus',
+};
+
+const _$PayMethodEnumMap = {
+  PayMethod.creditCatd: 'creditCatd',
+  PayMethod.checkCard: 'checkCard',
+  PayMethod.cash: 'cash',
+  PayMethod.accountTransfer: 'accountTransfer',
 };

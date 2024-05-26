@@ -19,10 +19,8 @@ import 'provider/map_provider.dart';
 import 'widgets/map_tile.dart';
 import 'widgets/my_marker.dart';
 import 'my.dart';
-import 'book.dart';
+import 'add_expense/page/expense_amount_page.dart';
 import 'map_plus.dart';
-import 'map/my_map.dart';
-import 'map/share_map.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -224,18 +222,23 @@ class _HomeState extends State<Home> {
           topRight: Radius.circular(24.0),
         ),
         minHeight: 150,
-        maxHeight: MediaQuery.of(context).size.height * 0.8,
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
         body: _mapScreen(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
+<<<<<<< HEAD
         selectedLabelStyle: TextStyle(
           fontFamily: "NanumSquareNeo-Bold"
         ),
         unselectedLabelStyle: TextStyle(
           fontFamily: "NanumSquareNeo-Bold"
         ),
+=======
+        selectedLabelStyle: TextStyle(fontFamily: "NanumSquareNeo-Bold"),
+        unselectedLabelStyle: TextStyle(fontFamily: "NanumSquareNeo-Bold"),
+>>>>>>> 450e798ced32361d76ec352d36f4d7f799550958
         selectedFontSize: 12,
         unselectedFontSize: 12,
         selectedItemColor: const Color(0xFFFF6F61),
@@ -298,7 +301,6 @@ class _HomeState extends State<Home> {
           MapStatus.dailyExpense => const DailyExpensePanel(),
           MapStatus.mapDetails => const MapDetailsPanel(),
           MapStatus.expenseDetails => const ExpenseDetailsPanel(),
-   
           MapStatus() => throw UnimplementedError(),
         },
         switch (mapProvider.shareMapStatus) {
@@ -307,7 +309,6 @@ class _HomeState extends State<Home> {
           MapStatus.dailyExpense => const DailyExpensePanel(),
           MapStatus.mapDetails => const MapDetailsPanel(),
           MapStatus.expenseDetails => const ExpenseDetailsPanel(),
-
           MapStatus() => throw UnimplementedError(),
         },
         const MyPage(),
@@ -324,7 +325,7 @@ class _HomeState extends State<Home> {
         : mapProvider.dailyExpenses[currentIndex];
 
     return Container(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(24.0),
       child: Column(
         children: [
           Container(
@@ -390,7 +391,12 @@ class _HomeState extends State<Home> {
                       ListTile(
                         leading: CircleAvatar(
                           backgroundColor: Colors.grey[200],
-                          child: Icon(expense.category.icon),
+                          child: Image.asset(
+                            expense.category.iconPath,
+                            width: 24,
+                            height: 24,
+                          ),
+                          // child: Icon(expense.category.icon),
                         ),
                         title: Text(
                           expense.content,
@@ -434,264 +440,162 @@ class _HomeState extends State<Home> {
   Widget _myMapPanel() {
     final mapProvider = context.watch<MapProvider>();
 
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            '마이맵',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
             children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFC4C4C4),
-                  borderRadius: BorderRadius.circular(8.0),
+              const Text(
+                '맵 목록',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '${mapProvider.myMapList.length}',
+                style: const TextStyle(
+                  color: Color(0xFFFF6F61),
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 10.0),
-              Row( //05/21 수정
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const IconButton(
-                    onPressed: null,
-                    icon: Icon(Icons.more_vert, color: Colors.transparent),
-                  ),
-                  Expanded(
-                    child: const Text(
-                    '마이맵',
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  const SizedBox(width: 48),                
-                ],
+              const Spacer(),
+              FloatingActionButton(
+                heroTag: 'my_map',
+                onPressed: () => _registerMyMap(),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                child: const Icon(Icons.add, color: Color(0xFFFF6F61)),
               ),
-              const SizedBox(height: 20),
-              // InkWell(
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(builder: (context) => MyMap()),
-              //     );
-              //   },
-              //   child: Container(
-              //     width: double.infinity,
-              //     padding: const EdgeInsets.all(20),
-              //     decoration: BoxDecoration(
-              //       color: Colors.purple[100],
-              //       borderRadius: BorderRadius.circular(10),
-              //     ),
-              //     child: const Align(
-              //       alignment: Alignment.topLeft,
-              //       child: Text(
-              //         '기본맵',
-              //         style:
-              //             TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              mapProvider.myMapList.isEmpty
-                  ? const Expanded(
-                      child: Center(
-                      child: Text(
-                        '아직 작성한 지도가 없습니다.',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ))
-                  : Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: mapProvider.myMapList.length,
-                        itemBuilder: (context, index) {
-                          final mapModel = mapProvider.myMapList[index];
-
-                          return MapTile(
-                            mapModel: mapModel,
-                            gotoLocation: (LatLng? latLng) =>
-                                _gotoMapPosition(latLng),
-                            changeDate: (date) {
-                              _selectedDate = date;
-                            },
-                          );
-                        },
-                      ),
-                    ),
             ],
           ),
-        ),
+          mapProvider.myMapList.isEmpty
+              ? const Expanded(
+                  child: Center(
+                  child: Text(
+                    '아직 작성한 지도가 없습니다.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ))
+              : Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: mapProvider.myMapList.length,
+                    itemBuilder: (context, index) {
+                      final mapModel = mapProvider.myMapList[index];
 
-        Positioned( //05/21 수정
-          bottom: 465,
-          right: 320,
-          child: Row(
-            children: [ const Text('맵 목록', style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            '${mapProvider.myMapList.length}', 
-              style: const TextStyle(
-                color: Color(0xFFFF6F61),
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
+                      return MapTile(
+                        mapModel: mapModel,
+                        gotoLocation: (LatLng? latLng) =>
+                            _gotoMapPosition(latLng),
+                        changeDate: (date) {
+                          _selectedDate = date;
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-          ),
-        ),
-
-        Positioned( // 05/21 수정
-          bottom: 450,
-          right: 15,
-          child: FloatingActionButton(
-            heroTag: 'my_map',
-            onPressed: () => _registerMyMap(),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            child: const Icon(Icons.add,color: Color(0xFFFF6F61)),
-          ),
-        ),
-      ],
-    );
-  }
+          );
+        }
 
   Widget _sharedMapPanel() {
     final mapProvider = context.watch<MapProvider>();
 
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            '공유맵',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
             children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFC4C4C4),
-                  borderRadius: BorderRadius.circular(8.0),
+              const Text(
+                '맵 목록',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '${mapProvider.sharedMapList.length}',
+                style: const TextStyle(
+                  color: Color(0xFFFF6F61),
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 10.0),
-              Row( //05/21 수정
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const IconButton(
-                    onPressed: null,
-                    icon: Icon(Icons.more_vert, color: Colors.transparent),
-                  ),
-                  Expanded(
-                    child: const Text(
-                    '공유맵',
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  const SizedBox(width: 48),                
-                ],
+              const Spacer(),
+              FloatingActionButton(
+                heroTag: 'shared_map',
+                onPressed: () => _registerMyMap(),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                child: const Icon(Icons.add, color: Color(0xFFFF6F61)),
               ),
-              const SizedBox(height: 5.0),
-              const Center(
-                
-              ),
-              // const SizedBox(height: 20), // 새로 추가된 부분
-              // InkWell(
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(builder: (context) => ShareMap()),
-              //     );
-              //   },
-              //   child: Container(
-              //     width: double.infinity,
-              //     padding: const EdgeInsets.all(20),
-              //     decoration: BoxDecoration(
-              //       color: Colors.purple[100],
-              //       borderRadius: BorderRadius.circular(10),
-              //     ),
-              //     child: const Align(
-              //       alignment: Alignment.topLeft,
-              //       child: Text(
-              //         '기본맵',
-              //         style:
-              //             TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              mapProvider.sharedMapList.isEmpty
-                  ? const Expanded(
-                      child: Center(
-                      child: Text(
-                        '아직 작성한 지도가 없습니다.',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ))
-                  : Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: mapProvider.sharedMapList.length,
-                        itemBuilder: (context, index) {
-                          final mapModel = mapProvider.sharedMapList[index];
-
-                          return MapTile(
-                            mapModel: mapModel,
-                            gotoLocation: (LatLng? latLng) =>
-                                _gotoMapPosition(latLng),
-                            changeDate: (date) {
-                              _selectedDate = date;
-                            },
-                          );
-                        },
-                      ),
-                    ),
             ],
           ),
-        ),
+          mapProvider.sharedMapList.isEmpty
+              ? const Expanded(
+                  child: Center(
+                  child: Text(
+                    '아직 작성한 지도가 없습니다.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ))
+              : Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: mapProvider.sharedMapList.length,
+                    itemBuilder: (context, index) {
+                      final mapModel = mapProvider.sharedMapList[index];
 
-        Positioned( //05/21 수정
-          bottom: 465,
-          right: 320,
-          child: Row(
-            children: [ const Text('맵 목록', style: TextStyle(color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            '${mapProvider.myMapList.length}', 
-              style: const TextStyle(
-                color: Color(0xFFFF6F61),
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
+                      return MapTile(
+                        mapModel: mapModel,
+                        gotoLocation: (LatLng? latLng) =>
+                            _gotoMapPosition(latLng),
+                        changeDate: (date) {
+                          _selectedDate = date;
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-          ),
-        ),
-        
-        Positioned( // 05/21 수정
-          bottom: 450,
-          right: 15,
-          child: FloatingActionButton(
-            heroTag: 'shared_map',
-            onPressed: () => _registerMyMap(),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            child: const Icon(Icons.add,color: Color(0xFFFF6F61)),
-          ),
-        ),
-      ],
-    );
-  }
+          );
+        }
 
   Widget _myPagePanel() {
     return Container(
@@ -708,7 +612,7 @@ class _HomeState extends State<Home> {
           ),
           const Expanded(
             child: Center(
-              child: Text('마이 페이지'),
+              child: Text('마이페이지'),
             ),
           ),
         ],
@@ -731,6 +635,9 @@ class _HomeState extends State<Home> {
 
               final markers = context.watch<MapProvider>().markers;
               final polylines = context.watch<MapProvider>().polylines;
+
+              print(
+                  'position : $position, markers : $markers, polylines : $polylines');
 
               return GoogleMap(
                 onMapCreated: (controller) => _onMapCreated(controller),
@@ -910,14 +817,13 @@ class _HomeState extends State<Home> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Book(
+        builder: (context) => ExpenseAmountPage(
           location: pinLocation,
           date: _selectedDate,
         ),
       ),
     );
-
-    // 지출 입력시에만 핀을 꽂는다. (book2 에서 true 입력)
+    
     if (result == true) {
       await _addPin(pinLocation);
     }

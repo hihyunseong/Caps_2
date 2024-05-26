@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:caps_2/models/expense.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,6 +16,7 @@ class MapModel with _$MapModel {
     required Prediction location,
     required DateTime selectedDate,
     required List<Expense> expenses,
+    @ColorConverter() required Color color,
   }) = _MapModel;
 
   factory MapModel.fromJson(Map<String, dynamic> json) =>
@@ -32,4 +35,18 @@ class MapModel with _$MapModel {
       0, (previousValue, element) => previousValue + element.amount.toInt());
 
   bool get isSharedMap => friends.isNotEmpty;
+}
+
+class ColorConverter implements JsonConverter<Color, String> {
+  const ColorConverter();
+
+  @override
+  Color fromJson(String json) {
+    return Color(int.parse(json, radix: 16));
+  }
+
+  @override
+  String toJson(Color color) {
+    return color.value.toRadixString(16);
+  }
 }

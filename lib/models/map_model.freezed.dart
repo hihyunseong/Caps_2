@@ -25,6 +25,8 @@ mixin _$MapModel {
   Prediction get location => throw _privateConstructorUsedError;
   DateTime get selectedDate => throw _privateConstructorUsedError;
   List<Expense> get expenses => throw _privateConstructorUsedError;
+  @ColorConverter()
+  Color get color => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,7 +44,8 @@ abstract class $MapModelCopyWith<$Res> {
       List<String> friends,
       Prediction location,
       DateTime selectedDate,
-      List<Expense> expenses});
+      List<Expense> expenses,
+      @ColorConverter() Color color});
 }
 
 /// @nodoc
@@ -63,6 +66,7 @@ class _$MapModelCopyWithImpl<$Res, $Val extends MapModel>
     Object? location = null,
     Object? selectedDate = null,
     Object? expenses = null,
+    Object? color = null,
   }) {
     return _then(_value.copyWith(
       mapName: null == mapName
@@ -85,6 +89,10 @@ class _$MapModelCopyWithImpl<$Res, $Val extends MapModel>
           ? _value.expenses
           : expenses // ignore: cast_nullable_to_non_nullable
               as List<Expense>,
+      color: null == color
+          ? _value.color
+          : color // ignore: cast_nullable_to_non_nullable
+              as Color,
     ) as $Val);
   }
 }
@@ -102,7 +110,8 @@ abstract class _$$MapModelImplCopyWith<$Res>
       List<String> friends,
       Prediction location,
       DateTime selectedDate,
-      List<Expense> expenses});
+      List<Expense> expenses,
+      @ColorConverter() Color color});
 }
 
 /// @nodoc
@@ -121,6 +130,7 @@ class __$$MapModelImplCopyWithImpl<$Res>
     Object? location = null,
     Object? selectedDate = null,
     Object? expenses = null,
+    Object? color = null,
   }) {
     return _then(_$MapModelImpl(
       mapName: null == mapName
@@ -143,6 +153,10 @@ class __$$MapModelImplCopyWithImpl<$Res>
           ? _value._expenses
           : expenses // ignore: cast_nullable_to_non_nullable
               as List<Expense>,
+      color: null == color
+          ? _value.color
+          : color // ignore: cast_nullable_to_non_nullable
+              as Color,
     ));
   }
 }
@@ -155,7 +169,8 @@ class _$MapModelImpl extends _MapModel {
       required final List<String> friends,
       required this.location,
       required this.selectedDate,
-      required final List<Expense> expenses})
+      required final List<Expense> expenses,
+      @ColorConverter() required this.color})
       : _friends = friends,
         _expenses = expenses,
         super._();
@@ -186,8 +201,12 @@ class _$MapModelImpl extends _MapModel {
   }
 
   @override
+  @ColorConverter()
+  final Color color;
+
+  @override
   String toString() {
-    return 'MapModel(mapName: $mapName, friends: $friends, location: $location, selectedDate: $selectedDate, expenses: $expenses)';
+    return 'MapModel(mapName: $mapName, friends: $friends, location: $location, selectedDate: $selectedDate, expenses: $expenses, color: $color)';
   }
 
   @override
@@ -201,7 +220,8 @@ class _$MapModelImpl extends _MapModel {
                 other.location == location) &&
             (identical(other.selectedDate, selectedDate) ||
                 other.selectedDate == selectedDate) &&
-            const DeepCollectionEquality().equals(other._expenses, _expenses));
+            const DeepCollectionEquality().equals(other._expenses, _expenses) &&
+            (identical(other.color, color) || other.color == color));
   }
 
   @JsonKey(ignore: true)
@@ -212,7 +232,8 @@ class _$MapModelImpl extends _MapModel {
       const DeepCollectionEquality().hash(_friends),
       location,
       selectedDate,
-      const DeepCollectionEquality().hash(_expenses));
+      const DeepCollectionEquality().hash(_expenses),
+      color);
 
   @JsonKey(ignore: true)
   @override
@@ -234,7 +255,8 @@ abstract class _MapModel extends MapModel {
       required final List<String> friends,
       required final Prediction location,
       required final DateTime selectedDate,
-      required final List<Expense> expenses}) = _$MapModelImpl;
+      required final List<Expense> expenses,
+      @ColorConverter() required final Color color}) = _$MapModelImpl;
   _MapModel._() : super._();
 
   factory _MapModel.fromJson(Map<String, dynamic> json) =
@@ -250,6 +272,9 @@ abstract class _MapModel extends MapModel {
   DateTime get selectedDate;
   @override
   List<Expense> get expenses;
+  @override
+  @ColorConverter()
+  Color get color;
   @override
   @JsonKey(ignore: true)
   _$$MapModelImplCopyWith<_$MapModelImpl> get copyWith =>

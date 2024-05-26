@@ -184,7 +184,7 @@ Widget build(BuildContext context) {
               ),
             ),
             TextSpan(
-              text: ' 찍어 소비를 기록하다.', 
+              text: ' 꽂아 소비를 기록하다.', 
               style: TextStyle(
                 fontSize: 18,
                 color: Color.fromARGB(255, 247, 152, 143), 
@@ -346,4 +346,3 @@ Widget _inputField(context) {
     );
   }
 }
-
