@@ -16,6 +16,7 @@ class MapModel with _$MapModel {
     required Prediction location,
     required DateTime selectedDate,
     required List<Expense> expenses,
+    DateTime? lastExpensesUpdate,
     @ColorConverter() required Color color,
   }) = _MapModel;
 

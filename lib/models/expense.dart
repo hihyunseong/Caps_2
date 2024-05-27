@@ -21,6 +21,7 @@ class Expense with _$Expense {
     required double longitude,
     required MapModel map,
     required PayMethod payMethod,
+    required DateTime createdAt,
   }) = _Expense;
 
   factory Expense.fromJson(Map<String, dynamic> json) =>

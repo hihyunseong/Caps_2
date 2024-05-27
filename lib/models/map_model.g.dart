@@ -16,6 +16,9 @@ _$MapModelImpl _$$MapModelImplFromJson(Map<String, dynamic> json) =>
       expenses: (json['expenses'] as List<dynamic>)
           .map((e) => Expense.fromJson(e as Map<String, dynamic>))
           .toList(),
+      lastExpensesUpdate: json['lastExpensesUpdate'] == null
+          ? null
+          : DateTime.parse(json['lastExpensesUpdate'] as String),
       color: const ColorConverter().fromJson(json['color'] as String),
     );
 
@@ -26,5 +29,6 @@ Map<String, dynamic> _$$MapModelImplToJson(_$MapModelImpl instance) =>
       'location': instance.location,
       'selectedDate': instance.selectedDate.toIso8601String(),
       'expenses': instance.expenses,
+      'lastExpensesUpdate': instance.lastExpensesUpdate?.toIso8601String(),
       'color': const ColorConverter().toJson(instance.color),
     };

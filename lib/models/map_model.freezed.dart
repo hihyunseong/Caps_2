@@ -25,6 +25,7 @@ mixin _$MapModel {
   Prediction get location => throw _privateConstructorUsedError;
   DateTime get selectedDate => throw _privateConstructorUsedError;
   List<Expense> get expenses => throw _privateConstructorUsedError;
+  DateTime? get lastExpensesUpdate => throw _privateConstructorUsedError;
   @ColorConverter()
   Color get color => throw _privateConstructorUsedError;
 
@@ -45,6 +46,7 @@ abstract class $MapModelCopyWith<$Res> {
       Prediction location,
       DateTime selectedDate,
       List<Expense> expenses,
+      DateTime? lastExpensesUpdate,
       @ColorConverter() Color color});
 }
 
@@ -66,6 +68,7 @@ class _$MapModelCopyWithImpl<$Res, $Val extends MapModel>
     Object? location = null,
     Object? selectedDate = null,
     Object? expenses = null,
+    Object? lastExpensesUpdate = freezed,
     Object? color = null,
   }) {
     return _then(_value.copyWith(
@@ -89,6 +92,10 @@ class _$MapModelCopyWithImpl<$Res, $Val extends MapModel>
           ? _value.expenses
           : expenses // ignore: cast_nullable_to_non_nullable
               as List<Expense>,
+      lastExpensesUpdate: freezed == lastExpensesUpdate
+          ? _value.lastExpensesUpdate
+          : lastExpensesUpdate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       color: null == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
@@ -111,6 +118,7 @@ abstract class _$$MapModelImplCopyWith<$Res>
       Prediction location,
       DateTime selectedDate,
       List<Expense> expenses,
+      DateTime? lastExpensesUpdate,
       @ColorConverter() Color color});
 }
 
@@ -130,6 +138,7 @@ class __$$MapModelImplCopyWithImpl<$Res>
     Object? location = null,
     Object? selectedDate = null,
     Object? expenses = null,
+    Object? lastExpensesUpdate = freezed,
     Object? color = null,
   }) {
     return _then(_$MapModelImpl(
@@ -153,6 +162,10 @@ class __$$MapModelImplCopyWithImpl<$Res>
           ? _value._expenses
           : expenses // ignore: cast_nullable_to_non_nullable
               as List<Expense>,
+      lastExpensesUpdate: freezed == lastExpensesUpdate
+          ? _value.lastExpensesUpdate
+          : lastExpensesUpdate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       color: null == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
@@ -170,6 +183,7 @@ class _$MapModelImpl extends _MapModel {
       required this.location,
       required this.selectedDate,
       required final List<Expense> expenses,
+      this.lastExpensesUpdate,
       @ColorConverter() required this.color})
       : _friends = friends,
         _expenses = expenses,
@@ -201,12 +215,14 @@ class _$MapModelImpl extends _MapModel {
   }
 
   @override
+  final DateTime? lastExpensesUpdate;
+  @override
   @ColorConverter()
   final Color color;
 
   @override
   String toString() {
-    return 'MapModel(mapName: $mapName, friends: $friends, location: $location, selectedDate: $selectedDate, expenses: $expenses, color: $color)';
+    return 'MapModel(mapName: $mapName, friends: $friends, location: $location, selectedDate: $selectedDate, expenses: $expenses, lastExpensesUpdate: $lastExpensesUpdate, color: $color)';
   }
 
   @override
@@ -221,6 +237,8 @@ class _$MapModelImpl extends _MapModel {
             (identical(other.selectedDate, selectedDate) ||
                 other.selectedDate == selectedDate) &&
             const DeepCollectionEquality().equals(other._expenses, _expenses) &&
+            (identical(other.lastExpensesUpdate, lastExpensesUpdate) ||
+                other.lastExpensesUpdate == lastExpensesUpdate) &&
             (identical(other.color, color) || other.color == color));
   }
 
@@ -233,6 +251,7 @@ class _$MapModelImpl extends _MapModel {
       location,
       selectedDate,
       const DeepCollectionEquality().hash(_expenses),
+      lastExpensesUpdate,
       color);
 
   @JsonKey(ignore: true)
@@ -256,6 +275,7 @@ abstract class _MapModel extends MapModel {
       required final Prediction location,
       required final DateTime selectedDate,
       required final List<Expense> expenses,
+      final DateTime? lastExpensesUpdate,
       @ColorConverter() required final Color color}) = _$MapModelImpl;
   _MapModel._() : super._();
 
@@ -272,6 +292,8 @@ abstract class _MapModel extends MapModel {
   DateTime get selectedDate;
   @override
   List<Expense> get expenses;
+  @override
+  DateTime? get lastExpensesUpdate;
   @override
   @ColorConverter()
   Color get color;

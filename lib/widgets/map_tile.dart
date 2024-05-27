@@ -19,6 +19,7 @@ class MapTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mapProvider = context.watch<MapProvider>();
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: InkWell(
@@ -115,7 +116,7 @@ class MapTile extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      '최근 작성 ${_getTimeAgo(mapModel.selectedDate)}',
+                      '최근 작성 ${_getTimeAgo(mapModel.lastExpensesUpdate ?? mapModel.selectedDate)}',
                       style: const TextStyle(
                         fontSize: 10,
                         fontFamily: 'NanumSquareNeo-Bold',
@@ -135,7 +136,7 @@ class MapTile extends StatelessWidget {
                             Icons.people_alt,
                             color: Colors.white,
                           )
-                        : Icon(
+                        : const Icon(
                             Icons.person_2_outlined,
                             color: Colors.white,
                           ),

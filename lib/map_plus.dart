@@ -294,13 +294,18 @@ class _MapPlusState extends State<MapPlus> {
   }
 
   void _registerMap() {
+    // isSharedMap이 true인 경우, 임시로 친구 추가
+    if (widget.isSharedMap) {
+      friends.add('친구1');
+    }
+
     // 현재는 friend textfield에 글자가 있는 경우 배열에 넣어줘서 처리
     if (_friendController.text != '') {
       friends.add(_friendController.text);
     }
 
     if (selectedLocation == null) {
-      // 지역이 선택되지 않은 경우, 에러 메시지를 띄워줍니다.
+      // 지역이 선택되지 않은 경우, 에러 메시지를 띄움
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('지역을 선택해주세요.'),

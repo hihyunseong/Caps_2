@@ -138,7 +138,9 @@ class _MapSelectPageState extends State<MapSelectPage> {
               CustomButton(
                 title: '다음',
                 height: 70,
-                color: Colors.red[100]!,
+                color: (selectedMapModel == null)
+                    ? Colors.red[100]!
+                    : Colors.red[300]!,
                 onTap: () {
                   if (selectedMapModel == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
