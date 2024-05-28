@@ -228,17 +228,8 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
-<<<<<<< HEAD
-        selectedLabelStyle: TextStyle(
-          fontFamily: "NanumSquareNeo-Bold"
-        ),
-        unselectedLabelStyle: TextStyle(
-          fontFamily: "NanumSquareNeo-Bold"
-        ),
-=======
         selectedLabelStyle: TextStyle(fontFamily: "NanumSquareNeo-Bold"),
         unselectedLabelStyle: TextStyle(fontFamily: "NanumSquareNeo-Bold"),
->>>>>>> 450e798ced32361d76ec352d36f4d7f799550958
         selectedFontSize: 12,
         unselectedFontSize: 12,
         selectedItemColor: const Color(0xFFFF6F61),

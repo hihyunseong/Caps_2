@@ -37,6 +37,10 @@ dependencies:
   http: ^1.2.1
   intl: ^0.19.0
   image_picker: ^0.8.4+5
+  kakao_flutter_sdk: ^1.2.1
+  flutter_web_auth_2: ^3.0.0
+  flutter_naver_login: ^1.6.0
+  google_sign_in: ^6.2.1
  
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -102,13 +106,13 @@ flutter:
     - assets/images/category/photo.png
     - assets/images/category/shopping.png
     - assets/images/category/plus.png
-<<<<<<< HEAD
-=======
     - assets/images/logo1.png
     - assets/images/logo2.png
-    
+    - assets/images/kakao.png
+    - assets/images/naver.png
+    - assets/images/google.png
 
->>>>>>> 450e798ced32361d76ec352d36f4d7f799550958
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
