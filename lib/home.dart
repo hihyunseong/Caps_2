@@ -288,16 +288,22 @@ class _HomeState extends State<Home> {
         _homePanel(),
         switch (mapProvider.myMapStatus) {
           MapStatus.mapList => _myMapPanel(),
-          MapStatus.expenses => const ExpensesPanel(),
-          MapStatus.dailyExpense => const DailyExpensePanel(),
+          MapStatus.expenses => ExpensesPanel(
+              panelController: _mainPanelController,
+              googleMapController: _mapController,
+            ),
+          MapStatus.dailyExpense => DailyExpensePanel(),
           MapStatus.mapDetails => const MapDetailsPanel(),
           MapStatus.expenseDetails => const ExpenseDetailsPanel(),
           MapStatus() => throw UnimplementedError(),
         },
         switch (mapProvider.shareMapStatus) {
           MapStatus.mapList => _sharedMapPanel(),
-          MapStatus.expenses => const ExpensesPanel(),
-          MapStatus.dailyExpense => const DailyExpensePanel(),
+          MapStatus.expenses => ExpensesPanel(
+              panelController: _mainPanelController,
+              googleMapController: _mapController,
+            ),
+          MapStatus.dailyExpense => DailyExpensePanel(),
           MapStatus.mapDetails => const MapDetailsPanel(),
           MapStatus.expenseDetails => const ExpenseDetailsPanel(),
           MapStatus() => throw UnimplementedError(),
@@ -440,8 +446,17 @@ class _HomeState extends State<Home> {
             '마이맵',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              fontFamily: 'NanumSquareNeo-Bold',
+            ),
+          ),
+          Text(
+            '나만의 소비를 기록해 보세요!', 
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 10,
+              fontFamily: 'NanumSquareNeo-Bold',
+              color: Color(0xFF9D9D9D),
             ),
           ),
           const SizedBox(height: 20),
@@ -450,9 +465,9 @@ class _HomeState extends State<Home> {
               const Text(
                 '맵 목록',
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold),
+                  fontSize: 16,
+                  fontFamily: 'NanumSquareNeo-Bold',
+                ),
               ),
               const SizedBox(width: 8),
               Text(
@@ -510,6 +525,7 @@ class _HomeState extends State<Home> {
 
   Widget _sharedMapPanel() {
     final mapProvider = context.watch<MapProvider>();
+    mapProvider.expenses;
 
     return Padding(
       padding: const EdgeInsets.all(24.0),
@@ -520,8 +536,17 @@ class _HomeState extends State<Home> {
             '공유맵',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              fontFamily: 'NanumSquareNeo-Bold',
+            ),
+          ),
+          Text(
+            '친구들과 함께 소비를 기록해 보세요!', 
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 10,
+              fontFamily: 'NanumSquareNeo-Bold',
+              color: Color(0xFF9D9D9D),
             ),
           ),
           const SizedBox(height: 20),
@@ -530,9 +555,9 @@ class _HomeState extends State<Home> {
               const Text(
                 '맵 목록',
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold),
+                  fontSize: 16,
+                  fontFamily: 'NanumSquareNeo-Bold',
+                ),
               ),
               const SizedBox(width: 8),
               Text(
@@ -546,7 +571,9 @@ class _HomeState extends State<Home> {
               const Spacer(),
               FloatingActionButton(
                 heroTag: 'shared_map',
-                onPressed: () => _registerMyMap(),
+                onPressed: () => _registerMyMap(
+                  isSharedMap: true,
+                ),
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 child: const Icon(Icons.add, color: Color(0xFFFF6F61)),
@@ -627,9 +654,6 @@ class _HomeState extends State<Home> {
               final markers = context.watch<MapProvider>().markers;
               final polylines = context.watch<MapProvider>().polylines;
 
-              print(
-                  'position : $position, markers : $markers, polylines : $polylines');
-
               return GoogleMap(
                 onMapCreated: (controller) => _onMapCreated(controller),
                 initialCameraPosition: position != null
@@ -673,16 +697,21 @@ class _HomeState extends State<Home> {
                   _addExpense();
                 },
                 style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Color(0xFFFF6F61)),
-                      fixedSize: MaterialStateProperty.all<Size>(const Size(200.0, 52.0)),
-                    ),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Color(0xFFFF6F61)),
+                  fixedSize:
+                      MaterialStateProperty.all<Size>(const Size(200.0, 52.0)),
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset('assets/images/logo2.png', width: 27, height: 24,
                     ),
                     const SizedBox(width: 8),
-                    const Text('여기에 핀 콕 찍기',style: TextStyle(fontFamily: "",fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w700),
+                    Text(
+                      '여기에 핀 꽂기',
+                      style: TextStyle(fontFamily: "", fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ],
                 ),
@@ -814,7 +843,8 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
-    
+
+    // 지출 입력시에만 핀을 꽂는다. (book2 에서 true 입력)
     if (result == true) {
       await _addPin(pinLocation);
     }

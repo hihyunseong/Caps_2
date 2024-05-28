@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:caps_2/enums/map_status.dart';
+import 'package:caps_2/models/expense.dart';
 import 'package:caps_2/provider/map_provider.dart';
+import 'package:caps_2/widgets/expense_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -42,17 +45,22 @@ class ExpenseDetailsPanel extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
+                // onPressed: mapModel.isSharedMap
+                //     ? () =>
+                //         mapProvider.changeShareMapStatus(MapStatus.mapDetails)
+                //     : () => mapProvider.changeMyMapStatus(MapStatus.mapDetails),
                 onPressed: mapModel.isSharedMap
                     ? () =>
-                        mapProvider.changeShareMapStatus(MapStatus.mapDetails)
-                    : () => mapProvider.changeMyMapStatus(MapStatus.mapDetails),
+                        mapProvider.changeShareMapStatus(MapStatus.dailyExpense)
+                    : () =>
+                        mapProvider.changeMyMapStatus(MapStatus.dailyExpense),
                 icon: const Icon(Icons.arrow_back),
               ),
               Text(
                 mapModel.mapName,
                 style: const TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                  fontFamily: 'NanumSquareNeo-Bold',
                 ),
               ),
               const IconButton(
@@ -63,73 +71,118 @@ class ExpenseDetailsPanel extends StatelessWidget {
           ),
 
           // expense details
+          const SizedBox(height: 10),
           Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.only(top: 20, bottom: 20),
-                child: Column(
+            child: ListView(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    ListTile(
-                      title: Text(
-                        expense.category.text,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Text(
-                        DateFormat('yyyy.MM.dd mm:ss').format(expense.date),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 93, 93, 93),
-                        ),
-                      ),
-                      trailing: Text(
-                        '${NumberFormat('###,###').format(expense.amount.toInt())}원',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    _locationAndDateSelectWidget(expense),
+                    const SizedBox(height: 20),
+                    _priceWidget(expense),
+                    const SizedBox(height: 20),
+                    ExpenseTile(
+                      expense: expense,
+                      imageHeight: 200,
+                      imageWidth: 200,
+                      onTap: () {},
+                    ),
+                    Divider(
+                      color: Colors.black,
+                      thickness: 2,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '댓글',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'NanumSquareNeo-Bold',
                       ),
                     ),
-                    if (expense.imagePath != null)
-                      Image.file(
-                        File(expense.imagePath!),
-                        width: 170,
-                        height: 170,
-                        fit: BoxFit.cover,
-                      ),
-                    Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Text(
-                        expense.content,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Text(
-                        expense.memo,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+                    SizedBox(height: 100.0),
                   ],
                 ),
-              ),
+              ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _locationAndDateSelectWidget(Expense expense) {
+    return Row(
+      children: [
+        Text(
+          expense.expenseLocationName,
+          style: const TextStyle(
+            fontSize: 12.0,
+            fontWeight: FontWeight.w900,
+            fontFamily: 'NanumSquareNeo-Bold',
+          ),
+        ),
+        const Text(
+          ' 에서',
+          style: TextStyle(
+            fontSize: 12.0,
+            fontFamily: 'NanumSquareNeo-Bold',
+            color: Colors.grey,
+          ),
+        ),
+        const SizedBox(width: 10),
+        InkWell(
+          onTap: () {
+            // _editRecord();
+            // _selectDate(context);
+          },
+          child: Row(
+            children: [
+              Text(
+                '${DateFormat('yyyy.MM.dd').format(expense.date)}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'NanumSquareNeo-Bold',
+                ),
+              ),
+              // IconButton(
+              //   onPressed: () {
+              //     _selectDate(context);
+              //   },
+              //   icon: const Icon(Icons.calendar_today),
+              // ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 10),
+        const Text(
+          '의 소비 기록',
+          style: TextStyle(
+            fontSize: 12.0,
+            fontFamily: 'NanumSquareNeo-Bold',
+            color: Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _priceWidget(Expense expense) {
+    return Text(
+      '₩ ${_formatNumber(expense.amount.toString())}',
+      style: const TextStyle(
+        fontSize: 16.0,
+        fontFamily: 'NanumSquareNeo-Bold',
+        color: Colors.red,
+      ),
+    );
+  }
+
+  String _formatNumber(String value) {
+    if (value.isEmpty) return ''; // 빈 문자열이면 그대로 반환
+    final formatter = NumberFormat('#,###'); // 세 자리마다 쉼표(,) 추가하는 포맷
+    return formatter.format(double.parse(value.replaceAll(',', '')));
   }
 }

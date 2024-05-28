@@ -53,7 +53,10 @@ class MapProvider extends ChangeNotifier {
     _mapList.addAll(mapModels);
   }
 
-  // map list 통합
+  // *******************************************
+  // 맵 목록 (나의 맵 + 공유맵)/
+  // *******************************************
+
   final List<MapModel> _mapList = [];
   List<MapModel> get mapList => _mapList;
 
@@ -173,7 +176,7 @@ class MapProvider extends ChangeNotifier {
       color: Color(0xD9FF6F61),
       width: 7,
     );
-
+    
     _polylines.clear();
     _polylines.add(polyline);
   }
@@ -184,6 +187,15 @@ class MapProvider extends ChangeNotifier {
 
   void addExpense(Expense expense) {
     _expenses.add(expense);
+
+    // 최근 작성 시간 업데이트
+    int mapIndex = _mapList.indexWhere((map) =>
+        (map.mapName == expense.map.mapName &&
+            map.location == expense.map.location));
+    if (mapIndex != -1) {
+      _mapList[mapIndex] =
+          _mapList[mapIndex].copyWith(lastExpensesUpdate: DateTime.now());
+    }
 
     notifyListeners();
   }
@@ -222,6 +234,56 @@ class MapProvider extends ChangeNotifier {
     return dailyExpenses;
   }
 
+  // 날짜 눌렀을 때 해당 날짜에 해당하는 소비 기록을 설정해주는 함수
+  Future<void> setIndexForDate(DateTime dateTime) async {
+    final index = dailyExpenses.indexWhere((dailyExpense) {
+      final expenseDate = dailyExpense.expenses.first.date;
+      return expenseDate.year == dateTime.year &&
+          expenseDate.month == dateTime.month &&
+          expenseDate.day == dateTime.day;
+    });
+
+    if (index != -1) {
+      _currentIndex = index;
+      await _updateMarker(); // 마커 업데이트를 기다림
+    }
+
+    notifyListeners();
+  }
+
+  // 모든 마커가 보이도록 지도를 축소하는 메서드
+  Future<void> fitAllMarkers(GoogleMapController mapController) async {
+    if (_markers.isEmpty) return;
+
+    LatLngBounds bounds = _calculateBounds(_markers);
+
+    CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 250);
+    await mapController.animateCamera(cameraUpdate);
+  }
+
+  LatLngBounds _calculateBounds(List<Marker> markers) {
+    double southWestLat = markers.first.position.latitude;
+    double southWestLng = markers.first.position.longitude;
+    double northEastLat = markers.first.position.latitude;
+    double northEastLng = markers.first.position.longitude;
+
+    for (Marker marker in markers) {
+      if (marker.position.latitude < southWestLat)
+        southWestLat = marker.position.latitude;
+      if (marker.position.longitude < southWestLng)
+        southWestLng = marker.position.longitude;
+      if (marker.position.latitude > northEastLat)
+        northEastLat = marker.position.latitude;
+      if (marker.position.longitude > northEastLng)
+        northEastLng = marker.position.longitude;
+    }
+
+    return LatLngBounds(
+      southwest: LatLng(southWestLat, southWestLng),
+      northeast: LatLng(northEastLat, northEastLng),
+    );
+  }
+
   int _currentIndex = 0;
   int get currentIndex => _currentIndex;
 
@@ -254,9 +316,10 @@ class MapProvider extends ChangeNotifier {
     return latLng;
   }
 
-  // map model
+  // MapModel - 현재 선택된 MapModel을 의미
   MapModel? _mapModel;
   MapModel? get mapModel => _mapModel;
+
 
   void changeMapModel(MapModel mapModel) {
     _currentIndex = 0;
@@ -273,7 +336,7 @@ class MapProvider extends ChangeNotifier {
     _getPolylines();
   }
 
-  // map status
+  // MapStatus - 어떤 panel 을 보여줄지 확인하는 용도로 쓰임
   MapStatus _myMapStatus = MapStatus.mapList;
   MapStatus get myMapStatus => _myMapStatus;
 
@@ -290,23 +353,26 @@ class MapProvider extends ChangeNotifier {
   void changeShareMapStatus(MapStatus status) {
     _myMapStatus = MapStatus.mapList;
     _shareMapStatus = status;
-
     notifyListeners();
   }
-
-  // daily Expense
+  
+  // daily Expense - 그날 사용한 expense list
   DailyExpense? _dailyExpense;
   DailyExpense? get dailyExpense => _dailyExpense;
 
   void setDailyExpense(DailyExpense dailyExpense) {
     _dailyExpense = dailyExpense;
+    _updateMarker();
+    notifyListeners();
   }
 
-  // expense
+
+  // expense 
   Expense? _expense;
   Expense? get expense => _expense;
 
   void setExpense(Expense expense) {
     _expense = expense;
+    notifyListeners();
   }
 }

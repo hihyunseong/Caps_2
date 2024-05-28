@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:caps_2/enums/map_status.dart';
 import 'package:caps_2/provider/map_provider.dart';
+import 'package:caps_2/widgets/expense_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class DailyExpensePanel extends StatelessWidget {
   const DailyExpensePanel({super.key});
@@ -26,10 +28,8 @@ class DailyExpensePanel extends StatelessWidget {
         ),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 width: 40,
@@ -56,7 +56,7 @@ class DailyExpensePanel extends StatelessWidget {
                     mapModel.mapName,
                     style: const TextStyle(
                       fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: 'NanumSquareNeo-Bold',
                     ),
                   ),
                   const IconButton(
@@ -65,64 +65,69 @@ class DailyExpensePanel extends StatelessWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: 20.0),
               Text(
-                DateFormat('yyyy년 M월 d일').format(dailyExpense.tourDay),
+                '${DateFormat('yyyy년 M월 d일').format(dailyExpense.tourDay)}의 소비 기록',
                 style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                  fontFamily: 'NanumSquareNeo-Bold',
                 ),
+              ),
+              const Divider(
+                color: Colors.black,
+                thickness: 2,
               ),
             ],
           ),
+          const SizedBox(height: 10.0),
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.only(top: 20, bottom: 20),
-              child: ListView.builder(
-                itemCount: dailyExpense.expenses.length,
-                itemBuilder: (context, index) {
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemCount: dailyExpense.expenses.length + 1,
+              itemBuilder: (context, index) {
+                if (index > dailyExpense.expenses.length - 1) {
+                  return const SizedBox(height: 300);
+                } else {
                   final expense = dailyExpense.expenses[index];
-
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.grey[200],
-                      child:
-                          // 이미지 있으면 표시 하고 아니면 아이콘
-                          expense.imagePath != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Image.file(
-                                    File(expense.imagePath!),
-                                    width: 40,
-                                    height: 40,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : Icon(expense.category.icon),
-                    ),
-                    title: Text(
-                      expense.content,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                  return Stack(
+                    children: [
+                      if (index == 0)
+                        Positioned(
+                          left: 35,
+                          top: 40,
+                          bottom: 0,
+                          child: Container(
+                            width: 2,
+                            color: Colors.grey[300],
+                          ),
+                        ),
+                      if (index != dailyExpense.expenses.length - 1 &&
+                          index != 0)
+                        Positioned(
+                          left: 35,
+                          top: 0,
+                          bottom: 0,
+                          child: Container(
+                            width: 2,
+                            color: Colors.grey[300],
+                          ),
+                        ),
+                      ExpenseTile(
+                        expense: expense,
+                        onTap: () {
+                          mapProvider.setExpense(expense);
+                          mapModel.isSharedMap
+                              ? mapProvider.changeShareMapStatus(
+                                  MapStatus.expenseDetails)
+                              : mapProvider
+                                  .changeMyMapStatus(MapStatus.expenseDetails);
+                        },
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: Text(
-                      expense.memo,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    trailing: Text(
-                      '${NumberFormat('###,###').format(expense.amount.toInt())}원',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    ],
                   );
-                },
-              ),
+                }
+              },
             ),
           ),
         ],

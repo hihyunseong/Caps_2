@@ -106,6 +106,14 @@ flutter:
     - assets/images/category/photo.png
     - assets/images/category/shopping.png
     - assets/images/category/plus.png
+    - assets/images/category/culture.png
+    - assets/images/category/accommodations.png
+    - assets/images/category/mart.png
+    - assets/images/category/tip.png
+    - assets/images/category/medicine.png
+    - assets/images/category/transport.png
+    - assets/images/category/beauty.png
+    - assets/images/category/flower.png
     - assets/images/logo1.png
     - assets/images/logo2.png
     - assets/images/kakao.png

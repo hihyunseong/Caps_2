@@ -64,7 +64,7 @@ class _ExpenseAmountPageState extends State<ExpenseAmountPage> {
           },
         ),
         title: const Text(
-          '소비 기록',
+          '금액 입력',
           style: TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.w900,
@@ -74,7 +74,7 @@ class _ExpenseAmountPageState extends State<ExpenseAmountPage> {
       ),
       body: Column(
         children: <Widget>[
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
@@ -88,7 +88,7 @@ class _ExpenseAmountPageState extends State<ExpenseAmountPage> {
           ),
           const SizedBox(height: 10),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 60.0),
+            padding: const EdgeInsets.symmetric(horizontal: 80.0),
             child: Row(
               children: [
                 const Icon(
@@ -115,14 +115,13 @@ class _ExpenseAmountPageState extends State<ExpenseAmountPage> {
           const Text(
             '얼마를 결제하셨나요?',
             style: TextStyle(
-              fontSize: 26.0,
+              fontSize: 20.0,
               fontWeight: FontWeight.w900,
               fontFamily: 'NanumSquareNeo-Bold',
             ),
           ),
-          const SizedBox(height: 30.0),
+          const SizedBox(height: 10.0),
           _buildInputField(),
-          const SizedBox(height: 50.0),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -152,8 +151,26 @@ class _ExpenseAmountPageState extends State<ExpenseAmountPage> {
               CustomButton(
                 title: '다음',
                 height: 70,
-                color: Colors.red[100]!,
+                color: (_inputValue == '' || _controller.text == '')
+                    ? Colors.red[100]!
+                    : Colors.red[300]!,
                 onTap: () {
+                  if (_controller.text == '') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('장소를 입력해주세요.'),
+                      ),
+                    );
+                    return;
+                  }
+                  if (_inputValue == '') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('금액을 입력해주세요.'),
+                      ),
+                    );
+                    return;
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(

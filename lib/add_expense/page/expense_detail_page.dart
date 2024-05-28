@@ -11,8 +11,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../../models/category.dart';
-import '../../../models/expense.dart';
+import '../../models/category.dart';
+import '../../models/expense.dart';
 
 // 소비 기록
 class ExpenseDetailPage extends StatefulWidget {
@@ -137,13 +137,42 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
               CustomButton(
                 title: '등록하기',
                 onTap: () {
+                  if (_contentController.text == '') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('제목을 입력해주세요.'),
+                      ),
+                    );
+                    return;
+                  }
+                  if (_selectedPayMethod == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('결제수단을 선택해주세요.'),
+                      ),
+                    );
+                    return;
+                  }
+                  if (_selectedCategory == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('카테고리를 선택해주세요.'),
+                      ),
+                    );
+                    return;
+                  }
+
                   _addExpense();
                   Navigator.pop(context);
                   Navigator.pop(context);
                   Navigator.pop(context, true);
                 },
                 height: 70,
-                color: Colors.red[100]!,
+                color: (_contentController.text == '' ||
+                        _selectedPayMethod == null ||
+                        _selectedCategory == null)
+                    ? Colors.red[100]!
+                    : Colors.red[300]!,
               ),
             ],
           ),
@@ -475,6 +504,7 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
       longitude: widget.location.longitude,
       map: widget.mapModel,
       payMethod: _selectedPayMethod ?? PayMethod.none,
+      createdAt: DateTime.now(),
     );
 
     final mapProvider = context.read<MapProvider>();
