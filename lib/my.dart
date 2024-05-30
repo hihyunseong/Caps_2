@@ -20,6 +20,7 @@ class _MyPageState extends State<MyPage> {
   String? idx;
   String? email;
   String? name;
+  String? profile;
   String? accToken;
   String? refToken;
 
@@ -35,6 +36,7 @@ class _MyPageState extends State<MyPage> {
     final loadIdx = await storage.read(key: 'idx');
     final loadEmail = await storage.read(key: 'email');
     final loadName = await storage.read(key: 'name');
+    final loadProfile = await storage.read(key: 'profile');
     final loadAccToken = await storage.read(key: 'accToken');
     final loadRefToken = await storage.read(key: 'refToken');
 
@@ -42,13 +44,14 @@ class _MyPageState extends State<MyPage> {
       idx = loadIdx;
       email = loadEmail;
       name = loadName;
+      profile = loadProfile;
       accToken = loadAccToken;
       refToken = loadRefToken;
     });
   }
 
   @override
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
   return Container(
     // padding: const EdgeInsets.all(24),
     // decoration: const BoxDecoration(
@@ -58,7 +61,7 @@ Widget build(BuildContext context) {
     //   ),
     // ), 
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        // mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             padding: const EdgeInsets.all(16.0),
@@ -88,10 +91,9 @@ Widget build(BuildContext context) {
                 ? CircleAvatar(
                     radius: 35.0,
                     backgroundColor: Colors.grey[200],
-                    child: Icon(
-                      Icons.person,
-                      size: 35.0,
-                      color: Colors.grey[600],
+                    child: Image.network(
+                      profile.toString(),
+                      width: 120,
                     ),
                   )
                 : CircleAvatar(
@@ -100,6 +102,13 @@ Widget build(BuildContext context) {
                       File(_image!.path),
                     ),
                   ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Text(
+            name.toString(),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10.0),
           TextButton(
