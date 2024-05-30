@@ -300,6 +300,7 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
               hintText: '제목을 입력해 주세요.',
               hintStyle: TextStyle(
                 color: Color(0xFFC4C4C4),
+                fontFamily: 'NanumSquareNeo-Bold',
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10)),

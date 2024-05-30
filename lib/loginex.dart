@@ -11,22 +11,24 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'home.dart';
 import 'signup.dart';
 import 'find_id.dart';
-import 'find_pw.dart';
+import 'find_pw.dart'; 
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginExPage extends StatefulWidget {
+  const LoginExPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginExPage> createState() => _LoginExPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginExPageState extends State<LoginExPage> {
   TextEditingController _idController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
   final storage = FlutterSecureStorage();
 
   bool _isObscure = true;
+
+  // final String redirect_Uri = "webauthcallback://auth";
 
   Future<void> _write(Map<String, dynamic> responseData, Map<String, String> header) async{
     await storage.write(key: 'idx', value: responseData['idx'].toString());
@@ -44,27 +46,27 @@ class _LoginPageState extends State<LoginPage> {
         final Map<String, dynamic> responseData = jsonDecode(utf8.decode(response.bodyBytes));
         final Map<String, String> header = response.headers;
         _write(responseData, header).then((_){// write  data
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('로그인'),
-                content: Text(responseData['name']! + '님 환영합니다.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Home()),
-                      );
-                    },
-                    child: Text('확인'),
-                  ),
-                ],
-              );
-            },
-          );});
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('로그인'),
+              content: Text(responseData['name']! + '님 환영합니다.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Home()),
+                    );
+                  },
+                  child: Text('확인'),
+                ),
+              ],
+            );
+          },
+        );});
       }else{
         showDialog(
           context: context,
@@ -102,37 +104,37 @@ class _LoginPageState extends State<LoginPage> {
           return;
         }
         _kakaoLoginUser(user).then((response){
-          print(utf8.decode(response.bodyBytes));
-          if(response.statusCode == 200) {
-            final Map<String, dynamic> responseData = jsonDecode(
-                utf8.decode(response.bodyBytes));
-            final Map<String, String> header = response.headers;
-            _write(responseData, header).then((_) { // write  data
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('로그인'),
-                    content: Text(responseData['name']! + '님 환영합니다.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Home()),
-                          );
-                        },
-                        child: Text('확인'),
-                      ),
-                    ],
-                  );
-                },
+            print(utf8.decode(response.bodyBytes));
+            if(response.statusCode == 200) {
+              final Map<String, dynamic> responseData = jsonDecode(
+                  utf8.decode(response.bodyBytes));
+              final Map<String, String> header = response.headers;
+              _write(responseData, header).then((_) { // write  data
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('로그인'),
+                      content: Text(responseData['name']! + '님 환영합니다.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Home()),
+                            );
+                          },
+                          child: Text('확인'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
               );
             }
-            );
-          }
         });
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
@@ -282,16 +284,16 @@ class _LoginPageState extends State<LoginPage> {
     String? name = user.kakaoAccount?.profile?.nickname;
     String? profile = user.kakaoAccount?.profile?.profileImageUrl;
     final response = await http.post(
-        url,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode({
-          'email': email,
-          'name' : name,
-          'profile': profile,
-        })
+      url,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: json.encode({
+        'email': email,
+        'name' : name,
+        'profile': profile,
+      })
     );
     return response;
   }
@@ -369,190 +371,190 @@ class _LoginPageState extends State<LoginPage> {
 
 
   Widget _header(context) {
-    return Column(
-      children: [
-        SizedBox(height: 50),
-        Row(
-          children: [
-            SizedBox(width: 97),
-            Image.asset(
-              'assets/images/frame.png',
-              width: 55,
-              height: 80,
-            ),
-            SizedBox(width: 13),
-            Image.asset(
-              'assets/images/pinkok.png',
-              width: 85,
-              height: 60,
-            ),
-          ],
-        ),
-        RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: '지도에 ',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Color.fromARGB(255, 247, 152, 143),
-                ),
-              ),
-              TextSpan(
-                text: '핀',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Color(0xFFFF6F61),
-                ),
-              ),
-              TextSpan(
-                text: '을 ',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Color.fromARGB(255, 247, 152, 143),
-                ),
-              ),
-              TextSpan(
-                text: '콕',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Color(0xFFFF6F61),
-                ),
-              ),
-              TextSpan(
-                text: ' 꽂아 소비를 기록하다.',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Color.fromARGB(255, 247, 152, 143),
-                ),
-              ),
-            ],
+  return Column(
+    children: [
+      SizedBox(height: 1222),
+      Row(
+        children: [
+          SizedBox(width: 97),
+          Image.asset(
+            'assets/images/frame.png',
+            width: 55, 
+            height: 80, 
           ),
-        ),
-        SizedBox(height: 48),
-      ],
-    );
-  }
-
-  Widget _inputField(context) {
-    bool _idEntered = _idController.text.isNotEmpty;
-    bool _passwordEntered = _passwordController.text.isNotEmpty;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        TextField(
-          controller: _idController,
-          decoration: InputDecoration(
-            hintText: "아이디(이메일)",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
-              borderSide: BorderSide(color: Colors.grey),
-            ),
-            fillColor: Colors.white,
-            filled: true,
+          SizedBox(width: 13), 
+          Image.asset(
+            'assets/images/pinkok.png', 
+            width: 85, 
+            height: 60, 
           ),
-          onChanged: (value) {
-            setState(() {}); // 텍스트 입력 변경 시 화면을 다시 그리기 위해 setState 호출
-          },
-        ),
-        SizedBox(height: 5),
-        TextField(
-          controller: _passwordController,
-          decoration: InputDecoration(
-            hintText: "비밀번호",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
-              borderSide: BorderSide(color: Colors.grey),
-            ),
-            fillColor: Colors.white,
-            filled: true,
-            suffixIcon: IconButton(
-              icon: Icon(
-                _isObscure ? Icons.visibility_off : Icons.visibility,
-              ),
-              onPressed: () {
-                setState(() {
-                  _isObscure = !_isObscure;
-                });
-              },
-            ),
-          ),
-          obscureText: _isObscure,
-          onChanged: (value) {
-            setState(() {}); // 텍스트 입력 변경 시 화면을 다시 그리기 위해 setState 호출
-          },
-        ),
-        SizedBox(height: 5),
-        ElevatedButton(
-          onPressed: _idEntered && _passwordEntered
-              ? () {
-            Login(context);
-          }
-              : null, // 입력되지 않은 경우 버튼을 비활성화
-          child: Text(
-            "로그인", style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
-            ),
-            padding: EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: _idEntered && _passwordEntered
-                ? Color(0xFFFF6F61)
-                : Colors.grey,
-          ),
-        ),
-        SizedBox(height: 30),
-        Row(
-          children: [
-            Container(
-              width: 54,
-              height: 1,
-              color: Colors.grey,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                "SNS 계정으로 간편 로그인/가입하기",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Container(
-              width: 53,
-              height: 1,
-              color: Colors.grey,
-            ),
-          ],
-        ),
-        SizedBox(height: 16,),
-        Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: KakaoLogin,
-                  child: Image.asset("assets/images/kakao.png", width: 44),
-                ),
-                TextButton(
-                  onPressed: NaverLogin,
-                  child: Image.asset("assets/images/naver.png", width: 44),
-                ),
-                TextButton(
-                  onPressed: GoogleLogin,
-                  child: Image.asset("assets/images/google.png", width: 44),
-                )
-              ],
-            )
-          ),
-          SizedBox(height: 80,)
         ],
-      );
-    }
+      ),
+      RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: '지도에 ',
+              style: TextStyle(
+                fontSize: 18,
+                color: Color.fromARGB(255, 247, 152, 143),
+              ),
+            ),
+            TextSpan(
+              text: '핀',
+              style: TextStyle(
+                fontSize: 18,
+                color: Color(0xFFFF6F61),
+              ),
+            ),
+            TextSpan(
+              text: '을 ', 
+              style: TextStyle(
+                fontSize: 18,
+                color: Color.fromARGB(255, 247, 152, 143), 
+              ),
+            ),
+            TextSpan(
+              text: '콕',
+              style: TextStyle(
+                fontSize: 18,
+                color: Color(0xFFFF6F61), 
+              ),
+            ),
+            TextSpan(
+              text: ' 꽂아 소비를 기록하다.', 
+              style: TextStyle(
+                fontSize: 18,
+                color: Color.fromARGB(255, 247, 152, 143), 
+              ),
+            ),
+          ],
+        ),
+      ),
+      SizedBox(height: 48),
+    ],
+  );
+}
+
+Widget _inputField(context) {
+  bool _idEntered = _idController.text.isNotEmpty;
+  bool _passwordEntered = _passwordController.text.isNotEmpty;
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      TextField(
+        controller: _idController,
+        decoration: InputDecoration(
+          hintText: "아이디(이메일)",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          fillColor: Colors.white,
+          filled: true,
+        ),
+        onChanged: (value) {
+          setState(() {}); // 텍스트 입력 변경 시 화면을 다시 그리기 위해 setState 호출
+        },
+      ),
+      SizedBox(height: 5),
+      TextField(
+        controller: _passwordController,
+        decoration: InputDecoration(
+          hintText: "비밀번호",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          fillColor: Colors.white,
+          filled: true,
+          suffixIcon: IconButton(
+            icon: Icon(
+              _isObscure ? Icons.visibility_off : Icons.visibility,
+            ),
+            onPressed: () {
+              setState(() {
+                _isObscure = !_isObscure;
+              });
+            },
+          ),
+        ),
+        obscureText: _isObscure,
+        onChanged: (value) {
+          setState(() {}); // 텍스트 입력 변경 시 화면을 다시 그리기 위해 setState 호출
+        },
+      ),
+      SizedBox(height: 5),
+      ElevatedButton(
+        onPressed: _idEntered && _passwordEntered
+            ? () {
+                Login(context);
+              }
+            : null, // 입력되지 않은 경우 버튼을 비활성화
+        child: Text(
+          "로그인", style: TextStyle(fontSize: 20, color: Colors.white),
+        ),
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: _idEntered && _passwordEntered
+              ? Color(0xFFFF6F61) 
+              : Colors.grey, 
+        ),
+      ),
+      SizedBox(height: 30),
+      Row(
+        children: [
+          Container(
+            width: 54, 
+            height: 1,
+            color: Colors.grey,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              "SNS 계정으로 간편 로그인/가입하기",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Container(
+            width: 53, 
+            height: 1,
+            color: Colors.grey,
+          ),
+        ],
+      ),
+      SizedBox(height: 16,),
+      Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: KakaoLogin,
+                child: Image.asset("assets/images/kakao.png", width: 44,),
+              ),
+              ElevatedButton(
+                onPressed: NaverLogin,
+                child: Image.asset("assets/images/naver.png", width: 44,),
+              )
+              ,ElevatedButton(
+                onPressed: GoogleLogin,
+                child: Image.asset("assets/images/google.png", width: 44,),
+              )
+            ],
+          )
+      ),
+      SizedBox(height: 156,)
+    ],
+  );
+}
 
 
   Widget _signup(context) {
@@ -566,10 +568,10 @@ class _LoginPageState extends State<LoginPage> {
       child: Text("회원가입",
         style: TextStyle(
           color: Colors.black,
-        ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _findID(context) {
     return TextButton(
@@ -582,10 +584,10 @@ class _LoginPageState extends State<LoginPage> {
       child: Text("아이디 찾기",
         style: TextStyle(
           color: Colors.black,
-        ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _forgotPassword(context) {
     return TextButton(

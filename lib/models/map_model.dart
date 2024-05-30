@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/models/expense.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,10 +13,11 @@ part 'map_model.g.dart';
 class MapModel with _$MapModel {
   factory MapModel({
     required String mapName,
-    required List<String> friends,
+    required List<FriendModel> friends,
     required Prediction location,
     required DateTime selectedDate,
     required List<Expense> expenses,
+    required bool isSharedMap,
     DateTime? lastExpensesUpdate,
     @ColorConverter() required Color color,
   }) = _MapModel;

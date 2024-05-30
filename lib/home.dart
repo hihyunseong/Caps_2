@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:caps_2/enums/map_status.dart';
+import 'package:caps_2/models/category.dart';
 import 'package:caps_2/models/daily_expense.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:caps_2/widgets/daily_expense_panel.dart';
@@ -127,9 +128,11 @@ class _HomeState extends State<Home> {
             ),
         icon: await MyMarker(
           index: markers.length + 1,
-          icon: expenses.isNotEmpty
-              ? expenses.last.category.icon
-              : Icons.account_balance_wallet,
+          category:
+              expenses.isNotEmpty ? expenses.last.category : Category.plus,
+          // icon: expenses.isNotEmpty
+          //     ? expenses.last.category.icon
+          //     : Icons.account_balance_wallet,
           imagePath: expenses.isNotEmpty ? expenses.last.imagePath : null,
         ).toBitmapDescriptor(
           logicalSize: const Size(400, 400),
@@ -210,6 +213,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: SlidingUpPanel(
         panel: _mainPanel(),
@@ -427,10 +431,10 @@ class _HomeState extends State<Home> {
                 },
               ),
             ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
+    }
 
   Widget _myMapPanel() {
     final mapProvider = context.watch<MapProvider>();
@@ -707,7 +711,7 @@ class _HomeState extends State<Home> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '여기에 핀 꽂기',
+                      '여기에 핀 콕 꽂기',
                       style: TextStyle(fontFamily: "", fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w700,
                       ),
                     ),
