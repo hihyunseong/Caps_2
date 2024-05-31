@@ -1,16 +1,17 @@
 import 'dart:io';
 
+import 'package:caps_2/models/category.dart';
 import 'package:flutter/material.dart';
 
 class MyMarker extends StatelessWidget {
   final int index;
-  final IconData icon;
+  final Category category;
   final String? imagePath;
 
   const MyMarker({
     super.key,
     required this.index,
-    required this.icon,
+    required this.category,
     this.imagePath,
   });
 
@@ -41,9 +42,10 @@ class MyMarker extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   )
-                : Icon(
-                    icon,
-                    color: Colors.black,
+                : Image.asset(
+                    category.iconPath,
+                    width: 40,
+                    height: 40,
                   ),
           ),
         ),

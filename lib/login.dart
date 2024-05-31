@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void KakaoLogin() async{
     if (await isKakaoTalkInstalled()) {
-      print('카카로 설치 됨');
+      print('카카오 설치 됨');
       try {
         await UserApi.instance.loginWithKakaoTalk();
         print('카카오톡으로 로그인 성공');
@@ -208,53 +208,49 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> GoogleLogin() async{
 
-    final GoogleSignInAccount? googleUser = await GoogleSignIn(scopes: [
-      'email',
-    ],).signIn();
+    final GoogleSignIn googleSignIn = GoogleSignIn();
 
-    // final GoogleSignIn googleSignIn = GoogleSignIn();
-    //
-    // final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
-    //
-    // if(googleSignInAccount != null){
-    //   print("구글 로그인");
-    //   _googleLoginUser(googleSignInAccount).then((response){
-    //     print(utf8.decode(response.bodyBytes));
-    //     if(response.statusCode == 200) {
-    //       final Map<String, dynamic> responseData = jsonDecode(
-    //           utf8.decode(response.bodyBytes));
-    //       final Map<String, String> header = response.headers;
-    //       _write(responseData, header).then((_) { // write  data
-    //         showDialog(
-    //           context: context,
-    //           builder: (BuildContext context) {
-    //             return AlertDialog(
-    //               title: Text('로그인'),
-    //               content: Text(responseData['name']! + '님 환영합니다.'),
-    //               actions: [
-    //                 TextButton(
-    //                   onPressed: () {
-    //                     Navigator.pop(context);
-    //                     Navigator.push(
-    //                       context,
-    //                       MaterialPageRoute(
-    //                           builder: (context) => const Home()),
-    //                     );
-    //                   },
-    //                   child: Text('확인'),
-    //                 ),
-    //               ],
-    //             );
-    //           },
-    //         );
-    //       }
-    //       );
-    //     }
-    //   });
-    // }
-    // else{
-    //   print("구글 로그인 실패");
-    // }
+    final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+
+    if(googleSignInAccount != null){
+      print("구글 로그인");
+      _googleLoginUser(googleSignInAccount).then((response){
+        print(utf8.decode(response.bodyBytes));
+        if(response.statusCode == 200) {
+          final Map<String, dynamic> responseData = jsonDecode(
+              utf8.decode(response.bodyBytes));
+          final Map<String, String> header = response.headers;
+          _write(responseData, header).then((_) { // write  data
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('로그인'),
+                  content: Text(responseData['name']! + '님 환영합니다.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Home()),
+                        );
+                      },
+                      child: Text('확인'),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+          );
+        }
+      });
+    }
+    else{
+      print("구글 로그인 실패");
+    }
   }
 
   Future<http.Response> _loginUser() async {
@@ -371,7 +367,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _header(context) {
     return Column(
       children: [
-        SizedBox(height: 126),
+        SizedBox(height: 50),
         Row(
           children: [
             SizedBox(width: 97),
@@ -534,25 +530,25 @@ class _LoginPageState extends State<LoginPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
+                TextButton(
                   onPressed: KakaoLogin,
-                  child: Image.asset("assets/images/kakao.png", width: 44,),
+                  child: Image.asset("assets/images/kakao.png", width: 44),
                 ),
-                ElevatedButton(
+                TextButton(
                   onPressed: NaverLogin,
-                  child: Image.asset("assets/images/naver.png", width: 44,),
-                )
-                ,ElevatedButton(
+                  child: Image.asset("assets/images/naver.png", width: 44),
+                ),
+                TextButton(
                   onPressed: GoogleLogin,
-                  child: Image.asset("assets/images/google.png", width: 44,),
+                  child: Image.asset("assets/images/google.png", width: 44),
                 )
               ],
             )
-        ),
-        SizedBox(height: 156,)
-      ],
-    );
-  }
+          ),
+          SizedBox(height: 80,)
+        ],
+      );
+    }
 
 
   Widget _signup(context) {

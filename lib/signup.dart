@@ -29,7 +29,7 @@ class _SignupPageState extends State<SignupPage> {
       appBar: AppBar(
         title: Align(
           alignment: FractionalOffset(0.4, 0),
-          child: Text('약관동의'),
+          child: Text('약관 동의'),
         ),
       ),
       body: SingleChildScrollView(
@@ -42,17 +42,22 @@ class _SignupPageState extends State<SignupPage> {
                 TextSpan(
                   text: '핀콕 서비스 이용을 위해 \n',
                   style: TextStyle(
+                    fontFamily: 'NanumSquareNeo',
                     fontSize: 18.0,
                   ),
                   children: <TextSpan>[
                     TextSpan(
                       text: '이용약관',
                       style: TextStyle(
+                        fontFamily: 'NanumSquareNeo',
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     TextSpan(
                       text: '에 동의해주세요.',
+                      style: TextStyle(
+                        fontFamily: 'NanumSquareNeo',
+                      ),
                     ),
                   ],
                 ),
@@ -85,9 +90,11 @@ class _SignupPageState extends State<SignupPage> {
                           activeColor: Color(0xFFFF6F61),
                         ),
                         Text(
-                          '전체동의',
+                          '전체 동의',
                           style: TextStyle(
-                            fontSize: 18.0,
+                            fontSize: 16.0,
+                            fontFamily: 'NanumSquareNeo-bold',
+                            
                           ),
                         ),
                       ],
@@ -111,6 +118,7 @@ class _SignupPageState extends State<SignupPage> {
                           '만 14세 이상입니다. (필수)',
                           style: TextStyle(
                             fontSize: 14.0,
+                            fontFamily: 'NanumSquareNeo',
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -135,6 +143,7 @@ class _SignupPageState extends State<SignupPage> {
                           '서비스 이용약관 동의(필수)',
                           style: TextStyle(
                             fontSize: 14.0,
+                            fontFamily: 'NanumSquareNeo',
                             fontWeight: FontWeight.bold,
                           ),
                         ),

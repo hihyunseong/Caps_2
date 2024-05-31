@@ -373,7 +373,7 @@ class _LoginExPageState extends State<LoginExPage> {
   Widget _header(context) {
   return Column(
     children: [
-      SizedBox(height: 126),
+      SizedBox(height: 1222),
       Row(
         children: [
           SizedBox(width: 97),

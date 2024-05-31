@@ -1,4 +1,5 @@
 import 'package:caps_2/add_expense/page/expense_detail_page.dart';
+import 'package:caps_2/add_expense/page/friend_select_page.dart';
 import 'package:caps_2/add_expense/widget/custom_button.dart';
 import 'package:caps_2/add_expense/widget/map_select_list_tile.dart';
 import 'package:caps_2/models/map_model.dart';
@@ -151,18 +152,37 @@ class _MapSelectPageState extends State<MapSelectPage> {
                     return;
                   }
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ExpenseDetailPage(
-                        amount: widget.amount,
-                        location: widget.location,
-                        date: widget.date,
-                        expenseLocationName: widget.expenseLocationName,
-                        mapModel: selectedMapModel!,
+                  // 공유맵인 경우 친구 선택
+                  if (selectedMapModel!.isSharedMap) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FriendSelectPage(
+                          amount: widget.amount,
+                          location: widget.location,
+                          date: widget.date,
+                          expenseLocationName: widget.expenseLocationName,
+                          mapModel: selectedMapModel!,
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    // 공유 맵 아닌 경우 바로 소비기록 페이지
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ExpenseDetailPage(
+                          amount: widget.amount,
+                          location: widget.location,
+                          date: widget.date,
+                          expenseLocationName: widget.expenseLocationName,
+                          mapModel: selectedMapModel!,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return;
                 },
               ),
             ],

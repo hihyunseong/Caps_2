@@ -67,11 +67,11 @@ class MapProvider extends ChangeNotifier {
 
   // 나의 맵
   List<MapModel> get myMapList =>
-      mapList.where((element) => element.friends.isEmpty).toList();
+      mapList.where((element) => !element.isSharedMap).toList();
 
   // 공유 맵
   List<MapModel> get sharedMapList =>
-      mapList.where((element) => element.friends.isNotEmpty).toList();
+      mapList.where((element) => element.isSharedMap).toList();
 
   // marker
   final List<Marker> _markers = [];
@@ -144,7 +144,7 @@ class MapProvider extends ChangeNotifier {
           onTap: () {},
           icon: await MyMarker(
             index: i + 1,
-            icon: expense.category.icon,
+            category: expense.category,
             imagePath: expense.imagePath,
           ).toBitmapDescriptor(
             logicalSize: const Size(400, 400),
@@ -176,7 +176,7 @@ class MapProvider extends ChangeNotifier {
       color: Color(0xD9FF6F61),
       width: 7,
     );
-    
+
     _polylines.clear();
     _polylines.add(polyline);
   }
@@ -320,7 +320,6 @@ class MapProvider extends ChangeNotifier {
   MapModel? _mapModel;
   MapModel? get mapModel => _mapModel;
 
-
   void changeMapModel(MapModel mapModel) {
     _currentIndex = 0;
     _mapModel = mapModel;
@@ -355,7 +354,7 @@ class MapProvider extends ChangeNotifier {
     _shareMapStatus = status;
     notifyListeners();
   }
-  
+
   // daily Expense - 그날 사용한 expense list
   DailyExpense? _dailyExpense;
   DailyExpense? get dailyExpense => _dailyExpense;
@@ -366,8 +365,7 @@ class MapProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
-  // expense 
+  // expense - 단일
   Expense? _expense;
   Expense? get expense => _expense;
 
