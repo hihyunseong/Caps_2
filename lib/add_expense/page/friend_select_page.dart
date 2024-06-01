@@ -3,6 +3,7 @@ import 'package:caps_2/add_expense/widget/custom_button.dart';
 import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class FriendSelectPage extends StatefulWidget {
@@ -26,8 +27,36 @@ class FriendSelectPage extends StatefulWidget {
 }
 
 class _FriendSelectPageState extends State<FriendSelectPage> {
-  final _controller = TextEditingController();
+  final _friendSearchController = TextEditingController();
+  // 친구 찾기
+  final ValueNotifier<String> _searchText = ValueNotifier<String>("");
+
   final List<FriendModel> selectedFriends = [];
+
+  String? myProfileImage;
+
+  @override
+  void initState() {
+    super.initState();
+    _friendSearchController.addListener(() {
+      _searchText.value = _friendSearchController.text;
+    });
+    getMyProfileImage();
+  }
+
+  @override
+  void dispose() {
+    _friendSearchController.dispose();
+    super.dispose();
+  }
+
+  void getMyProfileImage() async {
+    const storage = FlutterSecureStorage();
+    final tmp = await storage.read(key: 'profile');
+    setState(() {
+      myProfileImage = tmp;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,17 +87,22 @@ class _FriendSelectPageState extends State<FriendSelectPage> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
+                if (selectedFriends.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  _selectedFriendList(),
+                ],
+                const SizedBox(height: 10),
                 SizedBox(
                   height: 40,
                   child: TextField(
-                    controller: _controller,
+                    controller: _friendSearchController,
                     style: TextStyle(
                       fontSize: 16,
                       fontFamily: 'NanumSquareNeo-Bold',
                       color: Colors.grey[400]!,
                     ),
                     decoration: InputDecoration(
-                      hintText: '함께 한 멤버를 검색해보세요',
+                      hintText: '함께한 멤버를 검색해 보세요',
                       suffixIcon: const Icon(Icons.search, color: Colors.grey),
                       border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -86,31 +120,36 @@ class _FriendSelectPageState extends State<FriendSelectPage> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Text(
+                      '${widget.mapModel.mapName} 멤버',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'NanumSquareNeo-Bold',
+                        fontWeight: FontWeight.w900,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    const Icon(
+                      Icons.people_alt,
+                      color: Colors.purple,
+                      size: 20,
+                    ),
+                    Text(
+                      '${widget.mapModel.friends.length + 1}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'NanumSquareNeo-Bold',
+                        color: Colors.purple,
+                      ),
+                    )
+                  ],
+                ),
                 const SizedBox(height: 10),
-                // Expanded(
-                //   child: ValueListenableBuilder<String>(
-                //     valueListenable: _searchText,
-                //     builder: (context, searchText, child) {
-                //       final filteredMapList = mapProvider.mapList.where((map) {
-                //         return map.mapName.contains(searchText);
-                //       }).toList();
-                //       return ListView(
-                //         children: filteredMapList.reversed
-                //             .map(
-                //               (e) => MapSelectListTile(
-                //                 mapModel: e,
-                //                 onTap: () {
-                //                   setState(() {
-                //                     selectedMapModel = e;
-                //                   });
-                //                 },
-                //               ),
-                //             )
-                //             .toList(),
-                //       );
-                //     },
-                //   ),
-                // ),
+                _friendList(),
               ],
             ),
           ),
@@ -120,20 +159,8 @@ class _FriendSelectPageState extends State<FriendSelectPage> {
               CustomButton(
                 title: '다음',
                 height: 70,
-                color: Color(0xFFFF6F61),
-                // color: (selectedMapModel == null)
-                //     ? Colors.red[100]!
-                //     : Colors.red[300]!,
+                color: Colors.red,
                 onTap: () {
-                  // if (selectedMapModel == null) {
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(
-                  //       content: Text('맵을 선택해주세요.'),
-                  //     ),
-                  //   );
-                  //   return;
-                  // }
-
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -143,6 +170,7 @@ class _FriendSelectPageState extends State<FriendSelectPage> {
                         date: widget.date,
                         expenseLocationName: widget.expenseLocationName,
                         mapModel: widget.mapModel,
+                        selectedFriends: selectedFriends,
                       ),
                     ),
                   );
@@ -151,6 +179,123 @@ class _FriendSelectPageState extends State<FriendSelectPage> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _selectedFriendList() {
+    return Row(
+      children: selectedFriends.map((friend) {
+        return Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: Stack(
+            children: [
+              (friend.profile != null)
+                  ? Image.network(
+                      friend.profile!,
+                      height: 70,
+                      width: 70,
+                    )
+                  : const Icon(
+                      Icons.person,
+                      size: 70,
+                    ),
+              Positioned(
+                right: 0,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedFriends.remove(friend);
+                    });
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: const Icon(
+                      Icons.cancel,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _friendList() {
+    return ValueListenableBuilder<String>(
+      valueListenable: _searchText,
+      builder: (context, searchText, child) {
+        final filteredFriendList = widget.mapModel.friends.where((friend) {
+          return friend.name.contains(searchText);
+        }).toList();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            _myListTile(),
+            ...filteredFriendList.map((friend) {
+              bool isSelected = selectedFriends.contains(friend);
+              return ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: (friend.profile != null)
+                    ? Image.network(
+                        friend.profile!,
+                        height: 50,
+                        width: 50,
+                      )
+                    : const Icon(
+                        Icons.person,
+                        size: 50,
+                      ),
+                title: Text(
+                  friend.name,
+                  style: const TextStyle(
+                    fontFamily: 'NanumSquareNeo-Bold',
+                  ),
+                ),
+                trailing: isSelected
+                    ? const Icon(Icons.check_circle, color: Colors.red)
+                    : const Icon(Icons.radio_button_unchecked),
+                onTap: () {
+                  setState(() {
+                    if (isSelected) {
+                      selectedFriends.remove(friend);
+                    } else {
+                      selectedFriends.add(friend);
+                    }
+                  });
+                },
+              );
+            }).toList(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _myListTile() {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: (myProfileImage != null)
+          ? Image.network(
+              myProfileImage!,
+              height: 50,
+              width: 50,
+            )
+          : const Icon(
+              Icons.person,
+              size: 50,
+            ),
+      title: const Text(
+        '(나)',
+        style: TextStyle(
+          fontFamily: 'NanumSquareNeo-Bold',
+        ),
       ),
     );
   }

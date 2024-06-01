@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:caps_2/enums/map_status.dart';
+import 'package:caps_2/friend/provider/friend_provider.dart';
 import 'package:caps_2/models/category.dart';
 import 'package:caps_2/models/daily_expense.dart';
 import 'package:caps_2/models/map_model.dart';
@@ -527,7 +528,7 @@ class _HomeState extends State<Home> {
 
   Widget _sharedMapPanel() {
     final mapProvider = context.watch<MapProvider>();
-    mapProvider.expenses;
+    final frinedProvider = context.read<FriendProvider>();
 
     return Padding(
       padding: const EdgeInsets.all(24.0),
@@ -573,9 +574,12 @@ class _HomeState extends State<Home> {
               const Spacer(),
               FloatingActionButton(
                 heroTag: 'shared_map',
-                onPressed: () => _registerMyMap(
-                  isSharedMap: true,
-                ),
+                onPressed: () => {
+                  frinedProvider.getLatestList(),
+                  _registerMyMap(
+                    isSharedMap: true,
+                  ),
+                },
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 child: const Icon(Icons.add, color: Color(0xFFFF6F61)),

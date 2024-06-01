@@ -59,24 +59,16 @@ class _MyPageState extends State<MyPage> {
       //   ),
       // ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(24.0),
             child: Column(
-              children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFC4C4C4),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                ),
-                const SizedBox(height: 15),
+              children: [                
                 const Text(
                   '마이페이지',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                 style: TextStyle(fontSize: 20, fontFamily: 'NanumSquareNeo-Bold',
+                  ),
                 ),
               ],
             ),
@@ -86,14 +78,10 @@ class _MyPageState extends State<MyPage> {
               _showImagePickerDialog(context);
             },
             child: _image == null
-                ? CircleAvatar(
-                    radius: 35.0,
-                    backgroundColor: Colors.grey[200],
-                    child: Icon(
-                      Icons.person,
-                      size: 35.0,
-                      color: Colors.grey[600],
-                    ),
+                ? Image.asset(
+                    'assets/images/my.png',
+                    width: 75.0,
+                    height: 75.0,
                   )
                 : CircleAvatar(
                     radius: 35.0,
@@ -101,8 +89,12 @@ class _MyPageState extends State<MyPage> {
                       File(_image!.path),
                     ),
                   ),
-          ),
-          const SizedBox(height: 10.0),
+                ),
+                const SizedBox(height: 5.0),  
+                const Text('김미로', style: TextStyle(fontSize: 16.0, fontFamily: 'NanumSquareNeo-Bold',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
           TextButton(
               onPressed: () {
                 context.read<FriendProvider>().getLatestList();
@@ -121,7 +113,7 @@ class _MyPageState extends State<MyPage> {
                         color: Colors.black,
                         letterSpacing: 1.5,
                         fontSize: 16,
-                        fontWeight: FontWeight.bold),
+                        fontFamily: 'NanumSquareNeo-Bold'),
                   ),
                 ),
               )),
@@ -138,7 +130,7 @@ class _MyPageState extends State<MyPage> {
                       color: Colors.black,
                       letterSpacing: 1.5,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                      fontFamily: 'NanumSquareNeo-Bold',),
                 ),
               ),
             ),
@@ -156,7 +148,7 @@ class _MyPageState extends State<MyPage> {
                       color: Colors.black,
                       letterSpacing: 1.5,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                      fontFamily: 'NanumSquareNeo-Bold',),
                 ),
               ),
             ),
@@ -199,7 +191,7 @@ class _MyPageState extends State<MyPage> {
                       color: Colors.black,
                       letterSpacing: 1.5,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                      fontFamily: 'NanumSquareNeo-Bold',),
                 ),
               ),
             ),
@@ -222,7 +214,7 @@ class _MyPageState extends State<MyPage> {
                       color: Colors.black,
                       letterSpacing: 1.5,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                      fontFamily: 'NanumSquareNeo-Bold',),
                 ),
               ),
             ),
@@ -247,7 +239,7 @@ class _MyPageState extends State<MyPage> {
                       letterSpacing: 1.5,
                       color: Colors.red,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                      fontFamily: 'NanumSquareNeo-Bold',),
                 ),
               ),
             ),

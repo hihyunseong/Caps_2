@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:caps_2/add_expense/widget/custom_button.dart';
 import 'package:caps_2/enums/pay_method.dart';
+import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,6 +22,7 @@ class ExpenseDetailPage extends StatefulWidget {
   final DateTime date;
   final String expenseLocationName;
   final MapModel mapModel;
+  final List<FriendModel> selectedFriends;
 
   const ExpenseDetailPage({
     super.key,
@@ -29,6 +31,7 @@ class ExpenseDetailPage extends StatefulWidget {
     required this.date,
     required this.expenseLocationName,
     required this.mapModel,
+    required this.selectedFriends,
   });
 
   @override
@@ -137,14 +140,7 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
               CustomButton(
                 title: '등록하기',
                 onTap: () {
-                  if (_contentController.text == '') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('제목을 입력해주세요.'),
-                      ),
-                    );
-                    return;
-                  }
+                  
                   if (_selectedPayMethod == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -162,9 +158,14 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
                     return;
                   }
 
+                  context.read<MapProvider>().changeMapModel(widget.mapModel);
+
                   _addExpense();
                   Navigator.pop(context);
                   Navigator.pop(context);
+                  if (widget.mapModel.isSharedMap) {
+                    Navigator.pop(context);
+                  }
                   Navigator.pop(context, true);
                 },
                 height: 70,
@@ -274,13 +275,20 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
   }
 
   Widget _priceWidget() {
-    return Text(
-      '₩ ${_formatNumber(widget.amount.toString())}',
-      style: const TextStyle(
-        fontSize: 16.0,
-        fontFamily: 'NanumSquareNeo-Bold',
-        color: Colors.red,
-      ),
+    return Row(
+      children: [
+        Image.asset('assets/images/frame.png', height: 24.0, width: 24.0,
+        ),
+        const SizedBox(width: 8.0),
+        Text(
+          '₩ ${_formatNumber(widget.amount.toString())}',
+          style: const TextStyle(
+            fontSize: 16.0,
+            fontFamily: 'NanumSquareNeo-Bold',
+            color: Colors.red,
+          ),
+        ),
+      ],
     );
   }
 
@@ -291,6 +299,9 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
         SizedBox(
           child: TextField(
             controller: _contentController,
+            onChanged: (value) {
+              setState(() {});
+            },
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.only(
                 left: 20,
@@ -457,6 +468,9 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
       child: Expanded(
         child: TextField(
           controller: _additionalInfoController,
+          onChanged: (value) {
+            setState(() {});
+          },
           expands: true,
           minLines: null,
           maxLines: null,
@@ -506,6 +520,7 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
       map: widget.mapModel,
       payMethod: _selectedPayMethod ?? PayMethod.none,
       createdAt: DateTime.now(),
+      friends: widget.selectedFriends,
     );
 
     final mapProvider = context.read<MapProvider>();
@@ -670,7 +685,7 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
       },
     );
   }
-
+  
   String _formatNumber(String value) {
     if (value.isEmpty) return ''; // 빈 문자열이면 그대로 반환
     final formatter = NumberFormat('#,###'); // 세 자리마다 쉼표(,) 추가하는 포맷

@@ -1,4 +1,5 @@
 import 'package:caps_2/enums/pay_method.dart';
+import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,6 +23,7 @@ class Expense with _$Expense {
     required MapModel map,
     required PayMethod payMethod,
     required DateTime createdAt,
+    required List<FriendModel> friends,
   }) = _Expense;
 
   factory Expense.fromJson(Map<String, dynamic> json) =>

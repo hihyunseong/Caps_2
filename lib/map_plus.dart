@@ -163,6 +163,9 @@ class _MapPlusState extends State<MapPlus> {
         SizedBox(
           child: TextField(
             controller: _mapNameController,
+            onChanged: (value) {
+              setState(() {});
+            },
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.only(
                 left: 20,
@@ -203,9 +206,12 @@ class _MapPlusState extends State<MapPlus> {
   }
 
   Widget _colorTile(Color color) {
+    bool isSelected = selectedColor == color;
     return GestureDetector(
       onTap: () {
-        selectedColor = color;
+        setState(() {
+          selectedColor = color;
+        });
       },
       child: Container(
         width: 65.0,
@@ -213,6 +219,7 @@ class _MapPlusState extends State<MapPlus> {
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(8.0),
+          border: isSelected ? Border.all(color: Colors.black, width: 2.5) : null,
         ),
       ),
     );
@@ -326,25 +333,45 @@ class _MapPlusState extends State<MapPlus> {
         ),
       ),
       itemClick: (prediction) {
-        _locationController.text = prediction.description ?? '';
-        selectedLocation = prediction as Prediction?;
+        setState(() {
+          _locationController.text = prediction.description ?? '';
+          selectedLocation = prediction as Prediction?;
+        });
       },
       showError: false,
     );
   }
 
   bool _isReadyToRegister() {
-    if (_mapNameController.text.isEmpty ||
-        selectedColor == null ||
-        selectedLocation == null ||
-        selectedFriends.isEmpty) {
-      return false;
+    // 공유맵
+    if (widget.isSharedMap) {
+      if (_mapNameController.text.isEmpty ||
+          selectedColor == null ||
+          selectedLocation == null ||
+          selectedFriends.isEmpty) {
+        return false;
+      }
+    } else {
+      // 마이맵
+      if (_mapNameController.text.isEmpty ||
+          selectedColor == null ||
+          selectedLocation == null) {
+        return false;
+      }
     }
-
     return true;
   }
 
   void _registerMap() {
+    // // isSharedMap이 true인 경우, 임시로 친구 추가
+    // if (widget.isSharedMap) {
+    //   friends.add('친구1');
+    // }
+
+    // // 현재는 friend textfield에 글자가 있는 경우 배열에 넣어줘서 처리
+    // if (_friendController.text != '') {
+    //   friends.add(_friendController.text);
+    // }
 
     if (_mapNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -363,18 +390,18 @@ class _MapPlusState extends State<MapPlus> {
       );
       return;
     }
-
-    if (selectedFriends.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('친구를 초대해주세요.'),
-        ),
-      );
-      return;
+    if (widget.isSharedMap) {
+      if (selectedFriends.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('친구를 초대해주세요.'),
+          ),
+        );
+        return;
+      }
     }
 
     if (selectedLocation == null) {
-    
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('지역을 선택해주세요.'),
