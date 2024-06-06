@@ -35,8 +35,9 @@ class FriendListTile extends StatelessWidget {
           child: const Text(
             '삭제',
             style: TextStyle(
-              color: Colors.black,
+              color: Color(0xFF9D9D9D),
               fontFamily: 'NanumSquareNeo-Bold',
+              fontSize: 13.0,
             ),
           ),
         )

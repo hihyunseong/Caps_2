@@ -40,7 +40,7 @@ class FriendPage extends StatelessWidget {
                 dividerHeight: 0,
                 tabs: [
                   Text(
-                    '친구 목록 ${friendProvider.friendList.length}',
+                    '친구 목록${friendProvider.friendList.length}',
                     style: const TextStyle(
                       fontSize: 14,
                       fontFamily: 'NanumSquareNeo-Bold',

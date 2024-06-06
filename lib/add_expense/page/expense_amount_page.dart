@@ -98,6 +98,9 @@ class _ExpenseAmountPageState extends State<ExpenseAmountPage> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
                   ),
                 ),
                 const Text(

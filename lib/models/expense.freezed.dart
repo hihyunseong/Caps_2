@@ -32,6 +32,7 @@ mixin _$Expense {
   MapModel get map => throw _privateConstructorUsedError;
   PayMethod get payMethod => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
+  List<FriendModel> get friends => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -55,7 +56,8 @@ abstract class $ExpenseCopyWith<$Res> {
       double longitude,
       MapModel map,
       PayMethod payMethod,
-      DateTime createdAt});
+      DateTime createdAt,
+      List<FriendModel> friends});
 
   $MapModelCopyWith<$Res> get map;
 }
@@ -85,6 +87,7 @@ class _$ExpenseCopyWithImpl<$Res, $Val extends Expense>
     Object? map = null,
     Object? payMethod = null,
     Object? createdAt = null,
+    Object? friends = null,
   }) {
     return _then(_value.copyWith(
       expenseLocationName: null == expenseLocationName
@@ -135,6 +138,10 @@ class _$ExpenseCopyWithImpl<$Res, $Val extends Expense>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      friends: null == friends
+          ? _value.friends
+          : friends // ignore: cast_nullable_to_non_nullable
+              as List<FriendModel>,
     ) as $Val);
   }
 
@@ -166,7 +173,8 @@ abstract class _$$ExpenseImplCopyWith<$Res> implements $ExpenseCopyWith<$Res> {
       double longitude,
       MapModel map,
       PayMethod payMethod,
-      DateTime createdAt});
+      DateTime createdAt,
+      List<FriendModel> friends});
 
   @override
   $MapModelCopyWith<$Res> get map;
@@ -195,6 +203,7 @@ class __$$ExpenseImplCopyWithImpl<$Res>
     Object? map = null,
     Object? payMethod = null,
     Object? createdAt = null,
+    Object? friends = null,
   }) {
     return _then(_$ExpenseImpl(
       expenseLocationName: null == expenseLocationName
@@ -245,6 +254,10 @@ class __$$ExpenseImplCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      friends: null == friends
+          ? _value._friends
+          : friends // ignore: cast_nullable_to_non_nullable
+              as List<FriendModel>,
     ));
   }
 }
@@ -264,8 +277,10 @@ class _$ExpenseImpl extends _Expense {
       required this.longitude,
       required this.map,
       required this.payMethod,
-      required this.createdAt})
-      : super._();
+      required this.createdAt,
+      required final List<FriendModel> friends})
+      : _friends = friends,
+        super._();
 
   factory _$ExpenseImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExpenseImplFromJson(json);
@@ -294,10 +309,17 @@ class _$ExpenseImpl extends _Expense {
   final PayMethod payMethod;
   @override
   final DateTime createdAt;
+  final List<FriendModel> _friends;
+  @override
+  List<FriendModel> get friends {
+    if (_friends is EqualUnmodifiableListView) return _friends;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_friends);
+  }
 
   @override
   String toString() {
-    return 'Expense(expenseLocationName: $expenseLocationName, amount: $amount, category: $category, content: $content, memo: $memo, date: $date, imagePath: $imagePath, latitude: $latitude, longitude: $longitude, map: $map, payMethod: $payMethod, createdAt: $createdAt)';
+    return 'Expense(expenseLocationName: $expenseLocationName, amount: $amount, category: $category, content: $content, memo: $memo, date: $date, imagePath: $imagePath, latitude: $latitude, longitude: $longitude, map: $map, payMethod: $payMethod, createdAt: $createdAt, friends: $friends)';
   }
 
   @override
@@ -323,7 +345,8 @@ class _$ExpenseImpl extends _Expense {
             (identical(other.payMethod, payMethod) ||
                 other.payMethod == payMethod) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            const DeepCollectionEquality().equals(other._friends, _friends));
   }
 
   @JsonKey(ignore: true)
@@ -341,7 +364,8 @@ class _$ExpenseImpl extends _Expense {
       longitude,
       map,
       payMethod,
-      createdAt);
+      createdAt,
+      const DeepCollectionEquality().hash(_friends));
 
   @JsonKey(ignore: true)
   @override
@@ -370,7 +394,8 @@ abstract class _Expense extends Expense {
       required final double longitude,
       required final MapModel map,
       required final PayMethod payMethod,
-      required final DateTime createdAt}) = _$ExpenseImpl;
+      required final DateTime createdAt,
+      required final List<FriendModel> friends}) = _$ExpenseImpl;
   _Expense._() : super._();
 
   factory _Expense.fromJson(Map<String, dynamic> json) = _$ExpenseImpl.fromJson;
@@ -399,6 +424,8 @@ abstract class _Expense extends Expense {
   PayMethod get payMethod;
   @override
   DateTime get createdAt;
+  @override
+  List<FriendModel> get friends;
   @override
   @JsonKey(ignore: true)
   _$$ExpenseImplCopyWith<_$ExpenseImpl> get copyWith =>

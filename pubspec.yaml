@@ -89,6 +89,7 @@ flutter:
     - assets/images/location_pin.png
     - assets/images/frame.png
     - assets/images/pinkok.png
+    - assets/images/my.png
     - assets/images/home/home1.png
     - assets/images/home/home2.png
     - assets/images/mymap/mymap1.png

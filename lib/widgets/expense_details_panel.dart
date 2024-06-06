@@ -170,13 +170,24 @@ class ExpenseDetailsPanel extends StatelessWidget {
   }
 
   Widget _priceWidget(Expense expense) {
-    return Text(
-      '₩ ${_formatNumber(expense.amount.toString())}',
-      style: const TextStyle(
-        fontSize: 16.0,
-        fontFamily: 'NanumSquareNeo-Bold',
-        color: Colors.red,
+    return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Image.asset(
+        'assets/images/frame.png',
+        width: 24.0, 
+        height: 24.0, 
       ),
+      const SizedBox(width: 8.0),
+      Text(
+        '₩${_formatNumber(expense.amount.toString())}',
+        style: const TextStyle(
+          fontSize: 16.0,
+          fontFamily: 'NanumSquareNeo-Bold',
+          color: Colors.red,
+          ),
+        ),
+      ],
     );
   }
 

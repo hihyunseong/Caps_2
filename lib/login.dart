@@ -177,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('로그인'),
+                  title: Text('로그인',),
                   content: Text(responseData['name']! + '님 환영합니다.'),
                   actions: [
                     TextButton(
@@ -441,6 +441,9 @@ class _LoginPageState extends State<LoginPage> {
           controller: _idController,
           decoration: InputDecoration(
             hintText: "아이디(이메일)",
+            hintStyle: const TextStyle(
+            fontFamily: 'NanumSquareNeo-Bold',
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(4),
               borderSide: BorderSide(color: Colors.grey),
@@ -457,6 +460,9 @@ class _LoginPageState extends State<LoginPage> {
           controller: _passwordController,
           decoration: InputDecoration(
             hintText: "비밀번호",
+            hintStyle: const TextStyle(
+            fontFamily: 'NanumSquareNeo-Bold',
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(4),
               borderSide: BorderSide(color: Colors.grey),
@@ -487,7 +493,7 @@ class _LoginPageState extends State<LoginPage> {
           }
               : null, // 입력되지 않은 경우 버튼을 비활성화
           child: Text(
-            "로그인", style: TextStyle(fontSize: 20, color: Colors.white),
+            "로그인", style: TextStyle(fontSize: 20, fontFamily: 'NanumSquareNeo-Bold', color: Colors.white),
           ),
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -512,7 +518,8 @@ class _LoginPageState extends State<LoginPage> {
               child: Text(
                 "SNS 계정으로 간편 로그인/가입하기",
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14.5,
+                  fontFamily: 'NanumSquareNeo-Bold',
                   color: Colors.black,
                 ),
                 textAlign: TextAlign.center,
@@ -561,6 +568,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Text("회원가입",
         style: TextStyle(
+          fontFamily: 'NanumSquareNeo-Bold',
           color: Colors.black,
         ),
       ),
@@ -577,6 +585,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Text("아이디 찾기",
         style: TextStyle(
+          fontFamily: 'NanumSquareNeo-Bold',
           color: Colors.black,
         ),
       ),
@@ -593,6 +602,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Text("비밀번호 찾기",
         style: TextStyle(
+          fontFamily: 'NanumSquareNeo-Bold',
           color:Colors.black,
         ),
       ),

@@ -20,6 +20,9 @@ _$ExpenseImpl _$$ExpenseImplFromJson(Map<String, dynamic> json) =>
       map: MapModel.fromJson(json['map'] as Map<String, dynamic>),
       payMethod: $enumDecode(_$PayMethodEnumMap, json['payMethod']),
       createdAt: DateTime.parse(json['createdAt'] as String),
+      friends: (json['friends'] as List<dynamic>)
+          .map((e) => FriendModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$$ExpenseImplToJson(_$ExpenseImpl instance) =>
@@ -36,6 +39,7 @@ Map<String, dynamic> _$$ExpenseImplToJson(_$ExpenseImpl instance) =>
       'map': instance.map,
       'payMethod': _$PayMethodEnumMap[instance.payMethod]!,
       'createdAt': instance.createdAt.toIso8601String(),
+      'friends': instance.friends,
     };
 
 const _$CategoryEnumMap = {

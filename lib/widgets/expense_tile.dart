@@ -14,8 +14,8 @@ class ExpenseTile extends StatelessWidget {
     super.key,
     required this.expense,
     required this.onTap,
-    this.imageHeight = 40,
-    this.imageWidth = 40,
+    this.imageHeight = 180,
+    this.imageWidth = 180,
   });
 
   @override

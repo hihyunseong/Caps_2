@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-// 맵 선택
 class MapSelectPage extends StatefulWidget {
   final double amount;
   final LatLng location;
@@ -177,6 +176,7 @@ class _MapSelectPageState extends State<MapSelectPage> {
                           date: widget.date,
                           expenseLocationName: widget.expenseLocationName,
                           mapModel: selectedMapModel!,
+                          selectedFriends: [],
                         ),
                       ),
                     );

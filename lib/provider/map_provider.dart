@@ -131,7 +131,7 @@ class MapProvider extends ChangeNotifier {
 
   Future<void> _setMarkers() async {
     final List<Marker> myMarkers = [];
-
+    print(tourExpenses);
     for (var i = 0; i < tourExpenses.length; i++) {
       final expense = tourExpenses[i];
 
@@ -208,8 +208,11 @@ class MapProvider extends ChangeNotifier {
   List<Expense> get tourExpenses =>
       dailyExpenses.isEmpty ? [] : dailyExpenses[_currentIndex].expenses;
 
+
+
   // 지출을 날짜별로 그룹핑
   List<DailyExpense> get dailyExpenses {
+
     final Map<DateTime, List<Expense>> grouped = {};
 
     for (final expense in expenses) {
