@@ -1,23 +1,25 @@
-class Maps{
-  String idx;
+class MemberInfo{
+  int idx;
   String email;
   String name;
   String profile;
   String createdAt;
+  String updatedAt;
 
-  FriendInfo({required this.idx, required this.email, required this.name, required this.profile, required this.createdAt});
+  MemberInfo({required this.idx, required this.email, required this.name, required this.profile, required this.createdAt, required this.updatedAt});
 
-  factory FriendInfo.fromJson(Map<Object, dynamic> json) {
-    return FriendInfo(
-      idx: json['idx'].toString(),
+  factory MemberInfo.fromJson(Map<Object, dynamic> json) {
+    return MemberInfo(
+      idx: int.parse(json['idx']),
       email: json['email'].toString(),
       name: json['name'].toString(),
       profile: json['profile'].toString(),
       createdAt: json['createdAt'].toString(),
+      updatedAt: json['updatedAt'].toString(),
     );
   }
 
-  String getIdx(){
+  int getIdx(){
     return idx;
   }
   String getEmail(){
@@ -31,5 +33,8 @@ class Maps{
   }
   String getCreatedAt(){
     return createdAt;
+  }
+  String getUpdatedAt(){
+    return updatedAt;
   }
 }

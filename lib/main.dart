@@ -1,4 +1,5 @@
 import 'package:caps_2/friend/provider/friend_provider.dart';
+import 'package:caps_2/home.dart';
 import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),
+      home: Home(),
     );
   }
 

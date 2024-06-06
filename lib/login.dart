@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:caps_2/config/Config.dart';
+import 'package:caps_2/provider/map_provider.dart';
 import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';

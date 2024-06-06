@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:caps_2/friend/page/friend_page.dart';
 import 'package:caps_2/friend/provider/friend_provider.dart';
+import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -41,6 +42,7 @@ class _MyPageState extends State<MyPage> {
     final loadAccToken = await storage.read(key: 'accToken');
     final loadRefToken = await storage.read(key: 'refToken');
 
+
     setState(() {
       idx = loadIdx;
       email = loadEmail;
@@ -53,6 +55,8 @@ class _MyPageState extends State<MyPage> {
 
   @override
   Widget build(BuildContext context) {
+    MapProvider mapProvider = MapProvider();
+
     return Container(
       // padding: const EdgeInsets.all(24),
       // decoration: const BoxDecoration(
