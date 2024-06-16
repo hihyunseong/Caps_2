@@ -1,12 +1,17 @@
 import 'dart:io';
 
-import 'package:caps_2/enums/map_status.dart';
+import 'package:caps_2/common/enums/map_status.dart';
 import 'package:caps_2/models/daily_expense.dart';
 import 'package:caps_2/models/expense.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:caps_2/provider/api_service.dart';
+import 'package:caps_2/vo/Maps.dart';
+import 'package:caps_2/vo/MemberInfo.dart';
+import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:caps_2/widgets/my_marker.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -15,14 +20,101 @@ import 'package:widget_to_marker/widget_to_marker.dart';
 import 'package:path/path.dart' as p;
 
 class MapProvider extends ChangeNotifier {
+  final _dio = Dio();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   late ApiService apiService;
-
   late Directory _mapDir;
+
+  final String mapUrl = "http://" + UrlUtil.url + ':8082/api/v1/maps';
+
+  String? _loadAccToken;
+  String? _loadRefToken;
 
   MapProvider() {
     _init();
+    initializeHeader();
   }
 
+  //마이맵 불러오기
+  Future<List<Maps>> getMyMap() async {
+    final res = await _dio
+        .get(
+          '$mapUrl/private',
+        )
+        .catchError((error) => {print(error)});
+    print(res);
+    return res.data.map((e) => MapModel.fromJson(e)).cast<MapModel>().toList();
+  }
+
+  //공유맵 불러오기
+  Future<List<Maps>> getSharedMap() async {
+    final res = await _dio
+        .get(
+          '$mapUrl/shared',
+        )
+        .catchError((error) => {print(error)});
+    print(res);
+    return res.data.map((e) => Maps.fromJson(e)).cast<Maps>().toList();
+  }
+  
+  //마이맵 만들기
+  Future<void> createMyMap(String title, String color, int lat, int lon) async {
+    final res = await _dio.post('$mapUrl/private', data: {
+      'title': title,
+      'color': color,
+      'lat': lat,
+      'lon': lon,
+    });
+    print(res);
+  }
+  
+  //공유맵 만들기
+  Future<void> createSharedMap(
+      String title, String color, int lat, int lon) async {
+    final res = await _dio.post('$mapUrl/shared', data: {
+      'title': title,
+      'color': color,
+      'lat': lat,
+      'lon': lon,
+    });
+    print(res);
+  }
+
+  //지도 멤버 불러오기
+  Future<List<MemberInfo>> getMapMembers(int idx) async {
+    final res = await _dio
+        .get('$mapUrl/members$idx')
+        .catchError((error) => {print(error)});
+    print(res);
+    return res.data
+        .map((e) => MemberInfo.fromJson(e))
+        .cast<MemberInfo>()
+        .toList();
+  }
+
+  //만든 지도 멤버 추가하기
+  Future<void> addNewMapMembers()async{}
+  //기존 지도 멤버 추가하기
+  Future<void> addExistMapMember()async{}
+  //지도 이름 바꾸기
+  Future<void> changeMapInfo()async{}
+  //지도 나가기
+  Future<void> exitCurrentMap(int idx) async {
+    final res =
+        await _dio.delete('$mapUrl/$idx').catchError((error) => {print(error)});
+    print(res.data);
+  }
+
+  Future<void> initializeHeader() async {
+    _loadAccToken = await _storage.read(key: 'accToken');
+    _loadRefToken = await _storage.read(key: 'refToken');
+
+    if (_loadAccToken != null) {
+      _dio.options.headers['Authorization'] = 'Bearer $_loadAccToken';
+      _dio.options.headers['x-refresh-token'] = 'Bearer $_loadRefToken';
+    }
+  }
+  
   Future<void> _init() async {
     // load all map models
     final appDir = await getApplicationDocumentsDirectory();
@@ -103,6 +195,10 @@ class MapProvider extends ChangeNotifier {
     final filename = 'map_${mapModel.mapName}.json';
     final loadedMapModel = await apiService.loadMapModel(filename);
 
+    print(loadedMapModel);
+    print(loadedMapModel?.expenses.length);
+    print(loadedMapModel?.expenses);
+
     // 인덱스 초기화
     _currentIndex = 0;
 
@@ -125,6 +221,17 @@ class MapProvider extends ChangeNotifier {
       _markers.clear();
       _polylines.clear();
     }
+
+    notifyListeners();
+  }
+
+  Future<void> updateMapModel(
+      MapModel beforeMapModel, MapModel afterMapModel) async {
+    await apiService.updateMapModel(beforeMapModel, afterMapModel);
+
+    final index = _mapList
+        .indexWhere((element) => element.mapName == beforeMapModel.mapName);
+    _mapList[index] = afterMapModel;
 
     notifyListeners();
   }
@@ -257,7 +364,7 @@ class MapProvider extends ChangeNotifier {
 
     LatLngBounds bounds = _calculateBounds(_markers);
 
-    CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 250);
+    CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
     await mapController.animateCamera(cameraUpdate);
   }
 

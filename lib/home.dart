@@ -1,7 +1,9 @@
 import 'dart:io';
 
-import 'package:caps_2/enums/map_status.dart';
+import 'package:caps_2/common/enums/map_status.dart';
 import 'package:caps_2/friend/provider/friend_provider.dart';
+import 'package:caps_2/map/page/update_my_map_list_page.dart';
+import 'package:caps_2/map/page/update_share_map_list_page.dart';
 import 'package:caps_2/models/category.dart';
 import 'package:caps_2/models/daily_expense.dart';
 import 'package:caps_2/models/map_model.dart';
@@ -9,7 +11,9 @@ import 'package:caps_2/widgets/daily_expense_panel.dart';
 import 'package:caps_2/widgets/expense_details_panel.dart';
 import 'package:caps_2/widgets/map_details_panel.dart';
 import 'package:caps_2/widgets/expenses_panel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +23,7 @@ import 'package:widget_to_marker/widget_to_marker.dart';
 import 'provider/map_provider.dart';
 import 'widgets/map_tile.dart';
 import 'widgets/my_marker.dart';
-import 'my.dart';
+import 'my/page/my_page.dart';
 import 'add_expense/page/expense_amount_page.dart';
 import 'map_plus.dart';
 
@@ -214,7 +218,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: SlidingUpPanel(
         panel: _mainPanel(),
@@ -385,7 +388,7 @@ class _HomeState extends State<Home> {
                 itemCount: dailyExpense.expenses.length,
                 itemBuilder: (context, index) {
                   final expense = dailyExpense.expenses[index];
-
+                  
                   return Column(
                     children: [
                       ListTile(
@@ -460,6 +463,24 @@ class _HomeState extends State<Home> {
               fontSize: 10,
               fontFamily: 'NanumSquareNeo-Bold',
               color: Color(0xFF9D9D9D),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const UpdateMyMapListPage()),
+              );
+            },
+            child: Text(
+              '편집',
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 16,
+                fontFamily: 'NanumSquareNeo-Bold',
+                color: Color(0xFFFF6F61),
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -550,6 +571,24 @@ class _HomeState extends State<Home> {
               fontSize: 10,
               fontFamily: 'NanumSquareNeo-Bold',
               color: Color(0xFF9D9D9D),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const UpdateShareMapListPage()),
+              );
+            },
+            child: Text(
+              '편집',
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 16,
+                fontFamily: 'NanumSquareNeo-Bold',
+                color: Color(0xFFFF6F61),
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -671,7 +710,7 @@ class _HomeState extends State<Home> {
                         zoom: 17,
                       )
                     : const CameraPosition(
-                        target: LatLng(35.43, 127.269311),
+                        target: LatLng(31.43, 127.269311),
                         zoom: 17,
                       ),
                 myLocationEnabled: true,
@@ -724,30 +763,30 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-        if (_showExpenseButton)
-          Positioned(
-            bottom: 180.0,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: ElevatedButton.icon(
-                onPressed: () async {},
-                icon: const Icon(Icons.account_balance_wallet),
-                label: const Text(
-                  '가계부',
-                  style: TextStyle(fontSize: 14.0, color: Colors.white),
-                ),
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.orange),
-                  fixedSize:
-                      MaterialStateProperty.all<Size>(const Size(150.0, 50.0)),
-                ),
-              ),
-            ),
-          ),
+        // if (_showExpenseButton)
+        //   Positioned(
+        //     bottom: 180.0,
+        //     left: 0,
+        //     right: 0,
+        //     child: Center(
+        //       child: ElevatedButton.icon(
+        //         onPressed: () async {},
+        //         icon: const Icon(Icons.account_balance_wallet),
+        //         label: const Text(
+        //           '가계부',
+        //           style: TextStyle(fontSize: 14.0, color: Colors.white),
+        //         ),
+        //         style: ButtonStyle(
+        //           backgroundColor:
+        //               MaterialStateProperty.all<Color>(Colors.orange),
+        //           fixedSize:
+        //               MaterialStateProperty.all<Size>(const Size(150.0, 50.0)),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
         Positioned(
-          top: 120.0,
+          bottom: 180.0,
           right: 16.0,
           child: InkWell(
             onTap: _goToCurrentLocation,

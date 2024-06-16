@@ -1,4 +1,4 @@
-import 'package:caps_2/enums/map_status.dart';
+import 'package:caps_2/common/enums/map_status.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';

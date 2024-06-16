@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:caps_2/add_expense/widget/custom_button.dart';
-import 'package:caps_2/enums/pay_method.dart';
+import 'package:caps_2/common/enums/pay_method.dart';
 import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:caps_2/provider/map_provider.dart';
@@ -140,7 +140,6 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
               CustomButton(
                 title: '등록하기',
                 onTap: () {
-                  
                   if (_selectedPayMethod == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -158,7 +157,15 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
                     return;
                   }
 
-                  context.read<MapProvider>().changeMapModel(widget.mapModel);
+                  final mapProvider = context.read<MapProvider>();
+
+                  if (context.read<MapProvider>().mapModel != null) {
+                    if (widget.mapModel.selectedDate !=
+                        mapProvider.mapModel!.selectedDate) {
+                      mapProvider.changeMapModel(widget.mapModel);
+                      mapProvider.saveMapModel();
+                    }
+                  }
 
                   _addExpense();
                   Navigator.pop(context);
@@ -275,20 +282,13 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
   }
 
   Widget _priceWidget() {
-    return Row(
-      children: [
-        Image.asset('assets/images/frame.png', height: 24.0, width: 24.0,
-        ),
-        const SizedBox(width: 8.0),
-        Text(
-          '₩ ${_formatNumber(widget.amount.toString())}',
-          style: const TextStyle(
-            fontSize: 16.0,
-            fontFamily: 'NanumSquareNeo-Bold',
-            color: Colors.red,
-          ),
-        ),
-      ],
+    return Text(
+      '₩ ${_formatNumber(widget.amount.toString())}',
+      style: const TextStyle(
+        fontSize: 16.0,
+        fontFamily: 'NanumSquareNeo-Bold',
+        color: Colors.red,
+      ),
     );
   }
 
@@ -685,7 +685,7 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
       },
     );
   }
-  
+
   String _formatNumber(String value) {
     if (value.isEmpty) return ''; // 빈 문자열이면 그대로 반환
     final formatter = NumberFormat('#,###'); // 세 자리마다 쉼표(,) 추가하는 포맷

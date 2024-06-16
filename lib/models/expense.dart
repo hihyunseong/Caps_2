@@ -1,4 +1,4 @@
-import 'package:caps_2/enums/pay_method.dart';
+import 'package:caps_2/common/enums/pay_method.dart';
 import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

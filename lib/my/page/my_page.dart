@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:caps_2/friend/page/friend_page.dart';
 import 'package:caps_2/friend/provider/friend_provider.dart';
+import 'package:caps_2/my/page/update_profile_page.dart';
+import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'login.dart';
+import '../../login.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
@@ -21,6 +24,7 @@ class _MyPageState extends State<MyPage> {
   String? idx;
   String? email;
   String? name;
+  String? profile;
   String? accToken;
   String? refToken;
 
@@ -36,6 +40,7 @@ class _MyPageState extends State<MyPage> {
     final loadIdx = await storage.read(key: 'idx');
     final loadEmail = await storage.read(key: 'email');
     final loadName = await storage.read(key: 'name');
+    final loadProfile = await storage.read(key: 'profile');
     final loadAccToken = await storage.read(key: 'accToken');
     final loadRefToken = await storage.read(key: 'refToken');
 
@@ -43,6 +48,7 @@ class _MyPageState extends State<MyPage> {
       idx = loadIdx;
       email = loadEmail;
       name = loadName;
+      profile = loadProfile;
       accToken = loadAccToken;
       refToken = loadRefToken;
     });
@@ -50,24 +56,21 @@ class _MyPageState extends State<MyPage> {
 
   @override
   Widget build(BuildContext context) {
+    MapProvider mapProvider = MapProvider();
+
     return Container(
-      // padding: const EdgeInsets.all(24),
-      // decoration: const BoxDecoration(
-      //   borderRadius: BorderRadius.only(
-      //     topLeft: Radius.circular(20),
-      //     topRight: Radius.circular(20),
-      //   ),
-      // ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
             padding: const EdgeInsets.all(24.0),
             child: Column(
-              children: [                
+              children: [
                 const Text(
                   '마이페이지',
-                 style: TextStyle(fontSize: 20, fontFamily: 'NanumSquareNeo-Bold',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'NanumSquareNeo-Bold',
                   ),
                 ),
               ],
@@ -77,24 +80,60 @@ class _MyPageState extends State<MyPage> {
             onTap: () {
               _showImagePickerDialog(context);
             },
-            child: _image == null
-                ? Image.asset(
-                    'assets/images/my.png',
-                    width: 75.0,
-                    height: 75.0,
+            child: profile == null
+                ? Container(
+                    width: 70.0,
+                    height: 70.0,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.person,
+                      size: 35.0,
+                      color: Colors.grey[600],
+                    ),
                   )
-                : CircleAvatar(
-                    radius: 35.0,
-                    backgroundImage: FileImage(
-                      File(_image!.path),
+                : ClipOval(
+                    child: Image.network(
+                      profile!,
+                      width: 70,
+                      height: 70,
                     ),
                   ),
-                ),
-                const SizedBox(height: 5.0),  
-                const Text('김미로', style: TextStyle(fontSize: 16.0, fontFamily: 'NanumSquareNeo-Bold',
+          ),
+          const SizedBox(height: 5.0),
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  name ?? '',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontFamily: 'NanumSquareNeo-Bold',
                   ),
                   textAlign: TextAlign.center,
                 ),
+                SizedBox(width: 4.0),
+                GestureDetector(
+                  onTap: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UpdateProfilePage()),
+                    )
+                  },
+                  child: Image.asset(
+                    'assets/images/edit.png',
+                    width: 20.0,
+                    height: 20.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
           TextButton(
               onPressed: () {
                 context.read<FriendProvider>().getLatestList();
@@ -127,10 +166,11 @@ class _MyPageState extends State<MyPage> {
                 child: const Text(
                   '전체 지도',
                   style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 16,
-                      fontFamily: 'NanumSquareNeo-Bold',),
+                    color: Colors.black,
+                    letterSpacing: 1.5,
+                    fontSize: 16,
+                    fontFamily: 'NanumSquareNeo-Bold',
+                  ),
                 ),
               ),
             ),
@@ -145,10 +185,11 @@ class _MyPageState extends State<MyPage> {
                 child: const Text(
                   '이용약관',
                   style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 16,
-                      fontFamily: 'NanumSquareNeo-Bold',),
+                    color: Colors.black,
+                    letterSpacing: 1.5,
+                    fontSize: 16,
+                    fontFamily: 'NanumSquareNeo-Bold',
+                  ),
                 ),
               ),
             ),
@@ -188,10 +229,11 @@ class _MyPageState extends State<MyPage> {
                 child: const Text(
                   '버전',
                   style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 16,
-                      fontFamily: 'NanumSquareNeo-Bold',),
+                    color: Colors.black,
+                    letterSpacing: 1.5,
+                    fontSize: 16,
+                    fontFamily: 'NanumSquareNeo-Bold',
+                  ),
                 ),
               ),
             ),
@@ -211,10 +253,11 @@ class _MyPageState extends State<MyPage> {
                 child: const Text(
                   '로그아웃',
                   style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 16,
-                      fontFamily: 'NanumSquareNeo-Bold',),
+                    color: Colors.black,
+                    letterSpacing: 1.5,
+                    fontSize: 16,
+                    fontFamily: 'NanumSquareNeo-Bold',
+                  ),
                 ),
               ),
             ),
@@ -236,10 +279,11 @@ class _MyPageState extends State<MyPage> {
                 child: const Text(
                   '탈퇴하기',
                   style: TextStyle(
-                      letterSpacing: 1.5,
-                      color: Colors.red,
-                      fontSize: 16,
-                      fontFamily: 'NanumSquareNeo-Bold',),
+                    letterSpacing: 1.5,
+                    color: Colors.red,
+                    fontSize: 16,
+                    fontFamily: 'NanumSquareNeo-Bold',
+                  ),
                 ),
               ),
             ),

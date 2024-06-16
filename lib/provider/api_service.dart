@@ -44,4 +44,22 @@ class ApiService {
       await file.delete();
     }
   }
+
+  Future<void> updateMapModel(MapModel before, MapModel after) async {
+    final beforeFilename = 'map_${before.mapName}.json';
+    final afterFilename = 'map_${after.mapName}.json';
+
+    final beforeFile = File(p.join(mapDirPath, beforeFilename));
+    final afterFile = File(p.join(mapDirPath, afterFilename));
+
+    if (beforeFile.existsSync()) {
+      final beforeMapModelJson = jsonDecode(await beforeFile.readAsString());
+      final afterMapModelJson = after.toJson();
+
+      if (beforeMapModelJson != afterMapModelJson) {
+        await beforeFile.delete();
+        await afterFile.writeAsString(jsonEncode(afterMapModelJson));
+      }
+    }
+  }
 }

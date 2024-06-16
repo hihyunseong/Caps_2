@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:caps_2/enums/map_status.dart';
+import 'package:caps_2/common/enums/map_status.dart';
 import 'package:caps_2/models/expense.dart';
 import 'package:caps_2/provider/map_provider.dart';
 import 'package:caps_2/widgets/expense_tile.dart';

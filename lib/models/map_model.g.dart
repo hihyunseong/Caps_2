@@ -9,6 +9,7 @@ part of 'map_model.dart';
 _$MapModelImpl _$$MapModelImplFromJson(Map<String, dynamic> json) =>
     _$MapModelImpl(
       mapName: json['mapName'] as String,
+      ownerId: json['ownerId'] as int,
       friends: (json['friends'] as List<dynamic>)
           .map((e) => FriendModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -27,6 +28,7 @@ _$MapModelImpl _$$MapModelImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$MapModelImplToJson(_$MapModelImpl instance) =>
     <String, dynamic>{
       'mapName': instance.mapName,
+      'ownerId': instance.ownerId,
       'friends': instance.friends,
       'location': instance.location,
       'selectedDate': instance.selectedDate.toIso8601String(),

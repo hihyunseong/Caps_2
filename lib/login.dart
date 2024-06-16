@@ -1,12 +1,14 @@
 import 'dart:convert';
-import 'package:caps_2/config/Config.dart';
+import 'package:caps_2/common/config/Config.dart';
+import 'package:caps_2/provider/map_provider.dart';
 import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'home.dart';
 import 'signup.dart';
@@ -28,7 +30,8 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isObscure = true;
 
-  Future<void> _write(Map<String, dynamic> responseData, Map<String, String> header) async{
+  Future<void> _write(
+      Map<String, dynamic> responseData, Map<String, String> header) async {
     await storage.write(key: 'idx', value: responseData['idx'].toString());
     await storage.write(key: 'email', value: responseData['email']);
     await storage.write(key: 'name', value: responseData['name']);
@@ -40,10 +43,12 @@ class _LoginPageState extends State<LoginPage> {
   void Login(BuildContext context) async{
     _loginUser().then((response) {
       print(utf8.decode(response.bodyBytes));
-      if(response.statusCode == 200){
-        final Map<String, dynamic> responseData = jsonDecode(utf8.decode(response.bodyBytes));
+      if (response.statusCode == 200){
+        final Map<String, dynamic> responseData = 
+            jsonDecode(utf8.decode(response.bodyBytes));
         final Map<String, String> header = response.headers;
-        _write(responseData, header).then((_){// write  data
+        _write(responseData, header).then((_) { 
+          // write  data
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -64,8 +69,9 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               );
             },
-          );});
-      }else{
+          );
+        });
+      } else{
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -89,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void KakaoLogin() async{
     if (await isKakaoTalkInstalled()) {
-      print('카카로 설치 됨');
+      print('카카오 설치 됨');
       try {
         await UserApi.instance.loginWithKakaoTalk();
         print('카카오톡으로 로그인 성공');
@@ -103,11 +109,12 @@ class _LoginPageState extends State<LoginPage> {
         }
         _kakaoLoginUser(user).then((response){
           print(utf8.decode(response.bodyBytes));
-          if(response.statusCode == 200) {
-            final Map<String, dynamic> responseData = jsonDecode(
-                utf8.decode(response.bodyBytes));
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> responseData = 
+                jsonDecode(utf8.decode(response.bodyBytes));
             final Map<String, String> header = response.headers;
-            _write(responseData, header).then((_) { // write  data
+            _write(responseData, header).then((_) { 
+              // write  data
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -164,20 +171,23 @@ class _LoginPageState extends State<LoginPage> {
 
     final NaverLoginResult result = await FlutterNaverLogin.logIn();
 
-    if(result.status == NaverLoginStatus.loggedIn){
+    if (result.status == NaverLoginStatus.loggedIn){
       print('Logged IN');
       _naverLoginUser(result).then((response){
         print(utf8.decode(response.bodyBytes));
-        if(response.statusCode == 200) {
-          final Map<String, dynamic> responseData = jsonDecode(
-              utf8.decode(response.bodyBytes));
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> responseData = 
+              jsonDecode(utf8.decode(response.bodyBytes));
           final Map<String, String> header = response.headers;
-          _write(responseData, header).then((_) { // write  data
+          _write(responseData, header).then((_) { 
+            // write  data
             showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('로그인',),
+                  title: Text(
+                    '로그인',
+                  ),
                   content: Text(responseData['name']! + '님 환영합니다.'),
                   actions: [
                     TextButton(
@@ -195,71 +205,61 @@ class _LoginPageState extends State<LoginPage> {
                 );
               },
             );
-          }
-          );
+          });
         }
       });
-    }else{
+    } else {
       print("Naver Login Failed");
     }
-
   }
-
 
   Future<void> GoogleLogin() async{
 
-    final GoogleSignInAccount? googleUser = await GoogleSignIn(scopes: [
-      'email',
-    ],).signIn();
+    final GoogleSignIn googleSignIn = GoogleSignIn();
 
-    // final GoogleSignIn googleSignIn = GoogleSignIn();
-    //
-    // final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
-    //
-    // if(googleSignInAccount != null){
-    //   print("구글 로그인");
-    //   _googleLoginUser(googleSignInAccount).then((response){
-    //     print(utf8.decode(response.bodyBytes));
-    //     if(response.statusCode == 200) {
-    //       final Map<String, dynamic> responseData = jsonDecode(
-    //           utf8.decode(response.bodyBytes));
-    //       final Map<String, String> header = response.headers;
-    //       _write(responseData, header).then((_) { // write  data
-    //         showDialog(
-    //           context: context,
-    //           builder: (BuildContext context) {
-    //             return AlertDialog(
-    //               title: Text('로그인'),
-    //               content: Text(responseData['name']! + '님 환영합니다.'),
-    //               actions: [
-    //                 TextButton(
-    //                   onPressed: () {
-    //                     Navigator.pop(context);
-    //                     Navigator.push(
-    //                       context,
-    //                       MaterialPageRoute(
-    //                           builder: (context) => const Home()),
-    //                     );
-    //                   },
-    //                   child: Text('확인'),
-    //                 ),
-    //               ],
-    //             );
-    //           },
-    //         );
-    //       }
-    //       );
-    //     }
-    //   });
-    // }
-    // else{
-    //   print("구글 로그인 실패");
-    // }
+    final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+
+    if(googleSignInAccount != null){
+      print("구글 로그인");
+      _googleLoginUser(googleSignInAccount).then((response){
+        print(utf8.decode(response.bodyBytes));
+        if(response.statusCode == 200) {
+          final Map<String, dynamic> responseData = 
+              jsonDecode(utf8.decode(response.bodyBytes));
+          final Map<String, String> header = response.headers;
+          _write(responseData, header).then((_) { 
+            // write  data
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('로그인'),
+                  content: Text(responseData['name']! + '님 환영합니다.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Home()),
+                        );
+                      },
+                      child: Text('확인'),
+                    ),
+                  ],
+                );
+              },
+            );
+          });
+        }
+      });
+    } else {
+      print("구글 로그인 실패");
+    }
   }
 
   Future<http.Response> _loginUser() async {
-
-    final url = Uri.http( '${UrlUtil.url}:8080','/api/v1/members/login');
+    final url = Uri.http('${UrlUtil.url}:8080', '/api/v1/members/login');
 
     final response = await http.post(
       url,
@@ -277,12 +277,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<http.Response> _kakaoLoginUser(User user) async{
-    final url = Uri.http( '${UrlUtil.url}:8080','/api/v1/oauth/login/kakao');
+    final url = Uri.http('${UrlUtil.url}:8080', '/api/v1/oauth/login/kakao');
     String? email = user.kakaoAccount?.email;
     String? name = user.kakaoAccount?.profile?.nickname;
     String? profile = user.kakaoAccount?.profile?.profileImageUrl;
-    final response = await http.post(
-        url,
+    final response = await http.post(url,
         headers: {
           "Access-Control-Allow-Origin": "*",
           'Content-Type': 'application/json; charset=UTF-8',
@@ -291,8 +290,7 @@ class _LoginPageState extends State<LoginPage> {
           'email': email,
           'name' : name,
           'profile': profile,
-        })
-    );
+        }));
     return response;
   }
 
@@ -301,8 +299,7 @@ class _LoginPageState extends State<LoginPage> {
     String email = result.account.email;
     String name = result.account.name;
     String profile = result.account.profileImage;
-    final response = await http.post(
-        url,
+    final response = await http.post(url,
         headers: {
           "Access-Control-Allow-Origin": "*",
           'Content-Type': 'application/json; charset=UTF-8',
@@ -311,8 +308,7 @@ class _LoginPageState extends State<LoginPage> {
           'email': email,
           'name': name,
           'profile': profile,
-        })
-    );
+        }));
     return response;
   }
 
@@ -321,8 +317,7 @@ class _LoginPageState extends State<LoginPage> {
     String? email = account.email;
     String? name = account.displayName;
     String? profile = account.photoUrl;
-    final response = await http.post(
-        url,
+    final response = await http.post(url,
         headers: {
           "Access-Control-Allow-Origin": "*",
           'Content-Type': 'application/json; charset=UTF-8',
@@ -331,8 +326,7 @@ class _LoginPageState extends State<LoginPage> {
           'email': email,
           'name': name,
           'profile': profile,
-        })
-    );
+        }));
     return response;
   }
 
@@ -366,7 +360,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
 
   Widget _header(context) {
     return Column(
@@ -446,7 +439,7 @@ class _LoginPageState extends State<LoginPage> {
           decoration: InputDecoration(
             hintText: "아이디(이메일)",
             hintStyle: const TextStyle(
-            fontFamily: 'NanumSquareNeo-Bold',
+              fontFamily: 'NanumSquareNeo-Bold',
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(4),
@@ -497,7 +490,11 @@ class _LoginPageState extends State<LoginPage> {
           }
               : null, // 입력되지 않은 경우 버튼을 비활성화
           child: Text(
-            "로그인", style: TextStyle(fontSize: 20, fontFamily: 'NanumSquareNeo-Bold', color: Colors.white),
+            "로그인", 
+            style: TextStyle(
+                fontSize: 20, 
+                fontFamily: 'NanumSquareNeo-Bold', 
+                color: Colors.white),
           ),
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -536,31 +533,33 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-        SizedBox(height: 16,),
+        SizedBox(
+          height: 16
+        ),
         Center(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: KakaoLogin,
-                  child: Image.asset("assets/images/kakao.png", width: 44),
-                ),
-                TextButton(
-                  onPressed: NaverLogin,
-                  child: Image.asset("assets/images/naver.png", width: 44),
-                ),
-                TextButton(
-                  onPressed: GoogleLogin,
-                  child: Image.asset("assets/images/google.png", width: 44),
-                )
-              ],
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: KakaoLogin,
+              child: Image.asset("assets/images/kakao.png", width: 44),
+            ),
+            TextButton(
+              onPressed: NaverLogin,
+              child: Image.asset("assets/images/naver.png", width: 44),
+            ),
+            TextButton(
+              onPressed: GoogleLogin,
+              child: Image.asset("assets/images/google.png", width: 44),
             )
-          ),
-          SizedBox(height: 80,)
-        ],
-      );
-    }
-
+          ],
+        )),
+        SizedBox(
+          height: 80,
+        )
+      ],
+    );
+  }
 
   Widget _signup(context) {
     return TextButton(
@@ -570,7 +569,8 @@ class _LoginPageState extends State<LoginPage> {
           MaterialPageRoute(builder: (context) => SignupPage()),
         );
       },
-      child: Text("회원가입",
+      child: Text(
+        "회원가입",
         style: TextStyle(
           fontFamily: 'NanumSquareNeo-Bold',
           color: Colors.black,
@@ -587,7 +587,8 @@ class _LoginPageState extends State<LoginPage> {
           MaterialPageRoute(builder: (context) => FindId()),
         );
       },
-      child: Text("아이디 찾기",
+      child: Text(
+        "아이디 찾기",
         style: TextStyle(
           fontFamily: 'NanumSquareNeo-Bold',
           color: Colors.black,
@@ -604,7 +605,8 @@ class _LoginPageState extends State<LoginPage> {
           MaterialPageRoute(builder: (context) => FindPw()),
         );
       },
-      child: Text("비밀번호 찾기",
+      child: Text(
+        "비밀번호 찾기",
         style: TextStyle(
           fontFamily: 'NanumSquareNeo-Bold',
           color:Colors.black,
