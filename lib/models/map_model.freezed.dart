@@ -21,6 +21,7 @@ MapModel _$MapModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$MapModel {
   String get mapName => throw _privateConstructorUsedError;
+  int get ownerId => throw _privateConstructorUsedError;
   List<FriendModel> get friends => throw _privateConstructorUsedError;
   Prediction get location => throw _privateConstructorUsedError;
   DateTime get selectedDate => throw _privateConstructorUsedError;
@@ -43,6 +44,7 @@ abstract class $MapModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String mapName,
+      int ownerId,
       List<FriendModel> friends,
       Prediction location,
       DateTime selectedDate,
@@ -66,6 +68,7 @@ class _$MapModelCopyWithImpl<$Res, $Val extends MapModel>
   @override
   $Res call({
     Object? mapName = null,
+    Object? ownerId = null,
     Object? friends = null,
     Object? location = null,
     Object? selectedDate = null,
@@ -79,6 +82,10 @@ class _$MapModelCopyWithImpl<$Res, $Val extends MapModel>
           ? _value.mapName
           : mapName // ignore: cast_nullable_to_non_nullable
               as String,
+      ownerId: null == ownerId
+          ? _value.ownerId
+          : ownerId // ignore: cast_nullable_to_non_nullable
+              as int,
       friends: null == friends
           ? _value.friends
           : friends // ignore: cast_nullable_to_non_nullable
@@ -121,6 +128,7 @@ abstract class _$$MapModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {String mapName,
+      int ownerId,
       List<FriendModel> friends,
       Prediction location,
       DateTime selectedDate,
@@ -142,6 +150,7 @@ class __$$MapModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? mapName = null,
+    Object? ownerId = null,
     Object? friends = null,
     Object? location = null,
     Object? selectedDate = null,
@@ -155,6 +164,10 @@ class __$$MapModelImplCopyWithImpl<$Res>
           ? _value.mapName
           : mapName // ignore: cast_nullable_to_non_nullable
               as String,
+      ownerId: null == ownerId
+          ? _value.ownerId
+          : ownerId // ignore: cast_nullable_to_non_nullable
+              as int,
       friends: null == friends
           ? _value._friends
           : friends // ignore: cast_nullable_to_non_nullable
@@ -192,6 +205,7 @@ class __$$MapModelImplCopyWithImpl<$Res>
 class _$MapModelImpl extends _MapModel {
   _$MapModelImpl(
       {required this.mapName,
+      required this.ownerId,
       required final List<FriendModel> friends,
       required this.location,
       required this.selectedDate,
@@ -208,6 +222,8 @@ class _$MapModelImpl extends _MapModel {
 
   @override
   final String mapName;
+  @override
+  final int ownerId;
   final List<FriendModel> _friends;
   @override
   List<FriendModel> get friends {
@@ -238,7 +254,7 @@ class _$MapModelImpl extends _MapModel {
 
   @override
   String toString() {
-    return 'MapModel(mapName: $mapName, friends: $friends, location: $location, selectedDate: $selectedDate, expenses: $expenses, isSharedMap: $isSharedMap, lastExpensesUpdate: $lastExpensesUpdate, color: $color)';
+    return 'MapModel(mapName: $mapName, ownerId: $ownerId, friends: $friends, location: $location, selectedDate: $selectedDate, expenses: $expenses, isSharedMap: $isSharedMap, lastExpensesUpdate: $lastExpensesUpdate, color: $color)';
   }
 
   @override
@@ -247,6 +263,7 @@ class _$MapModelImpl extends _MapModel {
         (other.runtimeType == runtimeType &&
             other is _$MapModelImpl &&
             (identical(other.mapName, mapName) || other.mapName == mapName) &&
+            (identical(other.ownerId, ownerId) || other.ownerId == ownerId) &&
             const DeepCollectionEquality().equals(other._friends, _friends) &&
             (identical(other.location, location) ||
                 other.location == location) &&
@@ -265,6 +282,7 @@ class _$MapModelImpl extends _MapModel {
   int get hashCode => Object.hash(
       runtimeType,
       mapName,
+      ownerId,
       const DeepCollectionEquality().hash(_friends),
       location,
       selectedDate,
@@ -290,6 +308,7 @@ class _$MapModelImpl extends _MapModel {
 abstract class _MapModel extends MapModel {
   factory _MapModel(
       {required final String mapName,
+      required final int ownerId,
       required final List<FriendModel> friends,
       required final Prediction location,
       required final DateTime selectedDate,
@@ -304,6 +323,8 @@ abstract class _MapModel extends MapModel {
 
   @override
   String get mapName;
+  @override
+  int get ownerId;
   @override
   List<FriendModel> get friends;
   @override

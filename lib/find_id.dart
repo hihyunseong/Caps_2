@@ -46,7 +46,7 @@ class _FindIdState extends State<FindId> {
               Row(
                 children: [
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.2, // 드롭다운 버튼의 너비를 조정합니다.
+                  width: MediaQuery.of(context).size.width * 0.2, 
                   child: DropdownButtonFormField<String>(
                     value: _selectedCountryCode,
                     onChanged: (value) {

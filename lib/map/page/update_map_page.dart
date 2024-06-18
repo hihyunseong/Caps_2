@@ -2,29 +2,28 @@ import 'package:caps_2/add_expense/widget/custom_button.dart';
 import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/friend/provider/friend_provider.dart';
 import 'package:caps_2/friend/widget/friend_text_field.dart';
+import 'package:caps_2/models/map_model.dart';
+import 'package:caps_2/provider/map_provider.dart';
+import 'package:caps_2/widgets/sub_title_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'models/map_model.dart';
-import 'provider/map_provider.dart';
+class UpdateMapPage extends StatefulWidget {
+  final MapModel mapModel;
 
-class MapPlus extends StatefulWidget {
-  final bool isSharedMap;
-
-  const MapPlus({
+  const UpdateMapPage({
     super.key,
-    this.isSharedMap = false,
+    required this.mapModel,
   });
 
   @override
-  State<MapPlus> createState() => _MapPlusState();
+  State<UpdateMapPage> createState() => _UpdateMapPageState();
 }
 
-class _MapPlusState extends State<MapPlus> {
+class _UpdateMapPageState extends State<UpdateMapPage> {
   // 맵 이름
   final TextEditingController _mapNameController = TextEditingController();
   // 친구 초대
@@ -43,6 +42,14 @@ class _MapPlusState extends State<MapPlus> {
     super.initState();
     _friendSearchController.addListener(() {
       _searchText.value = _friendSearchController.text;
+    });
+    setState(() {
+      _mapNameController.text = widget.mapModel.mapName;
+      selectedColor = widget.mapModel.color;
+      selectedLocation = widget.mapModel.location;
+      selectedFriends = List.from(widget.mapModel.friends);
+      selectedLocation = widget.mapModel.location;
+      _locationController.text = selectedLocation?.description ?? '';
     });
   }
 
@@ -64,7 +71,7 @@ class _MapPlusState extends State<MapPlus> {
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
-          widget.isSharedMap ? '공유맵 생성' : '마이맵 생성',
+          widget.mapModel.isSharedMap ? '공유맵 편집' : '마이맵 편집',
           style: const TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.w900,
@@ -82,21 +89,21 @@ class _MapPlusState extends State<MapPlus> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10.0),
-                  _buildSubTitle(subTitle: '맵 이름', isRequired: true),
+                  SubTitleWidget(subTitle: '맵 이름', isRequired: true),
                   const SizedBox(height: 10.0),
                   _titleInputWidget(),
                   const SizedBox(height: 20.0),
-                  _buildSubTitle(subTitle: '맵 색상 선택', isRequired: true),
+                  SubTitleWidget(subTitle: '맵 색상 선택', isRequired: true),
                   const SizedBox(height: 10.0),
                   _colorSelectWidget(),
                   const SizedBox(height: 20.0),
-                  if (widget.isSharedMap) ...[
-                    _buildSubTitle(subTitle: '친구 초대', isRequired: true),
+                  if (widget.mapModel.isSharedMap) ...[
+                    SubTitleWidget(subTitle: '친구 초대', isRequired: true),
                     const SizedBox(height: 10.0),
                     _friendInviteWidget(friendProvider),
                     const SizedBox(height: 20.0),
                   ],
-                  _buildSubTitle(subTitle: '지역 선택', isRequired: true),
+                  SubTitleWidget(subTitle: '지역 선택', isRequired: true),
                   const SizedBox(height: 10.0),
                   _locationSelectWidget(),
                   const SizedBox(height: 100.0),
@@ -110,7 +117,7 @@ class _MapPlusState extends State<MapPlus> {
               CustomButton(
                 title: '완료',
                 onTap: () {
-                  _registerMap();
+                  _updateMap();
                 },
                 height: 70,
                 color:
@@ -119,40 +126,6 @@ class _MapPlusState extends State<MapPlus> {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSubTitle({required String subTitle, bool isRequired = false}) {
-    if (isRequired) {
-      return Row(
-        children: [
-          Text(
-            subTitle,
-            style: const TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w900,
-              fontFamily: 'NanumSquareNeo-Bold',
-            ),
-          ),
-          const Text(
-            '*',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w900,
-              fontFamily: 'NanumSquareNeo-Bold',
-              color: Colors.red,
-            ),
-          ),
-        ],
-      );
-    }
-    return Text(
-      subTitle,
-      style: const TextStyle(
-        fontSize: 18.0,
-        fontWeight: FontWeight.w900,
-        fontFamily: 'NanumSquareNeo-Bold',
       ),
     );
   }
@@ -346,7 +319,7 @@ class _MapPlusState extends State<MapPlus> {
 
   bool _isReadyToRegister() {
     // 공유맵
-    if (widget.isSharedMap) {
+    if (widget.mapModel.isSharedMap) {
       if (_mapNameController.text.isEmpty ||
           selectedColor == null ||
           selectedLocation == null ||
@@ -364,17 +337,7 @@ class _MapPlusState extends State<MapPlus> {
     return true;
   }
 
-  void _registerMap() async {
-    // // isSharedMap이 true인 경우, 임시로 친구 추가
-    // if (widget.isSharedMap) {
-    //   friends.add('친구1');
-    // }
-
-    // // 현재는 friend textfield에 글자가 있는 경우 배열에 넣어줘서 처리
-    // if (_friendController.text != '') {
-    //   friends.add(_friendController.text);
-    // }
-
+  void _updateMap() async {
     if (_mapNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -392,7 +355,7 @@ class _MapPlusState extends State<MapPlus> {
       );
       return;
     }
-    if (widget.isSharedMap) {
+    if (widget.mapModel.isSharedMap) {
       if (selectedFriends.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -416,8 +379,6 @@ class _MapPlusState extends State<MapPlus> {
 
     final loadIdx = await storage.read(key: 'idx');
 
-    // final owner = FriendModel(idx: lo, email: email, name: name, createdAt: createdAt, updatedAt: updatedAt)
-
     final newMap = MapModel(
       mapName: _mapNameController.text,
       ownerId: int.parse(loadIdx ?? ''),
@@ -426,12 +387,12 @@ class _MapPlusState extends State<MapPlus> {
       selectedDate: selectedDate,
       expenses: [],
       color: selectedColor!,
-      isSharedMap: widget.isSharedMap,
+      isSharedMap: widget.mapModel.isSharedMap,
     );
 
     final mapProvider = context.read<MapProvider>();
-    mapProvider.addMapModel(newMap);
+    mapProvider.updateMapModel(widget.mapModel, newMap);
 
-    Navigator.of(context).pop(newMap);
+    Navigator.of(context).pop();
   }
 }

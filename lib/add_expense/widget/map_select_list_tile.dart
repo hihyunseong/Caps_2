@@ -6,8 +6,9 @@ import 'package:provider/provider.dart';
 class MapSelectListTile extends StatelessWidget {
   final MapModel mapModel;
   final Function()? onTap;
+  final bool isSelected;
 
-  const MapSelectListTile({super.key, required this.mapModel, this.onTap});
+  const MapSelectListTile({super.key, required this.mapModel, this.onTap, required this.isSelected,});
 
   @override
   Widget build(BuildContext context) {
@@ -15,47 +16,13 @@ class MapSelectListTile extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10),
       child: InkWell(
         onTap: onTap,
-        onLongPress: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('확인'),
-                content: Text('${mapModel.mapName}을 삭제하시겠습니까?'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('취소'),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      final mapProvider = context.read<MapProvider>();
-                      await mapProvider.deleteMapModel(mapModel);
-
-                      Navigator.of(context).pop();
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('삭제되었습니다.'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                    },
-                    child: const Text('삭제'),
-                  ),
-                ],
-              );
-            },
-          );
-        },
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: mapModel.color,
             borderRadius: BorderRadius.circular(10),
+            border: isSelected ? Border.all(color: Colors.black, width: 2) : null,
           ),
           child: Row(
             children: [
@@ -76,20 +43,22 @@ class MapSelectListTile extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         mapModel.friends.isNotEmpty
-                            ? const Icon(
-                                Icons.people_alt,
+                            ? Image.asset(
+                                'assets/images/person.png',
+                                width: 14,
+                                height: 14,
                                 color: Colors.white,
-                                size: 14,
                               )
-                            : const Icon(
-                                Icons.person,
+                            : Image.asset(
+                                'assets/images/person2.png',
+                                width: 14,
+                                height: 14,
                                 color: Colors.white,
-                                size: 14,
                               ),
                         const SizedBox(width: 4),
                         mapModel.friends.isNotEmpty
                             ? Text(
-                                mapModel.friends.length.toString(),
+                                (mapModel.friends.length + 1).toString(),
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontFamily: 'NanumSquareNeo-Bold',

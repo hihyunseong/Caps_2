@@ -13,6 +13,7 @@ part 'map_model.g.dart';
 class MapModel with _$MapModel {
   factory MapModel({
     required String mapName,
+    required int ownerId,
     required List<FriendModel> friends,
     required Prediction location,
     required DateTime selectedDate,

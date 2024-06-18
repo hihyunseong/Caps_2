@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:caps_2/enums/map_status.dart';
+import 'package:caps_2/common/enums/map_status.dart';
+import 'package:caps_2/models/category.dart';
 import 'package:caps_2/models/daily_expense.dart';
 import 'package:caps_2/models/expense.dart';
 import 'package:caps_2/models/map_model.dart';
@@ -26,7 +27,8 @@ class MapProvider extends ChangeNotifier {
   late ApiService apiService;
   late Directory _mapDir;
 
-  final String mapUrl = "http://"+UrlUtil.url + ':8082/api/v1/maps';
+
+  final String mapUrl = "http://" + UrlUtil.url + ':8082/api/v1/maps';
 
   String? _loadAccToken;
   String? _loadRefToken;
@@ -37,90 +39,72 @@ class MapProvider extends ChangeNotifier {
   }
 
   //마이맵 불러오기
-  Future<List<Maps>> getMyMap() async{
-    final res = await  _dio.get(
-      '$mapUrl/private',
-    ).catchError((error)=>{
-      print(error)
-    });
+  Future<List<Maps>> getMyMap() async {
+    final res = await _dio
+        .get(
+          '$mapUrl/private',
+        )
+        .catchError((error) => {print(error)});
     print(res);
-    return res.data
-    .map((e)=>MapModel.fromJson(e))
-    .cast<MapModel>()
-    .toList();
+    return res.data.map((e) => MapModel.fromJson(e)).cast<MapModel>().toList();
   }
+
   //공유맵 불러오기
-  Future<List<Maps>> getSharedMap() async{
-    final res = await  _dio.get(
-      '$mapUrl/shared',
-    ).catchError((error)=>{
-      print(error)
-    });
+  Future<List<Maps>> getSharedMap() async {
+    final res = await _dio
+        .get(
+          '$mapUrl/shared',
+        )
+        .catchError((error) => {print(error)});
     print(res);
-    return res.data
-        .map((e)=>Maps.fromJson(e))
-        .cast<Maps>()
-        .toList();
+    return res.data.map((e) => Maps.fromJson(e)).cast<Maps>().toList();
   }
+  
   //마이맵 만들기
-  Future<void> createMyMap(String title, String color, int lat, int lon) async{
-    final res = await _dio.post(
-      '$mapUrl/private',
-      data: {
-        'title':title,
-        'color':color,
-        'lat':lat,
-        'lon':lon,
-      }
-    );
-    print(res);
-  }
-  //공유맵 만들기
-  Future<void> createSharedMap(String title, String color, int lat, int lon) async{
-    final res = await _dio.post(
-        '$mapUrl/shared',
-        data: {
-          'title':title,
-          'color':color,
-          'lat':lat,
-          'lon':lon,
-        }
-    );
-    print(res);
-  }
-  //지도 멤버 불러오기
-  Future<List<MemberInfo>> getMapMembers(int idx) async{
-    final res = await _dio.get(
-        '$mapUrl/members$idx'
-    ).catchError((error)=>{
-      print(error)
+  Future<void> createMyMap(String title, String color, int lat, int lon) async {
+    final res = await _dio.post('$mapUrl/private', data: {
+      'title': title,
+      'color': color,
+      'lat': lat,
+      'lon': lon,
     });
     print(res);
+  }
+  
+  //공유맵 만들기
+  Future<void> createSharedMap(
+      String title, String color, int lat, int lon) async {
+    final res = await _dio.post('$mapUrl/shared', data: {
+      'title': title,
+      'color': color,
+      'lat': lat,
+      'lon': lon,
+    });
+    print(res);
+  }
+
+  //지도 멤버 불러오기
+  Future<List<MemberInfo>> getMapMembers(int idx) async {
+    final res = await _dio
+        .get('$mapUrl/members$idx')
+        .catchError((error) => {print(error)});
+    print(res);
     return res.data
-        .map((e)=>MemberInfo.fromJson(e))
+        .map((e) => MemberInfo.fromJson(e))
         .cast<MemberInfo>()
         .toList();
   }
 
   //만든 지도 멤버 추가하기
-  Future<void> addNewMapMembers()async{
-
-  }
+  Future<void> addNewMapMembers() async {}
   //기존 지도 멤버 추가하기
-  Future<void> addExistMapMember()async{
-
-  }
+  Future<void> addExistMapMember() async {}
   //지도 이름 바꾸기
-  Future<void> changeMapInfo()async{
-
-  }
+  Future<void> changeMapInfo() async {}
   //지도 나가기
-  Future<void> exitCurrentMap(int idx)async{
-    final res = await _dio.delete(
-        '$mapUrl/$idx'
-    ).catchError((error)=>{
-      print(error)
-    });
+  Future<void> exitCurrentMap(int idx) async {
+    final res =
+        await _dio.delete('$mapUrl/$idx').catchError((error) => {print(error)});
     print(res.data);
   }
 
@@ -133,7 +117,7 @@ class MapProvider extends ChangeNotifier {
       _dio.options.headers['x-refresh-token'] = 'Bearer $_loadRefToken';
     }
   }
-
+  
   Future<void> _init() async {
     // load all map models
     final appDir = await getApplicationDocumentsDirectory();
@@ -214,6 +198,10 @@ class MapProvider extends ChangeNotifier {
     final filename = 'map_${mapModel.mapName}.json';
     final loadedMapModel = await apiService.loadMapModel(filename);
 
+    print(loadedMapModel);
+    print(loadedMapModel?.expenses.length);
+    print(loadedMapModel?.expenses);
+
     // 인덱스 초기화
     _currentIndex = 0;
 
@@ -236,6 +224,17 @@ class MapProvider extends ChangeNotifier {
       _markers.clear();
       _polylines.clear();
     }
+
+    notifyListeners();
+  }
+
+  Future<void> updateMapModel(
+      MapModel beforeMapModel, MapModel afterMapModel) async {
+    await apiService.updateMapModel(beforeMapModel, afterMapModel);
+
+    final index = _mapList
+        .indexWhere((element) => element.mapName == beforeMapModel.mapName);
+    _mapList[index] = afterMapModel;
 
     notifyListeners();
   }
@@ -371,7 +370,7 @@ class MapProvider extends ChangeNotifier {
 
     LatLngBounds bounds = _calculateBounds(_markers);
 
-    CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 250);
+    CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
     await mapController.animateCamera(cameraUpdate);
   }
 
@@ -487,4 +486,45 @@ class MapProvider extends ChangeNotifier {
     _expense = expense;
     notifyListeners();
   }
+
+// 카테고리
+  final List<Category> _activeCategories = [
+    Category.food,
+    Category.cafe,
+    Category.alcohol,
+    Category.photo,
+    Category.shopping,
+    Category.gift,
+  ];
+
+  List<Category> get activeCategories => _activeCategories;
+
+  final List<Category> _hiddenCategories = [
+    Category.culture,
+    Category.accommodations,
+    Category.mart,
+    Category.flower,
+    Category.medicine,
+    Category.tip,
+    Category.beauty,
+    Category.transport,
+    Category.etc,
+  ];
+
+  List<Category> get hiddenCategories => _hiddenCategories;
+
+  void showCategory(Category category) {
+    _activeCategories.add(category);
+    _hiddenCategories.remove(category);
+
+    notifyListeners();
+  }
+
+  void hideCategory(Category category) {
+    _hiddenCategories.add(category);
+    _activeCategories.remove(category);
+    
+    notifyListeners();
+  }
 }
+

@@ -1,7 +1,7 @@
 import 'package:caps_2/friend/model/request_friend_model.dart';
 import 'package:caps_2/friend/provider/friend_provider.dart';
 import 'package:caps_2/friend/widget/profile_image_widget.dart';
-import 'package:caps_2/utils/app_util.dart';
+import 'package:caps_2/common/utils/app_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +38,7 @@ class FriendRequestTile extends StatelessWidget {
                 child: const Text(
                   '수락',
                   style: TextStyle(
-                    color: Colors.red,
+                    color: const Color(0xFFFF6F61),
                     fontFamily: 'NanumSquareNeo-Bold',
                   ),
                 ),

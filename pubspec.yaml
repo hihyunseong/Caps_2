@@ -87,6 +87,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/location_pin.png
+    - assets/images/pin.png
     - assets/images/frame.png
     - assets/images/pinkok.png
     - assets/images/my.png
@@ -117,12 +118,17 @@ flutter:
     - assets/images/category/transport.png
     - assets/images/category/beauty.png
     - assets/images/category/flower.png
+    - assets/images/category/etc.png
     - assets/images/logo1.png
     - assets/images/logo2.png
     - assets/images/kakao.png
     - assets/images/naver.png
     - assets/images/google.png
-
+    - assets/images/edit.png
+    - assets/images/person.png
+    - assets/images/person2.png
+    - assets/images/exit.png
+    
 
 
   # The following line ensures that the Material Icons font is

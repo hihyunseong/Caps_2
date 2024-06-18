@@ -1,7 +1,7 @@
 import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/friend/provider/friend_provider.dart';
 import 'package:caps_2/friend/widget/profile_image_widget.dart';
-import 'package:caps_2/utils/app_util.dart';
+import 'package:caps_2/common/utils/app_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +39,7 @@ class FriendSearchTile extends StatelessWidget {
           child: const Text(
             '친구 추가',
             style: TextStyle(
-              color: Colors.red,
+              color: const Color(0xFFFF6F61),
               fontFamily: 'NanumSquareNeo-Bold',
             ),
           ),
