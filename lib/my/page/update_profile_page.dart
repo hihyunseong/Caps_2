@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:caps_2/add_expense/widget/custom_button.dart';
+import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:caps_2/widgets/sub_title_widget.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/src/media_type.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   const UpdateProfilePage({super.key});
@@ -23,6 +29,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   String? accToken;
   String? refToken;
 
+  final storage = const FlutterSecureStorage();
+
   @override
   void initState() {
     super.initState();
@@ -30,8 +38,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   Future<void> _loadFromStorage() async {
-    final storage = const FlutterSecureStorage();
-
     final loadIdx = await storage.read(key: 'idx');
     final loadEmail = await storage.read(key: 'email');
     final loadName = await storage.read(key: 'name');
@@ -97,7 +103,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 title: '완료',
                 height: 70,
                 color: Colors.red[300]!,
-                onTap: () {},
+                onTap: () {
+                  _updateProfile();
+                },
               ),
             ],
           ),
@@ -107,31 +115,45 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   Widget _profileImageStack() {
+    Widget profileWidget;
+    if (profile == null) {
+      profileWidget = Container(
+        width: 90.0,
+        height: 90.0,
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.person,
+          size: 35.0,
+          color: Colors.grey[600],
+        ),
+      );
+    } else {
+      if (_image == null) {
+        profileWidget = ClipOval(
+          child: Image.network(
+            profile!,
+            width: 90,
+            height: 90,
+          ),
+        );
+      } else {
+        profileWidget = ClipOval(
+          child: Image.file(
+            File(_image!.path),
+            width: 90,
+            height: 90,
+          ),
+        );
+      }
+    }
     return Column(
       children: [
         Stack(
           children: [
-            profile == null
-                ? Container(
-                    width: 90.0,
-                    height: 90.0,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.person,
-                      size: 35.0,
-                      color: Colors.grey[600],
-                    ),
-                  )
-                : ClipOval(
-                    child: Image.network(
-                      profile!,
-                      width: 90,
-                      height: 90,
-                    ),
-                  ),
+            profileWidget,
             Positioned(
               bottom: 0,
               right: 0,
@@ -216,6 +238,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     final XFile? image = await picker.pickImage(
                       source: ImageSource.gallery,
                     );
+
                     setState(() {
                       _image = image;
                     });
@@ -242,5 +265,63 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         );
       },
     );
+  }
+
+  Future<void> _updateProfile() async {
+    print(accToken);
+    print(refToken);
+    String name = _nickNameController.text;
+    if (name != '') {
+      final url = Uri.http('${UrlUtil.url}:8080', '/api/v1/members/name');
+      final response = await http.patch(
+        url,
+        headers: {
+          'Content-Type': 'text/plain',
+          'Authorization': 'Bearer $accToken',
+          'x-refresh-token': 'Bearer $refToken'
+        },
+        body: name,
+      );
+
+      if (response.statusCode == 204) {
+        print('change name success');
+        await storage.write(key: 'name', value: name);
+        _loadFromStorage();
+      } else {
+        print("change nickname error:\n${response.body}");
+      }
+    }
+
+    if (_image != null) {
+      final url = Uri.http('http://${UrlUtil.url}:8080', '/api/v1/members/profile');
+      final request = http.MultipartRequest('POST', url);
+      // request.files.add(http.MultipartFile.fromBytes(
+      //   'file',
+      //   await File(_image!.path).readAsBytes()
+      // ));
+      final file = http.MultipartFile.fromBytes(
+        'file',
+        await File(_image!.path).readAsBytes(),
+        contentType: MediaType('image', '*')
+        // contentType: new Media
+      );
+      request.files.add(file);
+      request.headers.addAll({
+        'Content-Type': 'image/*',
+        'Authorization': 'Bearer $accToken',
+        'x-refresh-token': 'Bearer $refToken'
+      });
+
+      print(request.headers);
+      final response = await http.Response.fromStream(await request.send());
+
+      if (response.statusCode == 204) {
+        // await storage.write(key: 'name', value: name);
+        print('change profile success');
+        _loadFromStorage();
+      } else {
+        print("change profile error:\n${response.statusCode}\n${response.body}");
+      }
+    }
   }
 }
