@@ -49,7 +49,15 @@ const _$CategoryEnumMap = {
   Category.photo: 'photo',
   Category.shopping: 'shopping',
   Category.gift: 'gift',
-  Category.plus: 'plus',
+  Category.culture: 'culture',
+  Category.accommodations: 'accommodations',
+  Category.mart: 'mart',
+  Category.flower: 'flower',
+  Category.medicine: 'medicine',
+  Category.tip: 'tip',
+  Category.beauty: 'beauty',
+  Category.transport: 'transport',
+  Category.etc: 'etc',
 };
 
 const _$PayMethodEnumMap = {

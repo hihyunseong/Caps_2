@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:caps_2/add_expense/page/category_edit.dart';
 import 'package:caps_2/add_expense/widget/custom_button.dart';
 import 'package:caps_2/common/enums/pay_method.dart';
 import 'package:caps_2/friend/model/friend_model.dart';
@@ -201,15 +202,6 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
               fontFamily: 'NanumSquareNeo-Bold',
             ),
           ),
-          const Text(
-            '*',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w900,
-              fontFamily: 'NanumSquareNeo-Bold',
-              color: Colors.red,
-            ),
-          ),
         ],
       );
     }
@@ -227,6 +219,10 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
     return Row(
       children: [
         Text(
+          '📍',
+          style: TextStyle(fontSize: 16.0),
+        ),
+        Text(
           widget.expenseLocationName,
           style: const TextStyle(
             fontSize: 12.0,
@@ -242,7 +238,11 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
             color: Colors.grey,
           ),
         ),
-        const SizedBox(width: 10),
+        Text(
+          '🗓',
+          style: TextStyle(fontSize: 16.0),
+        ),
+        const SizedBox(width: 2),
         InkWell(
           onTap: () {
             // _editRecord();
@@ -282,15 +282,26 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
   }
 
   Widget _priceWidget() {
-    return Text(
-      '₩ ${_formatNumber(widget.amount.toString())}',
-      style: const TextStyle(
-        fontSize: 16.0,
-        fontFamily: 'NanumSquareNeo-Bold',
-        color: Colors.red,
-      ),
-    );
-  }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(
+          'assets/images/frame.png',
+          width: 24.0, 
+          height: 24.0, 
+        ),
+        const SizedBox(width: 8.0),
+        Text(
+          '₩ ${_formatNumber(widget.amount.toString())}',
+          style: const TextStyle(
+            fontSize: 16.0,
+            fontFamily: 'NanumSquareNeo-Bold',
+            color: Colors.red,
+            ),
+          ),
+        ],
+      );
+    }
 
   Widget _titleInputWidget() {
     return Column(
@@ -384,28 +395,27 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
   }
 
   Widget _categoryWidget() {
+    final categories = context.watch<MapProvider>().activeCategories;
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(width: 3.0),
-          _buildIconButton(Category.food),
-          const SizedBox(width: 3.0),
-          _buildIconButton(Category.cafe),
-          const SizedBox(width: 3.0),
-          _buildIconButton(Category.alcohol),
-          const SizedBox(width: 3.0),
-          _buildIconButton(Category.photo),
-          const SizedBox(width: 3.0),
-          _buildIconButton(Category.shopping),
-          const SizedBox(width: 3.0),
-          _buildIconButton(Category.gift),
-          const SizedBox(width: 3.0),
+          for (final category in categories) ...[
+            _buildIconButton(category),
+            const SizedBox(width: 3.0),
+          ],
           Column(
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CategoryEdit()),
+                  );
+                },
                 icon: Image.asset(
                   'assets/images/category/plus.png',
                   width: 40,
@@ -504,13 +514,13 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
       date.month,
       date.day,
       time.hour,
-      time.minute,
+      time.minute, 
     );
 
     final expense = Expense(
       expenseLocationName: widget.expenseLocationName,
       amount: widget.amount,
-      category: _selectedCategory ?? Category.plus,
+      category: _selectedCategory ?? Category.etc,
       content: _contentController.text,
       memo: _additionalInfoController.text,
       date: dateTime,
@@ -527,37 +537,36 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
     mapProvider.addExpense(expense);
   }
 
-  Widget _buildIconButton(Category category) {
-    return Column(
-      children: [
-        IconButton(
+ Widget _buildIconButton(Category category) {
+  return Column(
+    children: [
+      Transform.translate(
+        offset: _selectedCategory == category ? Offset(0, -6) : Offset(0, 0),
+        child: IconButton(
           onPressed: () {
             setState(() {
               _selectedCategory = category;
             });
           },
-          icon: _selectedCategory == category
-              ? Image.asset(
-                  category.iconPath,
-                  width: 52,
-                  height: 52,
-                )
-              : Image.asset(
-                  category.iconPath,
-                  width: 40,
-                  height: 40,
-                ),
+          icon: Image.asset(
+            category.iconPath,
+            width: 40,
+            height: 40,
+          ),
           iconSize: 32.0,
         ),
-        Text(
-          category.text,
-          style: const TextStyle(
-            fontSize: 12,
-            fontFamily: 'NanumSquareNeo-Bold',
-          ),
+      ),
+      Text(
+        category.text,
+        style: const TextStyle(
+          fontSize: 12,
+          fontFamily: 'NanumSquareNeo-Bold',
         ),
-      ],
-    );
+      ),
+    ],
+  );
+}
+
     // return Column(
     //   children: [
     //     IconButton(
@@ -572,7 +581,7 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
     //     Text(label),
     //   ],
     // );
-  }
+  
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(

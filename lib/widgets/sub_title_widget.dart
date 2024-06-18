@@ -31,7 +31,7 @@ class SubTitleWidget extends StatelessWidget {
               fontSize: fontSize,
               fontWeight: FontWeight.w900,
               fontFamily: 'NanumSquareNeo-Bold',
-              color: Colors.red,
+              color: const Color(0xFFFF6F61),
             ),
           ),
         ],

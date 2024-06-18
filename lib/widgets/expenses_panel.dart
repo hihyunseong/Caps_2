@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+// 맵 목록에서 맵 선택했을 때 보이는 첫 페이지 위젯
 class ExpensesPanel extends StatelessWidget {
   final PanelController panelController;
   final GoogleMapController googleMapController;
@@ -48,19 +49,66 @@ class ExpensesPanel extends StatelessWidget {
             children: [
               IconButton(
                   onPressed: mapModel.isSharedMap
-                      ? () =>
-                          mapProvider.changeShareMapStatus(MapStatus.mapList)
+                      ? () => mapProvider.changeShareMapStatus(MapStatus.mapList)
                       : () => mapProvider.changeMyMapStatus(MapStatus.mapList),
                   icon: const Icon(Icons.arrow_back)),
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  color: Colors.transparent,
-                  child: Text(
-                    mapModel.mapName,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'NanumSquareNeo-Bold',
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    color: Colors.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          mapModel.mapName,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'NanumSquareNeo-Bold',
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        if (mapModel.friends.isNotEmpty)
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/person.png',
+                                width: 16,
+                                height: 16,
+                                color: const Color(0xFFAF55A6),
+                                ),
+                              const SizedBox(width: 4),
+                              Text(
+                                (mapModel.friends.length + 1).toString(),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'NanumSquareNeo-Bold',
+                                  color: const Color(0xFFAF55A6),
+                                ),
+                              ),
+                            ],
+                          )
+                        else
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/person2.png',
+                                width: 16,
+                                height: 16,
+                                color: const Color(0xFFF15B7C),
+                              ),
+                              const SizedBox(width: 4),
+                              const Text(
+                                '1',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'NanumSquareNeo-Bold',
+                                  color: const Color(0xFFF15B7C),
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
                     ),
                   ),
                 ),

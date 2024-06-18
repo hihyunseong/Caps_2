@@ -49,26 +49,9 @@ class _LoginPageState extends State<LoginPage> {
         final Map<String, String> header = response.headers;
         _write(responseData, header).then((_) { 
           // write  data
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('로그인'),
-                content: Text(responseData['name']! + '님 환영합니다.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Home()),
-                      );
-                    },
-                    child: Text('확인'),
-                  ),
-                ],
-              );
-            },
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Home()),
           );
         });
       } else{

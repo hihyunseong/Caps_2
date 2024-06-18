@@ -7,8 +7,16 @@ enum Category {
   photo('사진', 'assets/images/category/photo.png', Icons.camera_alt),
   shopping('쇼핑', 'assets/images/category/shopping.png', Icons.shopping_cart),
   gift('선물', 'assets/images/category/gift.png', Icons.card_giftcard),
-  plus('편집', 'assets/images/category/plus.png', Icons.add),
-  ;
+
+  culture('문화생활', 'assets/images/category/culture.png', Icons.restaurant),
+  accommodations('숙소', 'assets/images/category/accommodations.png', Icons.local_cafe),
+  mart('마트', 'assets/images/category/mart.png', Icons.local_bar),
+  flower('꽃', 'assets/images/category/flower.png', Icons.camera_alt),
+  medicine('의료', 'assets/images/category/medicine.png', Icons.shopping_cart),
+  tip('팁', 'assets/images/category/tip.png', Icons.card_giftcard),
+  beauty('미용', 'assets/images/category/beauty.png', Icons.add),
+  transport('교통', 'assets/images/category/transport.png', Icons.card_giftcard),
+  etc('기타', 'assets/images/category/etc.png', Icons.add);
 
   final String text;
   final String iconPath;

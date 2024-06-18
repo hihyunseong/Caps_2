@@ -39,7 +39,7 @@ class FriendSearchTile extends StatelessWidget {
           child: const Text(
             '친구 추가',
             style: TextStyle(
-              color: Colors.red,
+              color: const Color(0xFFFF6F61),
               fontFamily: 'NanumSquareNeo-Bold',
             ),
           ),

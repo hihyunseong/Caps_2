@@ -93,8 +93,7 @@ class _MapSelectPageState extends State<MapSelectPage> {
                         borderSide: BorderSide(color: Colors.grey),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(30)),
+                        borderRadius: const BorderRadius.all(Radius.circular(30)),
                         borderSide: BorderSide(
                           color: Colors.grey[400]!,
                           width: 1.5,
@@ -117,6 +116,7 @@ class _MapSelectPageState extends State<MapSelectPage> {
                             .map(
                               (e) => MapSelectListTile(
                                 mapModel: e,
+                                isSelected: selectedMapModel == e,
                                 onTap: () {
                                   setState(() {
                                     selectedMapModel = e;

@@ -38,7 +38,7 @@ class FriendRequestTile extends StatelessWidget {
                 child: const Text(
                   '수락',
                   style: TextStyle(
-                    color: Colors.red,
+                    color: const Color(0xFFFF6F61),
                     fontFamily: 'NanumSquareNeo-Bold',
                   ),
                 ),

@@ -70,10 +70,11 @@ class _UpdateMapListTileState extends State<UpdateMapListTile> {
                   onTap: () {
                     _showDialog(context);
                   },
-                  child: const Icon(
-                    Icons.exit_to_app_rounded,
+                  child: Image.asset(
+                    'assets/images/exit.png',
                     color: Colors.white,
-                    size: 20,
+                    width: 20,
+                    height: 20,
                   ),
                 ),
               ],
@@ -98,16 +99,18 @@ class _UpdateMapListTileState extends State<UpdateMapListTile> {
                           ),
                           const SizedBox(width: 8),
                           widget.mapModel.friends.isNotEmpty
-                              ? const Icon(
-                                  Icons.people_alt,
-                                  color: Colors.white,
-                                  size: 14,
-                                )
-                              : const Icon(
-                                  Icons.person,
-                                  color: Colors.white,
-                                  size: 14,
-                                ),
+                              ? Image.asset(
+                                'assets/images/person.png',
+                                width: 14,
+                                height: 14,
+                                color: Colors.white,
+                              )
+                            : Image.asset(
+                                'assets/images/person2.png',
+                                width: 14,
+                                height: 14,
+                                color: Colors.white,
+                              ),
                           const SizedBox(width: 4),
                           widget.mapModel.friends.isNotEmpty
                               ? Text(

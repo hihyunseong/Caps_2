@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+// expenses_panel > daily_expense_panel 후 상세기록 보는 페이지 위젯
 class ExpenseDetailsPanel extends StatelessWidget {
   const ExpenseDetailsPanel({super.key});
 
@@ -50,70 +51,65 @@ class ExpenseDetailsPanel extends StatelessWidget {
                 //         mapProvider.changeShareMapStatus(MapStatus.mapDetails)
                 //     : () => mapProvider.changeMyMapStatus(MapStatus.mapDetails),
                 onPressed: mapModel.isSharedMap
-                    ? () =>
-                        mapProvider.changeShareMapStatus(MapStatus.dailyExpense)
-                    : () =>
-                        mapProvider.changeMyMapStatus(MapStatus.dailyExpense),
+                    ? () => mapProvider.changeShareMapStatus(MapStatus.dailyExpense)
+                    : () => mapProvider.changeMyMapStatus(MapStatus.dailyExpense),
                 icon: const Icon(Icons.arrow_back),
               ),
-              Text(
-                mapModel.mapName,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontFamily: 'NanumSquareNeo-Bold',
-                ),
+                  const IconButton(
+                    onPressed: null,
+                    icon: Icon(Icons.more_vert, color: Colors.transparent),
+                  ),
+                ],
               ),
-              const IconButton(
-                onPressed: null,
-                icon: Icon(Icons.more_vert, color: Colors.transparent),
+
+              // expense details
+              const SizedBox(height: 10),
+              Expanded(
+                child: ListView(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _locationAndDateSelectWidget(expense),
+                        const SizedBox(height: 20),
+                        _priceWidget(expense),
+                        const SizedBox(height: 20),
+                        ExpenseTile(
+                          expense: expense,
+                          imageHeight: 200,
+                          imageWidth: 200,
+                          onTap: () {},
+                        ),
+                        Divider(
+                          color: Colors.black,
+                          thickness: 1,
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          '댓글',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'NanumSquareNeo-Bold',
+                          ),
+                        ),
+                        SizedBox(height: 100.0),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-
-          // expense details
-          const SizedBox(height: 10),
-          Expanded(
-            child: ListView(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _locationAndDateSelectWidget(expense),
-                    const SizedBox(height: 20),
-                    _priceWidget(expense),
-                    const SizedBox(height: 20),
-                    ExpenseTile(
-                      expense: expense,
-                      imageHeight: 200,
-                      imageWidth: 200,
-                      onTap: () {},
-                    ),
-                    Divider(
-                      color: Colors.black,
-                      thickness: 2,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      '댓글',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontFamily: 'NanumSquareNeo-Bold',
-                      ),
-                    ),
-                    SizedBox(height: 100.0),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        );
+      }
 
   Widget _locationAndDateSelectWidget(Expense expense) {
     return Row(
       children: [
+        Text(
+          '📍',
+          style: TextStyle(fontSize: 16.0),
+        ),
         Text(
           expense.expenseLocationName,
           style: const TextStyle(
@@ -130,7 +126,12 @@ class ExpenseDetailsPanel extends StatelessWidget {
             color: Colors.grey,
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 2),
+        Text(
+          '🗓',
+          style: TextStyle(fontSize: 16.0),
+        ),
+        
         InkWell(
           onTap: () {
             // _editRecord();
@@ -171,25 +172,25 @@ class ExpenseDetailsPanel extends StatelessWidget {
 
   Widget _priceWidget(Expense expense) {
     return Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Image.asset(
-        'assets/images/frame.png',
-        width: 24.0, 
-        height: 24.0, 
-      ),
-      const SizedBox(width: 8.0),
-      Text(
-        '₩${_formatNumber(expense.amount.toString())}',
-        style: const TextStyle(
-          fontSize: 16.0,
-          fontFamily: 'NanumSquareNeo-Bold',
-          color: Colors.red,
-          ),
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(
+          'assets/images/frame.png',
+          width: 24.0, 
+          height: 24.0, 
         ),
-      ],
-    );
-  }
+        const SizedBox(width: 8.0),
+        Text(
+          '₩${_formatNumber(expense.amount.toString())}',
+          style: const TextStyle(
+            fontSize: 16.0,
+            fontFamily: 'NanumSquareNeo-Bold',
+            color: Colors.red,
+            ),
+          ),
+        ],
+      );
+    }
 
   String _formatNumber(String value) {
     if (value.isEmpty) return ''; // 빈 문자열이면 그대로 반환

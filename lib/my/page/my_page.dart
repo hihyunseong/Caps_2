@@ -302,7 +302,6 @@ class _MyPageState extends State<MyPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('사진 선택'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[

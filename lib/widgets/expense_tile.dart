@@ -4,6 +4,7 @@ import 'package:caps_2/models/expense.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+// expenses_panel 에서 날짜 클릭 했을 때 보이는 페이지 위젯
 class ExpenseTile extends StatelessWidget {
   final Expense expense;
   final Function() onTap;

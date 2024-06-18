@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:caps_2/common/enums/map_status.dart';
+import 'package:caps_2/models/category.dart';
 import 'package:caps_2/models/daily_expense.dart';
 import 'package:caps_2/models/expense.dart';
 import 'package:caps_2/models/map_model.dart';
@@ -93,11 +94,11 @@ class MapProvider extends ChangeNotifier {
   }
 
   //만든 지도 멤버 추가하기
-  Future<void> addNewMapMembers()async{}
+  Future<void> addNewMapMembers() async {}
   //기존 지도 멤버 추가하기
-  Future<void> addExistMapMember()async{}
+  Future<void> addExistMapMember() async {}
   //지도 이름 바꾸기
-  Future<void> changeMapInfo()async{}
+  Future<void> changeMapInfo() async {}
   //지도 나가기
   Future<void> exitCurrentMap(int idx) async {
     final res =
@@ -480,4 +481,45 @@ class MapProvider extends ChangeNotifier {
     _expense = expense;
     notifyListeners();
   }
+
+// 카테고리
+  final List<Category> _activeCategories = [
+    Category.food,
+    Category.cafe,
+    Category.alcohol,
+    Category.photo,
+    Category.shopping,
+    Category.gift,
+  ];
+
+  List<Category> get activeCategories => _activeCategories;
+
+  final List<Category> _hiddenCategories = [
+    Category.culture,
+    Category.accommodations,
+    Category.mart,
+    Category.flower,
+    Category.medicine,
+    Category.tip,
+    Category.beauty,
+    Category.transport,
+    Category.etc,
+  ];
+
+  List<Category> get hiddenCategories => _hiddenCategories;
+
+  void showCategory(Category category) {
+    _activeCategories.add(category);
+    _hiddenCategories.remove(category);
+
+    notifyListeners();
+  }
+
+  void hideCategory(Category category) {
+    _hiddenCategories.add(category);
+    _activeCategories.remove(category);
+    
+    notifyListeners();
+  }
 }
+

@@ -134,7 +134,7 @@ class _HomeState extends State<Home> {
         icon: await MyMarker(
           index: markers.length + 1,
           category:
-              expenses.isNotEmpty ? expenses.last.category : Category.plus,
+              expenses.isNotEmpty ? expenses.last.category : Category.etc,
           // icon: expenses.isNotEmpty
           //     ? expenses.last.category.icon
           //     : Icons.account_balance_wallet,
@@ -856,7 +856,7 @@ class _HomeState extends State<Home> {
         // 고정 핀 이미지
         Positioned(
           top: MediaQuery.of(context).size.height * 0.5 - 70,
-          child: Image.asset('assets/images/location_pin.png',
+          child: Image.asset('assets/images/pin.png',
               width: 50, height: 50),
         ),
       ],
