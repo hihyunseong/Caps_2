@@ -123,7 +123,9 @@ class _MyPageState extends State<MyPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => UpdateProfilePage()),
-                    )
+                    ).then((v) {
+                      _loadFromStorage();
+                    })
                   },
                   child: Image.asset(
                     'assets/images/edit.png',
@@ -302,6 +304,7 @@ class _MyPageState extends State<MyPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          title: Text('사진 선택'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[

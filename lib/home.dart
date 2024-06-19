@@ -169,7 +169,7 @@ class _HomeState extends State<Home> {
     setState(() {
       _selectedIndex = index;
     });
-
+//
     switch (index) {
       case 0:
         // 홈
