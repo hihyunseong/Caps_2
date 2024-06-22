@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:caps_2/common/config/Config.dart';
 import 'package:caps_2/provider/map_provider.dart';
 import 'package:caps_2/vo/UrlUtil.dart';
@@ -10,10 +11,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
-import 'home.dart';
-import 'signup.dart';
+
+import 'auth/signup.dart';
 import 'find_id.dart';
 import 'find_pw.dart';
+import 'home.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -120,8 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 },
               );
-            }
-            );
+            });
           }
         });
       } catch (error) {
@@ -151,7 +152,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> NaverLogin() async{
-
     final NaverLoginResult result = await FlutterNaverLogin.logIn();
 
     if (result.status == NaverLoginStatus.loggedIn){
@@ -197,7 +197,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> GoogleLogin() async{
-
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
@@ -516,9 +515,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-        SizedBox(
-          height: 16
-        ),
+        SizedBox(height: 16),
         Center(
             child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

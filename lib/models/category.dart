@@ -23,4 +23,40 @@ enum Category {
   final IconData icon;
 
   const Category(this.text, this.iconPath, this.icon);
+
+  @override
+  String toString() {
+    switch (this) {
+      case Category.food:
+        return 'MEAL';
+      case Category.cafe:
+        return 'CAFE';
+      case Category.alcohol:
+        return 'BEVERAGE';
+      case Category.photo:
+        return 'PICTURE';
+      case Category.shopping:
+        return 'SHOPPING';
+      case Category.gift:
+        return 'PRESENT';
+      case Category.culture:
+        return 'CULTURE';
+      case Category.accommodations:
+        return 'ACCOMMODATIONS';
+      case Category.mart:
+        return 'MART';
+      case Category.flower:
+        return 'FLOWER';
+      case Category.medicine:
+        return 'MEDICINE';
+      case Category.tip:
+        return 'TIP';
+      case Category.beauty:
+        return 'BEAUTY';
+      case Category.transport:
+        return 'TRANSPORT';
+      case Category.etc:
+        return '기타';
+    }
+  }
 }

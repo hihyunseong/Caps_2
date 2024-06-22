@@ -1,13 +1,25 @@
-class Maps{
+class Maps {
   int idx;
   String title;
   String color;
   int lat;
   int lon;
+  int expenses;
+  String selectedDate;
   String createdAt;
   String updatedAt;
 
-  Maps({required this.idx, required this.title, required this.color, required this.lat, required this.lon, required this.createdAt, required this.updatedAt});
+  Maps({
+    required this.idx,
+    required this.title,
+    required this.color,
+    required this.lat,
+    required this.lon,
+    required this.expenses,
+    required this.selectedDate,
+    required this.createdAt,
+    required this.updatedAt,
+  });
 
   factory Maps.fromJson(Map<Object, dynamic> json) {
     return Maps(
@@ -16,30 +28,46 @@ class Maps{
       color: json['color'].toString(),
       lat: int.parse(json['lat']),
       lon: int.parse(json['lon']),
+      expenses: int.parse(json['expenses']),
+      selectedDate: json['selectedDate'].toString(),
       createdAt: json['createdAt'].toString(),
       updatedAt: json['updatedAt'].toString(),
     );
   }
 
-  int getIdx(){
+  int getIdx() {
     return idx;
   }
-  String getTitle(){
+
+  String getTitle() {
     return title;
   }
-  String getColor(){
+
+  String getColor() {
     return color;
   }
-  int getLat(){
+
+  int getLat() {
     return lat;
   }
-  int getLon(){
+
+  int getLon() {
     return lon;
   }
-  String getCreatedAt(){
+
+  int getExpenses() {
+    return expenses;
+  }
+
+  String getSelectedDate() {
+    return selectedDate;
+  }
+
+  String getCreatedAt() {
     return createdAt;
   }
-  String getUpdatedAt(){
+
+  String getUpdatedAt() {
     return updatedAt;
   }
 }

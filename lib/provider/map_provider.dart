@@ -1,6 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:caps_2/common/enums/map_status.dart';
+import 'package:caps_2/common/utils/extensions.dart';
+import 'package:caps_2/common/utils/service_injector.dart';
+import 'package:caps_2/map/model/dto/dto_model.dart';
+import 'package:caps_2/map/model/request_pin/request_pin_model.dart';
+import 'package:caps_2/map/model/request_shared_map/request_shared_map_model.dart';
+import 'package:caps_2/map/model/request_shared_map_with_friends/request_shared_map_with_friends_model.dart';
+import 'package:caps_2/map/repository/pin_repository.dart';
+import 'package:caps_2/map/repository/shared_map_repository.dart';
 import 'package:caps_2/models/category.dart';
 import 'package:caps_2/models/daily_expense.dart';
 import 'package:caps_2/models/expense.dart';
@@ -14,15 +23,20 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:path_provider/path_provider.dart';
-
-import 'package:widget_to_marker/widget_to_marker.dart';
-
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:widget_to_marker/widget_to_marker.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class MapProvider extends ChangeNotifier {
   final _dio = Dio();
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  SharedMapRepository sharedMapRepository =
+      SharedMapRepository(Dio(), baseUrl: '');
+  PinRepository pinRepository = PinRepository(Dio(), baseUrl: '');
+
   late ApiService apiService;
   late Directory _mapDir;
 
@@ -34,6 +48,46 @@ class MapProvider extends ChangeNotifier {
   MapProvider() {
     _init();
     initializeHeader();
+  }
+
+  Future<void> _initRepository() async {
+    const String mapUrl = 'http://43.201.118.1:8082/api/v1/maps';
+    const String pinUrl = 'http://43.201.118.1:8083/api/v1/pins';
+
+    const FlutterSecureStorage storage = FlutterSecureStorage();
+
+    String? accToken = await storage.read(key: 'accToken');
+    String? refToken = await storage.read(key: 'refToken');
+
+    final Dio dio = Dio(
+      BaseOptions(
+        contentType: Headers.jsonContentType,
+      ),
+    )..interceptors.addAll(
+        <Interceptor>[
+          InterceptorsWrapper(
+            onRequest: (options, handler) async {
+              if (accToken != null && refToken != null) {
+                options.headers['Authorization'] = 'Bearer $accToken';
+                options.headers['x-refresh-token'] = 'Bearer $refToken';
+              }
+              return handler.next(options); //continue
+            },
+          ),
+          PrettyDioLogger(
+            requestHeader: true,
+            requestBody: true,
+            responseBody: true,
+            responseHeader: true,
+            error: true,
+            compact: true,
+            maxWidth: 90,
+          ),
+        ],
+      );
+
+    sharedMapRepository = SharedMapRepository(dio, baseUrl: mapUrl);
+    pinRepository = PinRepository(dio, baseUrl: pinUrl);
   }
 
   //마이맵 불러오기
@@ -48,16 +102,13 @@ class MapProvider extends ChangeNotifier {
   }
 
   //공유맵 불러오기
-  Future<List<Maps>> getSharedMap() async {
-    final res = await _dio
-        .get(
-          '$mapUrl/shared',
-        )
-        .catchError((error) => {print(error)});
-    print(res);
-    return res.data.map((e) => Maps.fromJson(e)).cast<Maps>().toList();
+  Future<void> getSharedMap() async {
+    await _initRepository();
+    final maps = await sharedMapRepository.getSharedMap();
+    sharedMapList = maps.map((e) => e.toMapModel()).toList();
+    notifyListeners();
   }
-  
+
   //마이맵 만들기
   Future<void> createMyMap(String title, String color, int lat, int lon) async {
     final res = await _dio.post('$mapUrl/private', data: {
@@ -68,7 +119,7 @@ class MapProvider extends ChangeNotifier {
     });
     print(res);
   }
-  
+
   //공유맵 만들기
   Future<void> createSharedMap(
       String title, String color, int lat, int lon) async {
@@ -95,10 +146,13 @@ class MapProvider extends ChangeNotifier {
 
   //만든 지도 멤버 추가하기
   Future<void> addNewMapMembers() async {}
+
   //기존 지도 멤버 추가하기
   Future<void> addExistMapMember() async {}
+
   //지도 이름 바꾸기
   Future<void> changeMapInfo() async {}
+
   //지도 나가기
   Future<void> exitCurrentMap(int idx) async {
     final res =
@@ -115,7 +169,7 @@ class MapProvider extends ChangeNotifier {
       _dio.options.headers['x-refresh-token'] = 'Bearer $_loadRefToken';
     }
   }
-  
+
   Future<void> _init() async {
     // load all map models
     final appDir = await getApplicationDocumentsDirectory();
@@ -141,6 +195,21 @@ class MapProvider extends ChangeNotifier {
         mapModels.add(mapModel!);
       }
     }
+    //TODO
+    // final sharedMaps = await getSharedMap();
+    // sharedMaps.map((e) async {
+    //   final friends = await sharedMapRepository.getSharedMember(mapIdx: e.idx);
+    //   return MapModel(
+    //     mapName: e.title,
+    //     ownerId: e.idx,
+    //     friends: friends,
+    //     location: location,
+    //     selectedDate: e.selectedDate,
+    //     expenses: e.expenses,
+    //     isSharedMap: true,
+    //     color: e.color,
+    //   );
+    // });
 
     _mapList.clear();
     _mapList.addAll(mapModels);
@@ -151,6 +220,7 @@ class MapProvider extends ChangeNotifier {
   // *******************************************
 
   final List<MapModel> _mapList = [];
+
   List<MapModel> get mapList => _mapList;
 
   void addMapModel(MapModel map) {
@@ -163,11 +233,11 @@ class MapProvider extends ChangeNotifier {
       mapList.where((element) => !element.isSharedMap).toList();
 
   // 공유 맵
-  List<MapModel> get sharedMapList =>
-      mapList.where((element) => element.isSharedMap).toList();
+  List<MapModel> sharedMapList = [];
 
   // marker
   final List<Marker> _markers = [];
+
   List<Marker> get markers => _markers;
 
   Future<void> addMarker(Marker marker) async {
@@ -212,8 +282,13 @@ class MapProvider extends ChangeNotifier {
   }
 
   Future<void> deleteMapModel(MapModel mapModel) async {
-    await apiService.deleteMapModel(mapModel.mapName);
-    _mapList.removeWhere((element) => element.mapName == mapModel.mapName);
+    if (mapModel.isSharedMap) {
+      await sharedMapRepository.deleteSharedMap(mapIdx: mapModel.ownerId);
+      await getSharedMap();
+    } else {
+      await apiService.deleteMapModel(mapModel.mapName);
+      _mapList.removeWhere((element) => element.mapName == mapModel.mapName);
+    }
 
     // 현재 사용중인 mapModel 이 삭제되었을 경우
     if (_mapModel?.mapName == mapModel.mapName) {
@@ -235,6 +310,43 @@ class MapProvider extends ChangeNotifier {
     _mapList[index] = afterMapModel;
 
     notifyListeners();
+  }
+
+  Future<void> saveSharedMap(MapModel map) async {
+    final parsedDate = map.selectedDate;
+    String formattedDate =
+        '${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}T${parsedDate.hour.toString().padLeft(2, '0')}:${parsedDate.minute.toString().padLeft(2, '0')}:${parsedDate.second.toString().padLeft(2, '0')}';
+
+    await sharedMapRepository
+        .postSharedMap(
+          model: RequestSharedMapModel(
+            title: map.mapName,
+            color: map.color.getColorString(),
+            lat: map.latLng!.latitude.toInt(),
+            lon: map.latLng!.longitude.toInt(),
+            selectedDate: formattedDate,
+          ),
+        )
+        .then(
+          (value) => {
+            sharedMapRepository.postSharedMapWithFriends(
+              mapIdx: value.idx,
+              model: map.friends
+                  .map(
+                    (e) => RequestSharedMapWithFriendsModel(
+                      mapIdx: value.idx,
+                      memberIdx: e.idx,
+                    ),
+                  )
+                  .toList(),
+            ),
+          },
+          onError: (error) => {
+            print(
+              error,
+            ),
+          },
+        );
   }
 
   Future<void> _setMarkers() async {
@@ -269,6 +381,7 @@ class MapProvider extends ChangeNotifier {
 
   // polilyne
   final List<Polyline> _polylines = [];
+
   List<Polyline> get polylines => _polylines;
 
   void _getPolylines() {
@@ -291,18 +404,65 @@ class MapProvider extends ChangeNotifier {
 
   // expense
   final List<Expense> _expenses = [];
+
   List<Expense> get expenses => _expenses;
 
-  void addExpense(Expense expense) {
-    _expenses.add(expense);
+  void addExpense(Expense expense, bool isSharedMap) async {
+    if (isSharedMap) {
+      final String url =
+          'http://43.201.118.1:8083/api/v1/pins/${expense.map.ownerId}';
 
-    // 최근 작성 시간 업데이트
-    int mapIndex = _mapList.indexWhere((map) =>
-        (map.mapName == expense.map.mapName &&
-            map.location == expense.map.location));
-    if (mapIndex != -1) {
-      _mapList[mapIndex] =
-          _mapList[mapIndex].copyWith(lastExpensesUpdate: DateTime.now());
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+      const FlutterSecureStorage storage = FlutterSecureStorage();
+
+      String? accToken = await storage.read(key: 'accToken');
+      String? refToken = await storage.read(key: 'refToken');
+
+      request.headers['Authorization'] = 'Bearer $accToken';
+      request.headers['x-refresh-token'] = 'Bearer $refToken';
+      request.headers['Content-Type'] = 'multipart/form-data';
+
+      if (expense.imagePath != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            expense.imagePath!,
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        );
+      }
+      final dto = DtoModel(
+        header: expense.expenseLocationName,
+        title: expense.content,
+        method: expense.payMethod.toString(),
+        category: expense.category.toString(),
+        memo: expense.memo,
+        cost: expense.amount.toInt(),
+        lat: expense.latitude,
+        lon: expense.longitude,
+      );
+
+      request.fields['dto'] = jsonEncode(dto.toJson());
+      final response = await request.send();
+      // 응답 확인
+      if (response.statusCode == 200) {
+        print('Upload successful.');
+      } else {
+        print('Upload failed.');
+      }
+
+      //await pinRepository.getPinInfo(pinIdx: pin.pinIdx);
+    } else {
+      _expenses.add(expense);
+
+      // 최근 작성 시간 업데이트
+      int mapIndex = _mapList.indexWhere((map) =>
+          (map.mapName == expense.map.mapName &&
+              map.location == expense.map.location));
+      if (mapIndex != -1) {
+        _mapList[mapIndex] =
+            _mapList[mapIndex].copyWith(lastExpensesUpdate: DateTime.now());
+      }
     }
 
     notifyListeners();
@@ -393,6 +553,7 @@ class MapProvider extends ChangeNotifier {
   }
 
   int _currentIndex = 0;
+
   int get currentIndex => _currentIndex;
 
   LatLng? incrementIndex() {
@@ -426,6 +587,7 @@ class MapProvider extends ChangeNotifier {
 
   // MapModel - 현재 선택된 MapModel을 의미
   MapModel? _mapModel;
+
   MapModel? get mapModel => _mapModel;
 
   void changeMapModel(MapModel mapModel) {
@@ -445,6 +607,7 @@ class MapProvider extends ChangeNotifier {
 
   // MapStatus - 어떤 panel 을 보여줄지 확인하는 용도로 쓰임
   MapStatus _myMapStatus = MapStatus.mapList;
+
   MapStatus get myMapStatus => _myMapStatus;
 
   void changeMyMapStatus(MapStatus status) {
@@ -455,6 +618,7 @@ class MapProvider extends ChangeNotifier {
   }
 
   MapStatus _shareMapStatus = MapStatus.mapList;
+
   MapStatus get shareMapStatus => _shareMapStatus;
 
   void changeShareMapStatus(MapStatus status) {
@@ -465,6 +629,7 @@ class MapProvider extends ChangeNotifier {
 
   // daily Expense - 그날 사용한 expense list
   DailyExpense? _dailyExpense;
+
   DailyExpense? get dailyExpense => _dailyExpense;
 
   void setDailyExpense(DailyExpense dailyExpense) {
@@ -475,6 +640,7 @@ class MapProvider extends ChangeNotifier {
 
   // expense - 단일
   Expense? _expense;
+
   Expense? get expense => _expense;
 
   void setExpense(Expense expense) {
@@ -518,8 +684,7 @@ class MapProvider extends ChangeNotifier {
   void hideCategory(Category category) {
     _hiddenCategories.add(category);
     _activeCategories.remove(category);
-    
+
     notifyListeners();
   }
 }
-

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:caps_2/common/enums/map_status.dart';
@@ -16,6 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:google_places_flutter/model/place_details.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -26,6 +29,8 @@ import 'widgets/my_marker.dart';
 import 'my/page/my_page.dart';
 import 'add_expense/page/expense_amount_page.dart';
 import 'map_plus.dart';
+
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -56,9 +61,12 @@ class _HomeState extends State<Home> {
 
   final _mainPanelController = PanelController();
 
+  final _locationController = TextEditingController();
+
   @override
   void dispose() {
     _mapController.dispose();
+    _locationController.dispose();
 
     super.dispose();
   }
@@ -834,15 +842,28 @@ class _HomeState extends State<Home> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
+                  child: GooglePlaceAutoCompleteTextField(
+                    textEditingController: _locationController,
+                    googleAPIKey: 'AIzaSyBS7vyfFibnUZye3oVPwzBaEL4lw7S5iaI',
+                    boxDecoration: const BoxDecoration(),
+                    inputDecoration: const InputDecoration(
                       hintText: '소비를 기록할 장소를 검색해보세요.',
                       hintStyle: TextStyle(color: Color(0xFFC4C4C4)),
                       border: InputBorder.none,
                     ),
+                    itemClick: (prediction) async {
+                      setState(() {
+                        _locationController.text = prediction.description ?? '';
+                      });
+                      
+                      if (prediction.placeId != null) {
+                        await _gotoLocation(prediction.placeId!);
+                      }
+                    },
+                    showError: false,
                   ),
                 ),
-                SizedBox(width: 8.0),
+                SizedBox(width: 8.0), 
                 Image.asset(
                   'assets/images/search/Iconly/Regular/Light/Search.png',
                   width: 24,
@@ -861,6 +882,32 @@ class _HomeState extends State<Home> {
         ),
       ],
     );
+  }
+
+  Future<void> _gotoLocation(String placeId) async {
+    final placeDetails = await _getPlaceDetails(placeId);
+
+    final lat = placeDetails.result?.geometry?.location?.lat;
+    final lng = placeDetails.result?.geometry?.location?.lng;
+
+    if (lat != null && lng != null) {
+      await _gotoMapPosition(LatLng(lat, lng));
+    }
+  }
+
+  Future<PlaceDetails> _getPlaceDetails(String placeId) async {
+    const apiKey = 'AIzaSyBS7vyfFibnUZye3oVPwzBaEL4lw7S5iaI';
+
+    final url =
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      return PlaceDetails.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load place details');
+    }
   }
 
   Future<void> _addExpense() async {
