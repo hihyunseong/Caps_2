@@ -17,6 +17,10 @@ _$SharedMapImpl _$$SharedMapImplFromJson(Map<String, dynamic> json) =>
       selectedDate: DateTime.parse(json['selectedDate'] as String),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
+      friends: (json['friends'] as List<dynamic>?)
+              ?.map((e) => FriendModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$SharedMapImplToJson(_$SharedMapImpl instance) =>
@@ -30,4 +34,5 @@ Map<String, dynamic> _$$SharedMapImplToJson(_$SharedMapImpl instance) =>
       'selectedDate': instance.selectedDate.toIso8601String(),
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
+      'friends': instance.friends,
     };

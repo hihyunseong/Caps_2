@@ -14,8 +14,14 @@ class PostCommentBloc extends Bloc<PostCommentEvent, PostCommentState> {
   PostCommentBloc() : super(const PostCommentState.initial()) {
     on<PostCommentEvent>((event, emit) async {
       await event.mapOrNull(started: (event) async {
-        Dio dio = Dio()
-          ..interceptors.addAll(
+        emit(const PostCommentState.progress());
+        Dio dio = Dio(
+          BaseOptions(
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          ),
+        )..interceptors.addAll(
             <Interceptor>[
               PrettyDioLogger(
                 requestHeader: true,
@@ -58,6 +64,6 @@ class PostCommentBloc extends Bloc<PostCommentEvent, PostCommentState> {
     });
   }
 
-  final String pinUrl = "http://43.201.118.1:8080/api/v1/pin";
+  final String pinUrl = "http://43.201.118.1:8083/api/v1/pins";
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 }

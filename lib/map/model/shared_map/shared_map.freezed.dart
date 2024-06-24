@@ -29,6 +29,7 @@ mixin _$SharedMap {
   DateTime get selectedDate => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime get updatedAt => throw _privateConstructorUsedError;
+  List<FriendModel> get friends => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -50,7 +51,8 @@ abstract class $SharedMapCopyWith<$Res> {
       List<int> pins,
       DateTime selectedDate,
       DateTime createdAt,
-      DateTime updatedAt});
+      DateTime updatedAt,
+      List<FriendModel> friends});
 }
 
 /// @nodoc
@@ -75,6 +77,7 @@ class _$SharedMapCopyWithImpl<$Res, $Val extends SharedMap>
     Object? selectedDate = null,
     Object? createdAt = null,
     Object? updatedAt = null,
+    Object? friends = null,
   }) {
     return _then(_value.copyWith(
       idx: null == idx
@@ -113,6 +116,10 @@ class _$SharedMapCopyWithImpl<$Res, $Val extends SharedMap>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      friends: null == friends
+          ? _value.friends
+          : friends // ignore: cast_nullable_to_non_nullable
+              as List<FriendModel>,
     ) as $Val);
   }
 }
@@ -134,7 +141,8 @@ abstract class _$$SharedMapImplCopyWith<$Res>
       List<int> pins,
       DateTime selectedDate,
       DateTime createdAt,
-      DateTime updatedAt});
+      DateTime updatedAt,
+      List<FriendModel> friends});
 }
 
 /// @nodoc
@@ -157,6 +165,7 @@ class __$$SharedMapImplCopyWithImpl<$Res>
     Object? selectedDate = null,
     Object? createdAt = null,
     Object? updatedAt = null,
+    Object? friends = null,
   }) {
     return _then(_$SharedMapImpl(
       idx: null == idx
@@ -195,6 +204,10 @@ class __$$SharedMapImplCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      friends: null == friends
+          ? _value._friends
+          : friends // ignore: cast_nullable_to_non_nullable
+              as List<FriendModel>,
     ));
   }
 }
@@ -211,8 +224,10 @@ class _$SharedMapImpl extends _SharedMap {
       required final List<int> pins,
       required this.selectedDate,
       required this.createdAt,
-      required this.updatedAt})
+      required this.updatedAt,
+      final List<FriendModel> friends = const []})
       : _pins = pins,
+        _friends = friends,
         super._();
 
   factory _$SharedMapImpl.fromJson(Map<String, dynamic> json) =>
@@ -242,10 +257,18 @@ class _$SharedMapImpl extends _SharedMap {
   final DateTime createdAt;
   @override
   final DateTime updatedAt;
+  final List<FriendModel> _friends;
+  @override
+  @JsonKey()
+  List<FriendModel> get friends {
+    if (_friends is EqualUnmodifiableListView) return _friends;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_friends);
+  }
 
   @override
   String toString() {
-    return 'SharedMap(idx: $idx, title: $title, color: $color, lat: $lat, lon: $lon, pins: $pins, selectedDate: $selectedDate, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'SharedMap(idx: $idx, title: $title, color: $color, lat: $lat, lon: $lon, pins: $pins, selectedDate: $selectedDate, createdAt: $createdAt, updatedAt: $updatedAt, friends: $friends)';
   }
 
   @override
@@ -264,7 +287,8 @@ class _$SharedMapImpl extends _SharedMap {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+                other.updatedAt == updatedAt) &&
+            const DeepCollectionEquality().equals(other._friends, _friends));
   }
 
   @JsonKey(ignore: true)
@@ -279,7 +303,8 @@ class _$SharedMapImpl extends _SharedMap {
       const DeepCollectionEquality().hash(_pins),
       selectedDate,
       createdAt,
-      updatedAt);
+      updatedAt,
+      const DeepCollectionEquality().hash(_friends));
 
   @JsonKey(ignore: true)
   @override
@@ -305,7 +330,8 @@ abstract class _SharedMap extends SharedMap {
       required final List<int> pins,
       required final DateTime selectedDate,
       required final DateTime createdAt,
-      required final DateTime updatedAt}) = _$SharedMapImpl;
+      required final DateTime updatedAt,
+      final List<FriendModel> friends}) = _$SharedMapImpl;
   const _SharedMap._() : super._();
 
   factory _SharedMap.fromJson(Map<String, dynamic> json) =
@@ -329,6 +355,8 @@ abstract class _SharedMap extends SharedMap {
   DateTime get createdAt;
   @override
   DateTime get updatedAt;
+  @override
+  List<FriendModel> get friends;
   @override
   @JsonKey(ignore: true)
   _$$SharedMapImplCopyWith<_$SharedMapImpl> get copyWith =>

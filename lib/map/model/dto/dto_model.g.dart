@@ -8,6 +8,7 @@ part of 'dto_model.dart';
 
 _$DtoModelImpl _$$DtoModelImplFromJson(Map<String, dynamic> json) =>
     _$DtoModelImpl(
+      place: json['place'] as String,
       header: json['header'] as String,
       title: json['title'] as String,
       method: json['method'] as String,
@@ -16,10 +17,12 @@ _$DtoModelImpl _$$DtoModelImplFromJson(Map<String, dynamic> json) =>
       cost: json['cost'] as int,
       lat: (json['lat'] as num).toDouble(),
       lon: (json['lon'] as num).toDouble(),
+      list: (json['list'] as List<dynamic>).map((e) => e as int).toList(),
     );
 
 Map<String, dynamic> _$$DtoModelImplToJson(_$DtoModelImpl instance) =>
     <String, dynamic>{
+      'place': instance.place,
       'header': instance.header,
       'title': instance.title,
       'method': instance.method,
@@ -28,4 +31,5 @@ Map<String, dynamic> _$$DtoModelImplToJson(_$DtoModelImpl instance) =>
       'cost': instance.cost,
       'lat': instance.lat,
       'lon': instance.lon,
+      'list': instance.list,
     };

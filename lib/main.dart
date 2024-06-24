@@ -1,10 +1,12 @@
+import 'package:caps_2/common/custom_bloc_observer.dart';
 import 'package:caps_2/common/utils/service_injector.dart';
 import 'package:caps_2/friend/provider/friend_provider.dart';
+import 'package:caps_2/login.dart';
 import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:provider/provider.dart';
-import 'login.dart';
 void main() async {
   KakaoSdk.init(
     nativeAppKey: "579b96006db2df4884fe622c754f8d52",
@@ -13,6 +15,7 @@ void main() async {
   
   WidgetsFlutterBinding.ensureInitialized();
   await ServiceInjector.injectDependencies();
+  Bloc.observer = CustomBlocObserver();
   runApp(
     MultiProvider(
       providers: [

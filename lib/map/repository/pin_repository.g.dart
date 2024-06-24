@@ -82,17 +82,34 @@ class _PinRepository implements PinRepository {
   @override
   Future<PinModel> postPin({
     required int mapIdx,
-    required RequestPinModel model,
+    File? File,
+    required DtoModel dto,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
-    final _data = model;
+    final _data = FormData();
+    if (File != null) {
+      _data.files.add(MapEntry(
+        'File',
+        MultipartFile.fromFileSync(
+          File.path,
+          filename: File.path.split(Platform.pathSeparator).last,
+          contentType: MediaType.parse('image/jpeg'),
+        ),
+      ));
+    }
+    _data.fields.add(MapEntry(
+      'dto',
+      jsonEncode(dto),
+    ));
     final _result =
         await _dio.fetch<Map<String, dynamic>>(_setStreamType<PinModel>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
+      contentType: 'multipart/form-data',
     )
             .compose(
               _dio.options,
@@ -106,6 +123,35 @@ class _PinRepository implements PinRepository {
               baseUrl,
             ))));
     final value = PinModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<List<PinModel>> getAllPin({required int mapIdx}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result =
+        await _dio.fetch<List<dynamic>>(_setStreamType<List<PinModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/list/${mapIdx}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    var value = _result.data!
+        .map((dynamic i) => PinModel.fromJson(i as Map<String, dynamic>))
+        .toList();
     return value;
   }
 
@@ -133,6 +179,33 @@ class _PinRepository implements PinRepository {
               baseUrl,
             ))));
     final value = PinModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PinDetailModel> getPinDetailInfo({required int pinIdx}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<PinDetailModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/detail/${pinIdx}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = PinDetailModel.fromJson(_result.data!);
     return value;
   }
 

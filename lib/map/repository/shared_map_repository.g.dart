@@ -175,7 +175,7 @@ class _SharedMapRepository implements SharedMapRepository {
     )
         .compose(
           _dio.options,
-          'adds',
+          '/adds',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -199,7 +199,7 @@ class _SharedMapRepository implements SharedMapRepository {
     )
         .compose(
           _dio.options,
-          'maps/${mapIdx}',
+          '/${mapIdx}',
           queryParameters: queryParameters,
           data: _data,
         )

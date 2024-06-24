@@ -23,8 +23,8 @@ RequestSharedMapModel _$RequestSharedMapModelFromJson(
 mixin _$RequestSharedMapModel {
   String get title => throw _privateConstructorUsedError;
   String get color => throw _privateConstructorUsedError;
-  int get lat => throw _privateConstructorUsedError;
-  int get lon => throw _privateConstructorUsedError;
+  double get lat => throw _privateConstructorUsedError;
+  double get lon => throw _privateConstructorUsedError;
   String get selectedDate => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,7 +40,11 @@ abstract class $RequestSharedMapModelCopyWith<$Res> {
       _$RequestSharedMapModelCopyWithImpl<$Res, RequestSharedMapModel>;
   @useResult
   $Res call(
-      {String title, String color, int lat, int lon, String selectedDate});
+      {String title,
+      String color,
+      double lat,
+      double lon,
+      String selectedDate});
 }
 
 /// @nodoc
@@ -75,11 +79,11 @@ class _$RequestSharedMapModelCopyWithImpl<$Res,
       lat: null == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       lon: null == lon
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       selectedDate: null == selectedDate
           ? _value.selectedDate
           : selectedDate // ignore: cast_nullable_to_non_nullable
@@ -98,7 +102,11 @@ abstract class _$$RequestSharedMapModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String title, String color, int lat, int lon, String selectedDate});
+      {String title,
+      String color,
+      double lat,
+      double lon,
+      String selectedDate});
 }
 
 /// @nodoc
@@ -131,11 +139,11 @@ class __$$RequestSharedMapModelImplCopyWithImpl<$Res>
       lat: null == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       lon: null == lon
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       selectedDate: null == selectedDate
           ? _value.selectedDate
           : selectedDate // ignore: cast_nullable_to_non_nullable
@@ -162,9 +170,9 @@ class _$RequestSharedMapModelImpl implements _RequestSharedMapModel {
   @override
   final String color;
   @override
-  final int lat;
+  final double lat;
   @override
-  final int lon;
+  final double lon;
   @override
   final String selectedDate;
 
@@ -210,8 +218,8 @@ abstract class _RequestSharedMapModel implements RequestSharedMapModel {
   const factory _RequestSharedMapModel(
       {required final String title,
       required final String color,
-      required final int lat,
-      required final int lon,
+      required final double lat,
+      required final double lon,
       required final String selectedDate}) = _$RequestSharedMapModelImpl;
 
   factory _RequestSharedMapModel.fromJson(Map<String, dynamic> json) =
@@ -222,9 +230,9 @@ abstract class _RequestSharedMapModel implements RequestSharedMapModel {
   @override
   String get color;
   @override
-  int get lat;
+  double get lat;
   @override
-  int get lon;
+  double get lon;
   @override
   String get selectedDate;
   @override

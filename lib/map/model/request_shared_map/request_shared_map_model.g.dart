@@ -11,8 +11,8 @@ _$RequestSharedMapModelImpl _$$RequestSharedMapModelImplFromJson(
     _$RequestSharedMapModelImpl(
       title: json['title'] as String,
       color: json['color'] as String,
-      lat: json['lat'] as int,
-      lon: json['lon'] as int,
+      lat: (json['lat'] as num).toDouble(),
+      lon: (json['lon'] as num).toDouble(),
       selectedDate: json['selectedDate'] as String,
     );
 

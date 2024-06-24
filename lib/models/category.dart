@@ -7,7 +7,6 @@ enum Category {
   photo('사진', 'assets/images/category/photo.png', Icons.camera_alt),
   shopping('쇼핑', 'assets/images/category/shopping.png', Icons.shopping_cart),
   gift('선물', 'assets/images/category/gift.png', Icons.card_giftcard),
-
   culture('문화생활', 'assets/images/category/culture.png', Icons.restaurant),
   accommodations('숙소', 'assets/images/category/accommodations.png', Icons.local_cafe),
   mart('마트', 'assets/images/category/mart.png', Icons.local_bar),
@@ -57,6 +56,88 @@ enum Category {
         return 'TRANSPORT';
       case Category.etc:
         return '기타';
+    }
+  }
+
+  static Icon getIcon(String category) {
+    switch (category) {
+      case '식사':
+        return const Icon(
+          Icons.restaurant,
+          size: 36,
+        );
+      case '카페':
+        return const Icon(
+          Icons.local_cafe,
+          size: 36,
+        );
+      case '주류':
+        return const Icon(
+          Icons.local_bar,
+          size: 36,
+        );
+      case '사진':
+        return const Icon(
+          Icons.camera_alt,
+          size: 36,
+        );
+      case '쇼핑':
+        return const Icon(
+          Icons.shopping_cart,
+          size: 36,
+        );
+      case '선물':
+        return const Icon(
+          Icons.card_giftcard,
+          size: 36,
+        );
+      case '문화생활':
+        return const Icon(
+          Icons.restaurant,
+          size: 36,
+        );
+      case '숙소':
+        return const Icon(
+          Icons.local_cafe,
+          size: 36,
+        );
+      case '마트':
+        return const Icon(
+          Icons.local_bar,
+          size: 36,
+        );
+      case '꽃':
+        return const Icon(
+          Icons.camera_alt,
+          size: 36,
+        );
+      case '의료':
+        return const Icon(
+          Icons.shopping_cart,
+          size: 36,
+        );
+      case '팁':
+        return const Icon(
+          Icons.card_giftcard,
+          size: 36,
+        );
+      case '미용':
+        return const Icon(
+          Icons.add,
+          size: 36,
+        );
+      case '교통':
+        return const Icon(
+          Icons.card_giftcard,
+          size: 36,
+        );
+      case '기타':
+        return const Icon(
+          Icons.add,
+          size: 36,
+        );
+      default:
+        return const Icon(Icons.add);
     }
   }
 }

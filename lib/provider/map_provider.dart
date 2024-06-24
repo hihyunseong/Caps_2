@@ -3,9 +3,7 @@ import 'dart:io';
 
 import 'package:caps_2/common/enums/map_status.dart';
 import 'package:caps_2/common/utils/extensions.dart';
-import 'package:caps_2/common/utils/service_injector.dart';
 import 'package:caps_2/map/model/dto/dto_model.dart';
-import 'package:caps_2/map/model/request_pin/request_pin_model.dart';
 import 'package:caps_2/map/model/request_shared_map/request_shared_map_model.dart';
 import 'package:caps_2/map/model/request_shared_map_with_friends/request_shared_map_with_friends_model.dart';
 import 'package:caps_2/map/repository/pin_repository.dart';
@@ -23,12 +21,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:widget_to_marker/widget_to_marker.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 
 class MapProvider extends ChangeNotifier {
   final _dio = Dio();
@@ -44,6 +42,11 @@ class MapProvider extends ChangeNotifier {
 
   String? _loadAccToken;
   String? _loadRefToken;
+
+  String? myIdx;
+  String? myEmail;
+  String? myName;
+  String? myProfile;
 
   MapProvider() {
     _init();
@@ -105,7 +108,15 @@ class MapProvider extends ChangeNotifier {
   Future<void> getSharedMap() async {
     await _initRepository();
     final maps = await sharedMapRepository.getSharedMap();
-    sharedMapList = maps.map((e) => e.toMapModel()).toList();
+    final updatedMaps = [...maps];
+    for (int i = 0; i < maps.length; i++) {
+      final friends =
+          await sharedMapRepository.getSharedMember(mapIdx: maps[i].idx);
+      updatedMaps[i] = maps[i].copyWith(
+        friends: friends,
+      );
+    }
+    sharedMapList = updatedMaps.map((e) => e.toMapModel()).toList();
     notifyListeners();
   }
 
@@ -163,6 +174,10 @@ class MapProvider extends ChangeNotifier {
   Future<void> initializeHeader() async {
     _loadAccToken = await _storage.read(key: 'accToken');
     _loadRefToken = await _storage.read(key: 'refToken');
+    myIdx = await _storage.read(key: 'idx');
+    myEmail = await _storage.read(key: 'email');
+    myName = await _storage.read(key: 'name');
+    myProfile = await _storage.read(key: 'profile');
 
     if (_loadAccToken != null) {
       _dio.options.headers['Authorization'] = 'Bearer $_loadAccToken';
@@ -189,28 +204,16 @@ class MapProvider extends ChangeNotifier {
     final mapFiles = await _mapDir.list().toList();
 
     for (final map in mapFiles) {
-      if (map is File) {
-        final mapModel =
-            await apiService.loadMapModel(map.path.split('/').last);
-        mapModels.add(mapModel!);
+      try {
+        if (map is File) {
+          final mapModel =
+              await apiService.loadMapModel(map.path.split('/').last);
+          mapModels.add(mapModel!);
+        }
+      } catch (e) {
+        print(e);
       }
     }
-    //TODO
-    // final sharedMaps = await getSharedMap();
-    // sharedMaps.map((e) async {
-    //   final friends = await sharedMapRepository.getSharedMember(mapIdx: e.idx);
-    //   return MapModel(
-    //     mapName: e.title,
-    //     ownerId: e.idx,
-    //     friends: friends,
-    //     location: location,
-    //     selectedDate: e.selectedDate,
-    //     expenses: e.expenses,
-    //     isSharedMap: true,
-    //     color: e.color,
-    //   );
-    // });
-
     _mapList.clear();
     _mapList.addAll(mapModels);
   }
@@ -263,15 +266,22 @@ class MapProvider extends ChangeNotifier {
   }
 
   Future<void> loadMapModel(MapModel mapModel) async {
-    final filename = 'map_${mapModel.mapName}.json';
-    final loadedMapModel = await apiService.loadMapModel(filename);
+    final MapModel? loadedMapModel;
+    if (mapModel.isSharedMap) {
+      _expenses.clear();
+      final expenseList = await _getExpense(mapModel);
+      loadedMapModel = mapModel.copyWith(expenses: expenseList);
+    } else {
+      final filename = 'map_${mapModel.mapName}.json';
+      loadedMapModel = await apiService.loadMapModel(filename);
 
-    print(loadedMapModel);
-    print(loadedMapModel?.expenses.length);
-    print(loadedMapModel?.expenses);
+      print(loadedMapModel);
+      print(loadedMapModel?.expenses.length);
+      print(loadedMapModel?.expenses);
 
-    // 인덱스 초기화
-    _currentIndex = 0;
+      // 인덱스 초기화
+      _currentIndex = 0;
+    }
 
     if (loadedMapModel != null) {
       _mapModel = loadedMapModel;
@@ -312,21 +322,21 @@ class MapProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveSharedMap(MapModel map) async {
-    final parsedDate = map.selectedDate;
-    String formattedDate =
-        '${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}T${parsedDate.hour.toString().padLeft(2, '0')}:${parsedDate.minute.toString().padLeft(2, '0')}:${parsedDate.second.toString().padLeft(2, '0')}';
+    Future<void> saveSharedMap(MapModel map) async {
+      final parsedDate = map.selectedDate;
+      String formattedDate =
+          '${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}T${parsedDate.hour.toString().padLeft(2, '0')}:${parsedDate.minute.toString().padLeft(2, '0')}:${parsedDate.second.toString().padLeft(2, '0')}';
 
-    await sharedMapRepository
-        .postSharedMap(
-          model: RequestSharedMapModel(
-            title: map.mapName,
-            color: map.color.getColorString(),
-            lat: map.latLng!.latitude.toInt(),
-            lon: map.latLng!.longitude.toInt(),
-            selectedDate: formattedDate,
-          ),
-        )
+      await sharedMapRepository
+          .postSharedMap(
+            model: RequestSharedMapModel(
+              title: map.mapName,
+              color: map.color.getColorString(),
+              lat: map.latLng!.latitude,
+              lon: map.latLng!.longitude,
+              selectedDate: formattedDate,
+            ),
+          )
         .then(
           (value) => {
             sharedMapRepository.postSharedMapWithFriends(
@@ -407,6 +417,34 @@ class MapProvider extends ChangeNotifier {
 
   List<Expense> get expenses => _expenses;
 
+  Future<List<Expense>> _getExpense(MapModel map) async {
+    final pinList = await pinRepository.getAllPin(mapIdx: map.ownerId);
+    final List<Expense> expenseList = [];
+    for (final pin in pinList) {
+      final pinDetail =
+          await pinRepository.getPinDetailInfo(pinIdx: pin.pinIdx);
+      expenseList.add(
+        Expense(
+          pinIdx: pin.pinIdx,
+          expenseLocationName: pinDetail.header,
+          amount: pinDetail.cost.toDouble(),
+          category: pinDetail.category.toCategory(),
+          content: pinDetail.title,
+          memo: pinDetail.memo,
+          date: DateTime.now(),
+          imagePath: pinDetail.file,
+          latitude: pin.lat,
+          longitude: pin.lon,
+          map: map,
+          payMethod: pinDetail.method.toPayMethod(),
+          createdAt: DateTime.now(),
+          friends: pinDetail.list,
+        ),
+      );
+    }
+    return expenseList;
+  }
+
   void addExpense(Expense expense, bool isSharedMap) async {
     if (isSharedMap) {
       final String url =
@@ -420,18 +458,20 @@ class MapProvider extends ChangeNotifier {
 
       request.headers['Authorization'] = 'Bearer $accToken';
       request.headers['x-refresh-token'] = 'Bearer $refToken';
-      request.headers['Content-Type'] = 'multipart/form-data';
 
       if (expense.imagePath != null) {
         request.files.add(
           await http.MultipartFile.fromPath(
-            'file',
+            'File',
             expense.imagePath!,
             contentType: MediaType('image', 'jpeg'),
           ),
         );
       }
+      final friends = [int.parse(myIdx!)];
+      friends.addAll(expense.friends.map((e) => e.idx));
       final dto = DtoModel(
+        place: expense.expenseLocationName,
         header: expense.expenseLocationName,
         title: expense.content,
         method: expense.payMethod.toString(),
@@ -440,18 +480,27 @@ class MapProvider extends ChangeNotifier {
         cost: expense.amount.toInt(),
         lat: expense.latitude,
         lon: expense.longitude,
+        list: friends,
       );
 
-      request.fields['dto'] = jsonEncode(dto.toJson());
+      String jsonString = jsonEncode(dto.toJson());
+
+      var jsonFile = http.MultipartFile.fromString(
+        'dto',
+        jsonString,
+        contentType: MediaType('application', 'json'),
+      );
+
+      request.files.add(jsonFile);
+
       final response = await request.send();
+      final httpResponse = await http.Response.fromStream(response);
       // 응답 확인
-      if (response.statusCode == 200) {
-        print('Upload successful.');
+      if (httpResponse.statusCode == 201) {
+        loadMapModel(expense.map);
       } else {
         print('Upload failed.');
       }
-
-      //await pinRepository.getPinInfo(pinIdx: pin.pinIdx);
     } else {
       _expenses.add(expense);
 

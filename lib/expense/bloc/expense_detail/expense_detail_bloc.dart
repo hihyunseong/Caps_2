@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:caps_2/expense/model/pin_detail_model.dart';
 import 'package:caps_2/expense/repository/expense_detail_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -44,11 +45,12 @@ class ExpenseDetailBloc extends Bloc<ExpenseDetailEvent, ExpenseDetailState> {
           );
 
           try {
-            final res = await expenseDetailRepository.getExpenseDetail(
+            final PinDetailModel pinDetailModel =
+                await expenseDetailRepository.getExpenseDetail(
               pinIdx: event.pinIdx,
             );
             emit(ExpenseDetailState.success(
-              response: res,
+              pinDetailModel: pinDetailModel,
             ));
           } catch (e) {
             emit(const ExpenseDetailState.failure());
@@ -58,6 +60,6 @@ class ExpenseDetailBloc extends Bloc<ExpenseDetailEvent, ExpenseDetailState> {
     });
   }
 
-  final String pinUrl = "http://43.201.118.1:8080/api/v1/pin";
+  final String pinUrl = "http://43.201.118.1:8083/api/v1/pins";
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 }

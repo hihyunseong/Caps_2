@@ -20,6 +20,7 @@ DtoModel _$DtoModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$DtoModel {
+  String get place => throw _privateConstructorUsedError;
   String get header => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get method => throw _privateConstructorUsedError;
@@ -28,6 +29,7 @@ mixin _$DtoModel {
   int get cost => throw _privateConstructorUsedError;
   double get lat => throw _privateConstructorUsedError;
   double get lon => throw _privateConstructorUsedError;
+  List<int> get list => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -41,14 +43,16 @@ abstract class $DtoModelCopyWith<$Res> {
       _$DtoModelCopyWithImpl<$Res, DtoModel>;
   @useResult
   $Res call(
-      {String header,
+      {String place,
+      String header,
       String title,
       String method,
       String category,
       String memo,
       int cost,
       double lat,
-      double lon});
+      double lon,
+      List<int> list});
 }
 
 /// @nodoc
@@ -64,6 +68,7 @@ class _$DtoModelCopyWithImpl<$Res, $Val extends DtoModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? place = null,
     Object? header = null,
     Object? title = null,
     Object? method = null,
@@ -72,8 +77,13 @@ class _$DtoModelCopyWithImpl<$Res, $Val extends DtoModel>
     Object? cost = null,
     Object? lat = null,
     Object? lon = null,
+    Object? list = null,
   }) {
     return _then(_value.copyWith(
+      place: null == place
+          ? _value.place
+          : place // ignore: cast_nullable_to_non_nullable
+              as String,
       header: null == header
           ? _value.header
           : header // ignore: cast_nullable_to_non_nullable
@@ -106,6 +116,10 @@ class _$DtoModelCopyWithImpl<$Res, $Val extends DtoModel>
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
               as double,
+      list: null == list
+          ? _value.list
+          : list // ignore: cast_nullable_to_non_nullable
+              as List<int>,
     ) as $Val);
   }
 }
@@ -119,14 +133,16 @@ abstract class _$$DtoModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String header,
+      {String place,
+      String header,
       String title,
       String method,
       String category,
       String memo,
       int cost,
       double lat,
-      double lon});
+      double lon,
+      List<int> list});
 }
 
 /// @nodoc
@@ -140,6 +156,7 @@ class __$$DtoModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? place = null,
     Object? header = null,
     Object? title = null,
     Object? method = null,
@@ -148,8 +165,13 @@ class __$$DtoModelImplCopyWithImpl<$Res>
     Object? cost = null,
     Object? lat = null,
     Object? lon = null,
+    Object? list = null,
   }) {
     return _then(_$DtoModelImpl(
+      place: null == place
+          ? _value.place
+          : place // ignore: cast_nullable_to_non_nullable
+              as String,
       header: null == header
           ? _value.header
           : header // ignore: cast_nullable_to_non_nullable
@@ -182,6 +204,10 @@ class __$$DtoModelImplCopyWithImpl<$Res>
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
               as double,
+      list: null == list
+          ? _value._list
+          : list // ignore: cast_nullable_to_non_nullable
+              as List<int>,
     ));
   }
 }
@@ -190,18 +216,23 @@ class __$$DtoModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$DtoModelImpl implements _DtoModel {
   const _$DtoModelImpl(
-      {required this.header,
+      {required this.place,
+      required this.header,
       required this.title,
       required this.method,
       required this.category,
       required this.memo,
       required this.cost,
       required this.lat,
-      required this.lon});
+      required this.lon,
+      required final List<int> list})
+      : _list = list;
 
   factory _$DtoModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$DtoModelImplFromJson(json);
 
+  @override
+  final String place;
   @override
   final String header;
   @override
@@ -218,10 +249,17 @@ class _$DtoModelImpl implements _DtoModel {
   final double lat;
   @override
   final double lon;
+  final List<int> _list;
+  @override
+  List<int> get list {
+    if (_list is EqualUnmodifiableListView) return _list;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_list);
+  }
 
   @override
   String toString() {
-    return 'DtoModel(header: $header, title: $title, method: $method, category: $category, memo: $memo, cost: $cost, lat: $lat, lon: $lon)';
+    return 'DtoModel(place: $place, header: $header, title: $title, method: $method, category: $category, memo: $memo, cost: $cost, lat: $lat, lon: $lon, list: $list)';
   }
 
   @override
@@ -229,6 +267,7 @@ class _$DtoModelImpl implements _DtoModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DtoModelImpl &&
+            (identical(other.place, place) || other.place == place) &&
             (identical(other.header, header) || other.header == header) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.method, method) || other.method == method) &&
@@ -237,13 +276,24 @@ class _$DtoModelImpl implements _DtoModel {
             (identical(other.memo, memo) || other.memo == memo) &&
             (identical(other.cost, cost) || other.cost == cost) &&
             (identical(other.lat, lat) || other.lat == lat) &&
-            (identical(other.lon, lon) || other.lon == lon));
+            (identical(other.lon, lon) || other.lon == lon) &&
+            const DeepCollectionEquality().equals(other._list, _list));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, header, title, method, category, memo, cost, lat, lon);
+      runtimeType,
+      place,
+      header,
+      title,
+      method,
+      category,
+      memo,
+      cost,
+      lat,
+      lon,
+      const DeepCollectionEquality().hash(_list));
 
   @JsonKey(ignore: true)
   @override
@@ -261,18 +311,22 @@ class _$DtoModelImpl implements _DtoModel {
 
 abstract class _DtoModel implements DtoModel {
   const factory _DtoModel(
-      {required final String header,
+      {required final String place,
+      required final String header,
       required final String title,
       required final String method,
       required final String category,
       required final String memo,
       required final int cost,
       required final double lat,
-      required final double lon}) = _$DtoModelImpl;
+      required final double lon,
+      required final List<int> list}) = _$DtoModelImpl;
 
   factory _DtoModel.fromJson(Map<String, dynamic> json) =
       _$DtoModelImpl.fromJson;
 
+  @override
+  String get place;
   @override
   String get header;
   @override
@@ -289,6 +343,8 @@ abstract class _DtoModel implements DtoModel {
   double get lat;
   @override
   double get lon;
+  @override
+  List<int> get list;
   @override
   @JsonKey(ignore: true)
   _$$DtoModelImplCopyWith<_$DtoModelImpl> get copyWith =>

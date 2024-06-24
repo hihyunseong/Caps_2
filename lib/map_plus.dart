@@ -319,7 +319,7 @@ class _MapPlusState extends State<MapPlus> {
     return GooglePlaceAutoCompleteTextField(
       // focusNode: FocusNode(),
       textEditingController: _locationController,
-      googleAPIKey: 'AIzaSyC1eSqD_heZGVub3oYpV3UGeq7h7r1rWEQ',
+      googleAPIKey: 'AIzaSyBS7vyfFibnUZye3oVPwzBaEL4lw7S5iaI',
       // countries: ['KR'],
       boxDecoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
@@ -430,7 +430,13 @@ class _MapPlusState extends State<MapPlus> {
     );
 
     final mapProvider = context.read<MapProvider>();
-    mapProvider.addMapModel(newMap);
+    if (widget.isSharedMap) {
+      await mapProvider.saveSharedMap(newMap);
+    } else {
+      mapProvider.addMapModel(newMap);
+    }
+
+    await mapProvider.getSharedMap();
 
     Navigator.of(context).pop(newMap);
   }

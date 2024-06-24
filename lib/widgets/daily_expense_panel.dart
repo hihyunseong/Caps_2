@@ -1,13 +1,10 @@
-import 'dart:io';
-
 import 'package:caps_2/common/enums/map_status.dart';
+import 'package:caps_2/expense/view/expense_details_view.dart';
 import 'package:caps_2/provider/map_provider.dart';
 import 'package:caps_2/widgets/expense_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // expenses_panel 에서 날짜 클릭 했을 때 보이는 페이지 위젯
 class DailyExpensePanel extends StatelessWidget {
@@ -75,7 +72,7 @@ class DailyExpensePanel extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  (mapModel.friends.length + 1).toString(),
+                                  (mapModel.friends.length).toString(),
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontFamily: 'NanumSquareNeo-Bold',
@@ -161,25 +158,33 @@ class DailyExpensePanel extends StatelessWidget {
                                 color: Colors.grey[300],
                               ),
                             ),
-                          ExpenseTile(
-                            expense: expense,
-                            onTap: () {
-                              mapProvider.setExpense(expense);
-                              mapModel.isSharedMap
-                                  ? mapProvider.changeShareMapStatus(
-                                      MapStatus.expenseDetails)
-                                  : mapProvider
-                                      .changeMyMapStatus(MapStatus.expenseDetails);
-                            },
-                          ),
-                        ],
-                      );
-                    }
-                  },
-                ),
-              ),
-            ],
+                      ExpenseTile(
+                        expense: expense,
+                        onTap: () {
+                          mapProvider.setExpense(expense);
+                          if (mapModel.isSharedMap) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return ExpenseDetailsView(
+                                      pinIdx: expense.pinIdx);
+                                },
+                              ),
+                            );
+                            return;
+                          }
+                          mapProvider
+                              .changeMyMapStatus(MapStatus.expenseDetails);
+                        },
+                      ),
+                    ],
+                  );
+                }
+              },
+            ),
           ),
-        );
-      }
-    }
+        ],
+      ),
+    );
+  }
+}

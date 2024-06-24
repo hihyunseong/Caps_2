@@ -108,7 +108,9 @@ class _MapSelectPageState extends State<MapSelectPage> {
                   child: ValueListenableBuilder<String>(
                     valueListenable: _searchText,
                     builder: (context, searchText, child) {
-                      final filteredMapList = mapProvider.mapList.where((map) {
+                      final filteredMapList =
+                          (mapProvider.myMapList + mapProvider.sharedMapList)
+                              .where((map) {
                         return map.mapName.contains(searchText);
                       }).toList();
                       return ListView(

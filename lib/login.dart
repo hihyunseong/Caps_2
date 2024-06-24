@@ -1,15 +1,12 @@
 import 'dart:convert';
 
-import 'package:caps_2/common/config/Config.dart';
-import 'package:caps_2/provider/map_provider.dart';
 import 'package:caps_2/vo/UrlUtil.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 import 'auth/signup.dart';
@@ -178,8 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const Home()),
+                          MaterialPageRoute(builder: (context) => const Home()),
                         );
                       },
                       child: Text('확인'),

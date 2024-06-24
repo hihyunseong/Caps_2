@@ -19,7 +19,6 @@ class MapTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mapProvider = context.watch<MapProvider>();
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: InkWell(
@@ -65,7 +64,7 @@ class MapTile extends StatelessWidget {
                         const SizedBox(width: 4),
                         mapModel.friends.isNotEmpty
                             ? Text(
-                                (mapModel.friends.length + 1).toString(),
+                                (mapModel.friends.length).toString(),
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontFamily: 'NanumSquareNeo-Bold',

@@ -12,9 +12,7 @@ import 'package:caps_2/widgets/daily_expense_panel.dart';
 import 'package:caps_2/widgets/expense_details_panel.dart';
 import 'package:caps_2/widgets/map_details_panel.dart';
 import 'package:caps_2/widgets/expenses_panel.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
@@ -62,6 +60,12 @@ class _HomeState extends State<Home> {
   final _mainPanelController = PanelController();
 
   final _locationController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<MapProvider>().getSharedMap();
+  }
 
   @override
   void dispose() {
@@ -141,8 +145,7 @@ class _HomeState extends State<Home> {
             ),
         icon: await MyMarker(
           index: markers.length + 1,
-          category:
-              expenses.isNotEmpty ? expenses.last.category : Category.etc,
+          category: expenses.isNotEmpty ? expenses.last.category : Category.etc,
           // icon: expenses.isNotEmpty
           //     ? expenses.last.category.icon
           //     : Icons.account_balance_wallet,
@@ -558,7 +561,8 @@ class _HomeState extends State<Home> {
   Widget _sharedMapPanel() {
     final mapProvider = context.watch<MapProvider>();
     final frinedProvider = context.read<FriendProvider>();
-
+    mapProvider.getSharedMap();
+    
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(

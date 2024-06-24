@@ -20,6 +20,7 @@ RequestPinModel _$RequestPinModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$RequestPinModel {
+  String? get file => throw _privateConstructorUsedError;
   DtoModel get dto => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -34,7 +35,7 @@ abstract class $RequestPinModelCopyWith<$Res> {
           RequestPinModel value, $Res Function(RequestPinModel) then) =
       _$RequestPinModelCopyWithImpl<$Res, RequestPinModel>;
   @useResult
-  $Res call({DtoModel dto});
+  $Res call({String? file, DtoModel dto});
 
   $DtoModelCopyWith<$Res> get dto;
 }
@@ -52,9 +53,14 @@ class _$RequestPinModelCopyWithImpl<$Res, $Val extends RequestPinModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? file = freezed,
     Object? dto = null,
   }) {
     return _then(_value.copyWith(
+      file: freezed == file
+          ? _value.file
+          : file // ignore: cast_nullable_to_non_nullable
+              as String?,
       dto: null == dto
           ? _value.dto
           : dto // ignore: cast_nullable_to_non_nullable
@@ -79,7 +85,7 @@ abstract class _$$RequestPinModelImplCopyWith<$Res>
       __$$RequestPinModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({DtoModel dto});
+  $Res call({String? file, DtoModel dto});
 
   @override
   $DtoModelCopyWith<$Res> get dto;
@@ -96,9 +102,14 @@ class __$$RequestPinModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? file = freezed,
     Object? dto = null,
   }) {
     return _then(_$RequestPinModelImpl(
+      file: freezed == file
+          ? _value.file
+          : file // ignore: cast_nullable_to_non_nullable
+              as String?,
       dto: null == dto
           ? _value.dto
           : dto // ignore: cast_nullable_to_non_nullable
@@ -110,17 +121,19 @@ class __$$RequestPinModelImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$RequestPinModelImpl implements _RequestPinModel {
-  const _$RequestPinModelImpl({required this.dto});
+  const _$RequestPinModelImpl({this.file, required this.dto});
 
   factory _$RequestPinModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$RequestPinModelImplFromJson(json);
 
   @override
+  final String? file;
+  @override
   final DtoModel dto;
 
   @override
   String toString() {
-    return 'RequestPinModel(dto: $dto)';
+    return 'RequestPinModel(file: $file, dto: $dto)';
   }
 
   @override
@@ -128,12 +141,13 @@ class _$RequestPinModelImpl implements _RequestPinModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RequestPinModelImpl &&
+            (identical(other.file, file) || other.file == file) &&
             (identical(other.dto, dto) || other.dto == dto));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, dto);
+  int get hashCode => Object.hash(runtimeType, file, dto);
 
   @JsonKey(ignore: true)
   @override
@@ -151,12 +165,15 @@ class _$RequestPinModelImpl implements _RequestPinModel {
 }
 
 abstract class _RequestPinModel implements RequestPinModel {
-  const factory _RequestPinModel({required final DtoModel dto}) =
-      _$RequestPinModelImpl;
+  const factory _RequestPinModel(
+      {final String? file,
+      required final DtoModel dto}) = _$RequestPinModelImpl;
 
   factory _RequestPinModel.fromJson(Map<String, dynamic> json) =
       _$RequestPinModelImpl.fromJson;
 
+  @override
+  String? get file;
   @override
   DtoModel get dto;
   @override

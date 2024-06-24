@@ -40,12 +40,12 @@ abstract class SharedMapRepository {
     @Body() required RequestMapTitleModel model,
   });
 
-  @POST('adds')
+  @POST('/adds')
   Future<void> postFriendToMap({
     @Body() required RequestSharedMapWithFriendsModel model,
   });
 
-  @DELETE('maps/{mapIdx}')
+  @DELETE('/{mapIdx}')
   Future<void> deleteSharedMap({
     @Path('mapIdx') required int mapIdx,
   });

@@ -8,6 +8,7 @@ part of 'expense.dart';
 
 _$ExpenseImpl _$$ExpenseImplFromJson(Map<String, dynamic> json) =>
     _$ExpenseImpl(
+      pinIdx: json['pinIdx'] as int? ?? 0,
       expenseLocationName: json['expenseLocationName'] as String,
       amount: (json['amount'] as num).toDouble(),
       category: $enumDecode(_$CategoryEnumMap, json['category']),
@@ -27,6 +28,7 @@ _$ExpenseImpl _$$ExpenseImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$ExpenseImplToJson(_$ExpenseImpl instance) =>
     <String, dynamic>{
+      'pinIdx': instance.pinIdx,
       'expenseLocationName': instance.expenseLocationName,
       'amount': instance.amount,
       'category': _$CategoryEnumMap[instance.category]!,

@@ -13,6 +13,7 @@ part 'get_comment_state.dart';
 class GetCommentBloc extends Bloc<GetCommentEvent, GetCommentState> {
   GetCommentBloc() : super(const GetCommentState.initial()) {
     on<GetCommentEvent>((event, emit) async {
+      emit(const GetCommentState.progress());
       await event.map(
         started: (event) async {
           Dio dio = Dio()
@@ -59,6 +60,6 @@ class GetCommentBloc extends Bloc<GetCommentEvent, GetCommentState> {
     });
   }
 
-  final String pinUrl = "http://43.201.118.1:8080/api/v1/pin";
+  final String pinUrl = "http://43.201.118.1:8083/api/v1/pins";
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 }
