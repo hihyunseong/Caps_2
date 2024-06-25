@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:caps_2/add_expense/widget/custom_button.dart';
+import 'package:caps_2/common/utils/extensions.dart';
 import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/friend/provider/friend_provider.dart';
 import 'package:caps_2/friend/widget/friend_text_field.dart';
@@ -430,7 +433,14 @@ class _MapPlusState extends State<MapPlus> {
     );
 
     final mapProvider = context.read<MapProvider>();
-    mapProvider.addMapModel(newMap);
+    if (widget.isSharedMap) {
+      await mapProvider.saveSharedMap(newMap);
+    } else {
+      await mapProvider.createMyMap(newMap.mapName, newMap.color.getColorString(), newMap.latLng!.latitude, newMap.latLng!.longitude, newMap.selectedDate);
+    }
+
+    await mapProvider.getSharedMap();
+    await mapProvider.getMyMap();
 
     Navigator.of(context).pop(newMap);
   }

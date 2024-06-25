@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:caps_2/add_expense/widget/custom_button.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/src/media_type.dart';
+import 'package:image/image.dart' as img;
 
 class UpdateProfilePage extends StatefulWidget {
   const UpdateProfilePage({super.key});
@@ -30,6 +32,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   String? refToken;
 
   final storage = const FlutterSecureStorage();
+
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -60,6 +64,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -103,8 +113,14 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 title: '완료',
                 height: 70,
                 color: Colors.red[300]!,
-                onTap: () {
+                onTap: () async {
+                  setState(() {
+                    isLoading = true;
+                  });
                   _updateProfile();
+                  setState(() {
+                    isLoading = false;
+                  });
                 },
               ),
             ],
@@ -141,8 +157,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         );
       } else {
         profileWidget = ClipOval(
-          child: Image.file(
-            File(_image!.path),
+          child: Image.memory(
+            _image!.readAsBytesSync(),
             width: 90,
             height: 90,
           ),
@@ -237,6 +253,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     final picker = ImagePicker();
                     final image = await picker.pickImage(
                       source: ImageSource.gallery,
+                      maxHeight: 128,
+                      maxWidth: 128,
+                      imageQuality: 30
                     );
 
                     setState(() {
@@ -256,6 +275,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     final ImagePicker picker = ImagePicker();
                     final image = await picker.pickImage(
                       source: ImageSource.camera,
+                        maxHeight: 128,
+                        maxWidth: 128,
+                      imageQuality: 30
                     );
                     setState(() {
                       if(image!=null) {
@@ -291,7 +313,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         body: name,
       );
 
-      if (response.statusCode == 204) {
+      if (response.statusCode == 200) {
         print('change name success');
         await storage.write(key: 'name', value: name);
         _loadFromStorage();
@@ -301,32 +323,45 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     }
 
     if (_image != null) {
+      print(await _image!.length());
+      print((await _image!.readAsBytes()).length);
+      print(_image!.path);
+      print(_image!.path.split('/').last.split('.').last);
+
       final url = Uri.http('${UrlUtil.url}:8080', '/api/v1/members/profile');
       final request = http.MultipartRequest('POST', url);
 
-      final fileName = _image!.path.split('/').last;
-      // request.files.add(http.MultipartFile.fromBytes(
-      //   'file',
-      //   await File(_image!.path).readAsBytes()
-      // ));
+      final originalImage = img.decodeImage(await _image!.readAsBytes());
+      if (originalImage == null) {
+        print('Failed to decode image');
+        return;
+      }
+
+      final jpegImage = img.encodeJpg(originalImage);
+
       request.files.add(
-        await http.MultipartFile.fromPath(
-            'file',
-            _image!.path,
-            filename: fileName,
-            contentType: MediaType("image", "jpeg")
-        )
+          await http.MultipartFile.fromBytes(
+              'file',
+              jpegImage,
+              filename: 'logo.jpeg',
+              contentType: MediaType("image", 'jpeg')
+          )
       );
+      print('init file');
       request.headers.addAll({
+        // 'Content-Type': 'image/${_image!.path.split('/').last.split('.').last}',
         'Authorization': 'Bearer $accToken',
-        'x-refresh-token': 'Bearer $refToken'
+        'x-refresh-token': 'Bearer $refToken',
+        // 'Content-Length': '${await _image!.length()}'
       });
 
-      final response = await request.send();
 
-      if (response.statusCode == 204) {
-        // await storage.write(key: 'name', value: name);
+      final response = await http.Response.fromStream(await request.send());
+
+      if (response.statusCode == 200) {
         print('change profile success');
+        var newProfileUrl = json.decode(response.body)['profile'];
+        await storage.write(key: 'profile', value: newProfileUrl);
         _loadFromStorage();
       } else {
         print("change profile error:\n${response.statusCode}\n${response}");

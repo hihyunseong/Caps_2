@@ -532,9 +532,8 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
       createdAt: DateTime.now(),
       friends: widget.selectedFriends,
     );
-
     final mapProvider = context.read<MapProvider>();
-    mapProvider.addExpense(expense);
+    mapProvider.addExpense(expense, widget.mapModel.isSharedMap);
   }
 
  Widget _buildIconButton(Category category) {
@@ -582,7 +581,6 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
     //   ],
     // );
   
-
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,

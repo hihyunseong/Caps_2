@@ -1,7 +1,5 @@
 import 'package:caps_2/models/map_model.dart';
-import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MapSelectListTile extends StatelessWidget {
   final MapModel mapModel;
@@ -58,7 +56,7 @@ class MapSelectListTile extends StatelessWidget {
                         const SizedBox(width: 4),
                         mapModel.friends.isNotEmpty
                             ? Text(
-                                (mapModel.friends.length + 1).toString(),
+                                (mapModel.friends.length).toString(),
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontFamily: 'NanumSquareNeo-Bold',

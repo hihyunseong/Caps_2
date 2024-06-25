@@ -79,7 +79,7 @@ class ExpensesPanel extends StatelessWidget {
                                 ),
                               const SizedBox(width: 4),
                               Text(
-                                (mapModel.friends.length + 1).toString(),
+                                (mapModel.friends.length).toString(),
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontFamily: 'NanumSquareNeo-Bold',

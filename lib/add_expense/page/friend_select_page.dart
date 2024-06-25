@@ -2,9 +2,11 @@ import 'package:caps_2/add_expense/page/expense_detail_page.dart';
 import 'package:caps_2/add_expense/widget/custom_button.dart';
 import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/models/map_model.dart';
+import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class FriendSelectPage extends StatefulWidget {
   final double amount;
@@ -133,13 +135,14 @@ class _FriendSelectPageState extends State<FriendSelectPage> {
                       ),
                     ),
                     const SizedBox(width: 5),
-                    const Icon(
-                      Icons.people_alt,
-                      color: Colors.purple,
-                      size: 20,
+                    Image.asset(
+                      'assets/images/person.png',
+                      width: 16,
+                      height: 16,
+                      color: const Color(0xFFAF55A6),
                     ),
                     Text(
-                      '${widget.mapModel.friends.length + 1}',
+                      '${widget.mapModel.friends.length}',
                       style: const TextStyle(
                         fontSize: 12,
                         fontFamily: 'NanumSquareNeo-Bold',
@@ -232,7 +235,8 @@ class _FriendSelectPageState extends State<FriendSelectPage> {
       valueListenable: _searchText,
       builder: (context, searchText, child) {
         final filteredFriendList = widget.mapModel.friends.where((friend) {
-          return friend.name.contains(searchText);
+          return friend.name.contains(searchText) &&
+              friend.email != context.read<MapProvider>().myEmail;
         }).toList();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,

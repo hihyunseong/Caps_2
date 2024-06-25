@@ -20,6 +20,7 @@ Expense _$ExpenseFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Expense {
+  int get pinIdx => throw _privateConstructorUsedError;
   String get expenseLocationName => throw _privateConstructorUsedError;
   double get amount => throw _privateConstructorUsedError;
   Category get category => throw _privateConstructorUsedError;
@@ -45,7 +46,8 @@ abstract class $ExpenseCopyWith<$Res> {
       _$ExpenseCopyWithImpl<$Res, Expense>;
   @useResult
   $Res call(
-      {String expenseLocationName,
+      {int pinIdx,
+      String expenseLocationName,
       double amount,
       Category category,
       String content,
@@ -75,6 +77,7 @@ class _$ExpenseCopyWithImpl<$Res, $Val extends Expense>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? pinIdx = null,
     Object? expenseLocationName = null,
     Object? amount = null,
     Object? category = null,
@@ -90,6 +93,10 @@ class _$ExpenseCopyWithImpl<$Res, $Val extends Expense>
     Object? friends = null,
   }) {
     return _then(_value.copyWith(
+      pinIdx: null == pinIdx
+          ? _value.pinIdx
+          : pinIdx // ignore: cast_nullable_to_non_nullable
+              as int,
       expenseLocationName: null == expenseLocationName
           ? _value.expenseLocationName
           : expenseLocationName // ignore: cast_nullable_to_non_nullable
@@ -162,7 +169,8 @@ abstract class _$$ExpenseImplCopyWith<$Res> implements $ExpenseCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String expenseLocationName,
+      {int pinIdx,
+      String expenseLocationName,
       double amount,
       Category category,
       String content,
@@ -191,6 +199,7 @@ class __$$ExpenseImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? pinIdx = null,
     Object? expenseLocationName = null,
     Object? amount = null,
     Object? category = null,
@@ -206,6 +215,10 @@ class __$$ExpenseImplCopyWithImpl<$Res>
     Object? friends = null,
   }) {
     return _then(_$ExpenseImpl(
+      pinIdx: null == pinIdx
+          ? _value.pinIdx
+          : pinIdx // ignore: cast_nullable_to_non_nullable
+              as int,
       expenseLocationName: null == expenseLocationName
           ? _value.expenseLocationName
           : expenseLocationName // ignore: cast_nullable_to_non_nullable
@@ -266,7 +279,8 @@ class __$$ExpenseImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ExpenseImpl extends _Expense {
   _$ExpenseImpl(
-      {required this.expenseLocationName,
+      {this.pinIdx = 0,
+      required this.expenseLocationName,
       required this.amount,
       required this.category,
       required this.content,
@@ -285,6 +299,9 @@ class _$ExpenseImpl extends _Expense {
   factory _$ExpenseImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExpenseImplFromJson(json);
 
+  @override
+  @JsonKey()
+  final int pinIdx;
   @override
   final String expenseLocationName;
   @override
@@ -319,7 +336,7 @@ class _$ExpenseImpl extends _Expense {
 
   @override
   String toString() {
-    return 'Expense(expenseLocationName: $expenseLocationName, amount: $amount, category: $category, content: $content, memo: $memo, date: $date, imagePath: $imagePath, latitude: $latitude, longitude: $longitude, map: $map, payMethod: $payMethod, createdAt: $createdAt, friends: $friends)';
+    return 'Expense(pinIdx: $pinIdx, expenseLocationName: $expenseLocationName, amount: $amount, category: $category, content: $content, memo: $memo, date: $date, imagePath: $imagePath, latitude: $latitude, longitude: $longitude, map: $map, payMethod: $payMethod, createdAt: $createdAt, friends: $friends)';
   }
 
   @override
@@ -327,6 +344,7 @@ class _$ExpenseImpl extends _Expense {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ExpenseImpl &&
+            (identical(other.pinIdx, pinIdx) || other.pinIdx == pinIdx) &&
             (identical(other.expenseLocationName, expenseLocationName) ||
                 other.expenseLocationName == expenseLocationName) &&
             (identical(other.amount, amount) || other.amount == amount) &&
@@ -353,6 +371,7 @@ class _$ExpenseImpl extends _Expense {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      pinIdx,
       expenseLocationName,
       amount,
       category,
@@ -383,7 +402,8 @@ class _$ExpenseImpl extends _Expense {
 
 abstract class _Expense extends Expense {
   factory _Expense(
-      {required final String expenseLocationName,
+      {final int pinIdx,
+      required final String expenseLocationName,
       required final double amount,
       required final Category category,
       required final String content,
@@ -400,6 +420,8 @@ abstract class _Expense extends Expense {
 
   factory _Expense.fromJson(Map<String, dynamic> json) = _$ExpenseImpl.fromJson;
 
+  @override
+  int get pinIdx;
   @override
   String get expenseLocationName;
   @override

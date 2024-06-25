@@ -100,22 +100,21 @@ class _UpdateMapListTileState extends State<UpdateMapListTile> {
                           const SizedBox(width: 8),
                           widget.mapModel.friends.isNotEmpty
                               ? Image.asset(
-                                'assets/images/person.png',
-                                width: 14,
-                                height: 14,
-                                color: Colors.white,
-                              )
-                            : Image.asset(
-                                'assets/images/person2.png',
-                                width: 14,
-                                height: 14,
-                                color: Colors.white,
-                              ),
+                                  'assets/images/person.png',
+                                  width: 14,
+                                  height: 14,
+                                  color: Colors.white,
+                                )
+                              : Image.asset(
+                                  'assets/images/person2.png',
+                                  width: 14,
+                                  height: 14,
+                                  color: Colors.white,
+                                ),
                           const SizedBox(width: 4),
                           widget.mapModel.friends.isNotEmpty
                               ? Text(
-                                  (widget.mapModel.friends.length + 1)
-                                      .toString(),
+                                  (widget.mapModel.friends.length).toString(),
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontFamily: 'NanumSquareNeo-Bold',
@@ -183,20 +182,22 @@ class _UpdateMapListTileState extends State<UpdateMapListTile> {
           ),
           actions: <Widget>[
             CupertinoDialogAction(
-              child: Text('취소',
-                style: TextStyle(
-                    color: Colors.blue, fontWeight: FontWeight.bold),
-                  ),
+              child: Text(
+                '취소',
+                style:
+                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             CupertinoDialogAction(
               isDefaultAction: true,
-              child: Text('나가기',
-                style: TextStyle(
-                    color: Colors.blue, fontWeight: FontWeight.bold),
-                  ),
+              child: Text(
+                '나가기',
+                style:
+                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+              ),
               onPressed: () {
                 context.read<MapProvider>().deleteMapModel(widget.mapModel);
                 Navigator.of(context).pop();

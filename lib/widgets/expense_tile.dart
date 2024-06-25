@@ -92,8 +92,8 @@ class ExpenseTile extends StatelessWidget {
                   ),
                   if (expense.imagePath != null) ...[
                     const SizedBox(height: 10),
-                    Image.file(
-                      File(expense.imagePath!),
+                    Image.network(
+                      expense.imagePath!,
                       width: imageWidth,
                       height: imageHeight,
                       fit: BoxFit.cover,

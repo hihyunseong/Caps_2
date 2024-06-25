@@ -11,6 +11,7 @@ part 'expense.g.dart';
 @freezed
 class Expense with _$Expense {
   factory Expense({
+    @Default(0) int pinIdx,
     required String expenseLocationName,
     required double amount,
     required Category category,
