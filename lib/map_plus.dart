@@ -1,4 +1,5 @@
 import 'package:caps_2/add_expense/widget/custom_button.dart';
+import 'package:caps_2/common/utils/extensions.dart';
 import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/friend/provider/friend_provider.dart';
 import 'package:caps_2/friend/widget/friend_text_field.dart';
@@ -195,9 +196,9 @@ class _MapPlusState extends State<MapPlus> {
   Widget _colorSelectWidget() {
     return Row(
       children: [
-        _colorTile(const Color.fromRGBO(241, 92, 124, 1)),
+        _colorTile(const Color.fromRGBO(47, 200, 84, 1)),
         const SizedBox(width: 15),
-        _colorTile(const Color.fromRGBO(174, 85, 165, 1)),
+        _colorTile(const Color.fromRGBO(255, 185, 55, 1)),
         const SizedBox(width: 15),
         _colorTile(const Color.fromRGBO(124, 88, 175, 1)),
         const SizedBox(width: 15),
@@ -433,10 +434,8 @@ class _MapPlusState extends State<MapPlus> {
     if (widget.isSharedMap) {
       await mapProvider.saveSharedMap(newMap);
     } else {
-      mapProvider.addMapModel(newMap);
+      await mapProvider.getNewMyMap();
     }
-
-    await mapProvider.getSharedMap();
 
     Navigator.of(context).pop(newMap);
   }

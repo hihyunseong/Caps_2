@@ -4,17 +4,15 @@ import 'package:caps_2/models/map_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
-part 'shared_map.freezed.dart';
-
-part 'shared_map.g.dart';
+part 'my_map.freezed.dart';
+part 'my_map.g.dart';
 
 @freezed
-class SharedMap with _$SharedMap {
-  const SharedMap._();
+class MyMap with _$MyMap {
+  const MyMap._();
 
-  const factory SharedMap({
+  const factory MyMap({
     required int idx,
-    required int ownerIdx,
     required String title,
     required String color,
     required double lat,
@@ -24,13 +22,12 @@ class SharedMap with _$SharedMap {
     required DateTime createdAt,
     required DateTime updatedAt,
     @Default([]) List<FriendModel> friends,
-  }) = _SharedMap;
+  }) = _MyMap;
 
   MapModel toMapModel() {
     return MapModel(
       mapName: title,
       ownerId: idx,
-      sharedOwnerId: ownerIdx,
       friends: friends,
       location: Prediction(
         lat: lat.toString(),
@@ -38,7 +35,7 @@ class SharedMap with _$SharedMap {
       ),
       selectedDate: selectedDate,
       expenses: [],
-      isSharedMap: true,
+      isSharedMap: false,
       lastExpensesUpdate: updatedAt,
       color: color.getColorFromString(),
     );
@@ -61,6 +58,5 @@ class SharedMap with _$SharedMap {
     );
   }
 
-  factory SharedMap.fromJson(Map<String, dynamic> json) =>
-      _$SharedMapFromJson(json);
+  factory MyMap.fromJson(Map<String, dynamic> json) => _$MyMapFromJson(json);
 }

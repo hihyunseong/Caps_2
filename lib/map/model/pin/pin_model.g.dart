@@ -14,8 +14,10 @@ _$PinModelImpl _$$PinModelImplFromJson(Map<String, dynamic> json) =>
       memo: json['memo'] as String,
       category: json['category'] as String,
       cost: json['cost'] as int,
+      day: json['day'] as int,
       lat: (json['lat'] as num).toDouble(),
       lon: (json['lon'] as num).toDouble(),
+      createdAt: DateTime.parse(json['createdAt'] as String),
       file: json['file'] as String?,
     );
 
@@ -27,7 +29,9 @@ Map<String, dynamic> _$$PinModelImplToJson(_$PinModelImpl instance) =>
       'memo': instance.memo,
       'category': instance.category,
       'cost': instance.cost,
+      'day': instance.day,
       'lat': instance.lat,
       'lon': instance.lon,
+      'createdAt': instance.createdAt.toIso8601String(),
       'file': instance.file,
     };

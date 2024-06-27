@@ -35,8 +35,8 @@ class MyMarker extends StatelessWidget {
             child: imagePath != null
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(25),
-                    child: Image.file(
-                      File(imagePath!),
+                    child: Image.network(
+                      imagePath!,
                       width: 40,
                       height: 40,
                       fit: BoxFit.cover,

@@ -15,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../models/category.dart';
 import '../../models/expense.dart';
+import 'package:caps_2/expense/model/pin_detail_model.dart';
 
 // 소비 기록
 class ExpenseDetailPage extends StatefulWidget {
@@ -532,7 +533,7 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
       createdAt: DateTime.now(),
       friends: widget.selectedFriends,
     );
-
+    
     final mapProvider = context.read<MapProvider>();
     mapProvider.addExpense(expense, widget.mapModel.isSharedMap);
   }

@@ -5,7 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class UpdateShareMapListPage extends StatelessWidget {
-  const UpdateShareMapListPage({super.key});
+  const UpdateShareMapListPage({
+    super.key,
+    required this.memberId,
+  });
+
+  final String memberId;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +53,7 @@ class UpdateShareMapListPage extends StatelessWidget {
                 );
               },
               mapModel: mapProvider.sharedMapList[index],
+              memberId: int.parse(memberId),
             );
           },
         ),

@@ -21,11 +21,10 @@ RequestMapTitleModel _$RequestMapTitleModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$RequestMapTitleModel {
   String get title => throw _privateConstructorUsedError;
-  @ColorConverter()
-  Color get color => throw _privateConstructorUsedError;
-  int get lat => throw _privateConstructorUsedError;
-  int get lon => throw _privateConstructorUsedError;
-  DateTime get selectedDate => throw _privateConstructorUsedError;
+  String get color => throw _privateConstructorUsedError;
+  double get lat => throw _privateConstructorUsedError;
+  double get lon => throw _privateConstructorUsedError;
+  String get selectedDate => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -41,10 +40,10 @@ abstract class $RequestMapTitleModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String title,
-      @ColorConverter() Color color,
-      int lat,
-      int lon,
-      DateTime selectedDate});
+      String color,
+      double lat,
+      double lon,
+      String selectedDate});
 }
 
 /// @nodoc
@@ -75,19 +74,19 @@ class _$RequestMapTitleModelCopyWithImpl<$Res,
       color: null == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
-              as Color,
+              as String,
       lat: null == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       lon: null == lon
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       selectedDate: null == selectedDate
           ? _value.selectedDate
           : selectedDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as String,
     ) as $Val);
   }
 }
@@ -102,10 +101,10 @@ abstract class _$$RequestMapTitleModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {String title,
-      @ColorConverter() Color color,
-      int lat,
-      int lon,
-      DateTime selectedDate});
+      String color,
+      double lat,
+      double lon,
+      String selectedDate});
 }
 
 /// @nodoc
@@ -133,19 +132,19 @@ class __$$RequestMapTitleModelImplCopyWithImpl<$Res>
       color: null == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
-              as Color,
+              as String,
       lat: null == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       lon: null == lon
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       selectedDate: null == selectedDate
           ? _value.selectedDate
           : selectedDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as String,
     ));
   }
 }
@@ -155,7 +154,7 @@ class __$$RequestMapTitleModelImplCopyWithImpl<$Res>
 class _$RequestMapTitleModelImpl implements _RequestMapTitleModel {
   const _$RequestMapTitleModelImpl(
       {required this.title,
-      @ColorConverter() required this.color,
+      required this.color,
       required this.lat,
       required this.lon,
       required this.selectedDate});
@@ -166,14 +165,13 @@ class _$RequestMapTitleModelImpl implements _RequestMapTitleModel {
   @override
   final String title;
   @override
-  @ColorConverter()
-  final Color color;
+  final String color;
   @override
-  final int lat;
+  final double lat;
   @override
-  final int lon;
+  final double lon;
   @override
-  final DateTime selectedDate;
+  final String selectedDate;
 
   @override
   String toString() {
@@ -217,10 +215,10 @@ class _$RequestMapTitleModelImpl implements _RequestMapTitleModel {
 abstract class _RequestMapTitleModel implements RequestMapTitleModel {
   const factory _RequestMapTitleModel(
       {required final String title,
-      @ColorConverter() required final Color color,
-      required final int lat,
-      required final int lon,
-      required final DateTime selectedDate}) = _$RequestMapTitleModelImpl;
+       required final String color,
+      required final double lat,
+      required final double lon,
+      required final String selectedDate}) = _$RequestMapTitleModelImpl;
 
   factory _RequestMapTitleModel.fromJson(Map<String, dynamic> json) =
       _$RequestMapTitleModelImpl.fromJson;
@@ -228,14 +226,13 @@ abstract class _RequestMapTitleModel implements RequestMapTitleModel {
   @override
   String get title;
   @override
-  @ColorConverter()
-  Color get color;
+  String get color;
   @override
-  int get lat;
+  double get lat;
   @override
-  int get lon;
+  double get lon;
   @override
-  DateTime get selectedDate;
+  String get selectedDate;
   @override
   @JsonKey(ignore: true)
   _$$RequestMapTitleModelImplCopyWith<_$RequestMapTitleModelImpl>

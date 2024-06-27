@@ -27,6 +27,7 @@ mixin _$DtoModel {
   String get category => throw _privateConstructorUsedError;
   String get memo => throw _privateConstructorUsedError;
   int get cost => throw _privateConstructorUsedError;
+  int get day => throw _privateConstructorUsedError;
   double get lat => throw _privateConstructorUsedError;
   double get lon => throw _privateConstructorUsedError;
   List<int> get list => throw _privateConstructorUsedError;
@@ -50,6 +51,7 @@ abstract class $DtoModelCopyWith<$Res> {
       String category,
       String memo,
       int cost,
+      int day,
       double lat,
       double lon,
       List<int> list});
@@ -75,6 +77,7 @@ class _$DtoModelCopyWithImpl<$Res, $Val extends DtoModel>
     Object? category = null,
     Object? memo = null,
     Object? cost = null,
+    Object? day = null,
     Object? lat = null,
     Object? lon = null,
     Object? list = null,
@@ -108,6 +111,10 @@ class _$DtoModelCopyWithImpl<$Res, $Val extends DtoModel>
           ? _value.cost
           : cost // ignore: cast_nullable_to_non_nullable
               as int,
+      day: null == day
+          ? _value.day
+          : day // ignore: cast_nullable_to_non_nullable
+              as int,
       lat: null == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
@@ -140,6 +147,7 @@ abstract class _$$DtoModelImplCopyWith<$Res>
       String category,
       String memo,
       int cost,
+      int day,
       double lat,
       double lon,
       List<int> list});
@@ -163,6 +171,7 @@ class __$$DtoModelImplCopyWithImpl<$Res>
     Object? category = null,
     Object? memo = null,
     Object? cost = null,
+    Object? day = null,
     Object? lat = null,
     Object? lon = null,
     Object? list = null,
@@ -196,6 +205,10 @@ class __$$DtoModelImplCopyWithImpl<$Res>
           ? _value.cost
           : cost // ignore: cast_nullable_to_non_nullable
               as int,
+      day: null == day
+          ? _value.day
+          : day // ignore: cast_nullable_to_non_nullable
+              as int,        
       lat: null == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
@@ -223,6 +236,7 @@ class _$DtoModelImpl implements _DtoModel {
       required this.category,
       required this.memo,
       required this.cost,
+      required this.day,
       required this.lat,
       required this.lon,
       required final List<int> list})
@@ -245,6 +259,8 @@ class _$DtoModelImpl implements _DtoModel {
   final String memo;
   @override
   final int cost;
+  @override
+  final int day;
   @override
   final double lat;
   @override
@@ -275,6 +291,7 @@ class _$DtoModelImpl implements _DtoModel {
                 other.category == category) &&
             (identical(other.memo, memo) || other.memo == memo) &&
             (identical(other.cost, cost) || other.cost == cost) &&
+            (identical(other.day, day) || other.day == day) &&
             (identical(other.lat, lat) || other.lat == lat) &&
             (identical(other.lon, lon) || other.lon == lon) &&
             const DeepCollectionEquality().equals(other._list, _list));
@@ -291,6 +308,7 @@ class _$DtoModelImpl implements _DtoModel {
       category,
       memo,
       cost,
+      day,
       lat,
       lon,
       const DeepCollectionEquality().hash(_list));
@@ -318,6 +336,7 @@ abstract class _DtoModel implements DtoModel {
       required final String category,
       required final String memo,
       required final int cost,
+      required final int day,
       required final double lat,
       required final double lon,
       required final List<int> list}) = _$DtoModelImpl;
@@ -339,6 +358,8 @@ abstract class _DtoModel implements DtoModel {
   String get memo;
   @override
   int get cost;
+  @override
+  int get day;
   @override
   double get lat;
   @override

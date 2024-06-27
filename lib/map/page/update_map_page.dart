@@ -168,9 +168,9 @@ class _UpdateMapPageState extends State<UpdateMapPage> {
   Widget _colorSelectWidget() {
     return Row(
       children: [
-        _colorTile(const Color.fromRGBO(241, 92, 124, 1)),
+        _colorTile(const Color.fromRGBO(47, 200, 84, 1)),
         const SizedBox(width: 15),
-        _colorTile(const Color.fromRGBO(174, 85, 165, 1)),
+        _colorTile(const Color.fromRGBO(255, 185, 55, 1)),
         const SizedBox(width: 15),
         _colorTile(const Color.fromRGBO(124, 88, 175, 1)),
         const SizedBox(width: 15),
@@ -374,25 +374,35 @@ class _UpdateMapPageState extends State<UpdateMapPage> {
       );
       return;
     }
-
-    final storage = const FlutterSecureStorage();
-
-    final loadIdx = await storage.read(key: 'idx');
-
-    final newMap = MapModel(
-      mapName: _mapNameController.text,
-      ownerId: int.parse(loadIdx ?? ''),
-      friends: selectedFriends,
-      location: selectedLocation!,
-      selectedDate: selectedDate,
-      expenses: [],
-      color: selectedColor!,
-      isSharedMap: widget.mapModel.isSharedMap,
-    );
-
     final mapProvider = context.read<MapProvider>();
-    mapProvider.updateMapModel(widget.mapModel, newMap);
 
-    Navigator.of(context).pop();
+     if (widget.mapModel.isSharedMap) {
+      await mapProvider.editSharedMap(widget.mapModel.copyWith(
+        mapName: _mapNameController.text,
+        friends: selectedFriends,
+        location: selectedLocation!,
+        color: selectedColor!,
+      ));
+    } else {
+      final storage = const FlutterSecureStorage();
+
+      final loadIdx = await storage.read(key: 'idx');
+
+      final newMap = MapModel(
+        mapName: _mapNameController.text,
+        ownerId: int.parse(loadIdx ?? ''),
+        friends: selectedFriends,
+        location: selectedLocation!,
+        selectedDate: selectedDate,
+        expenses: [],
+        color: selectedColor!,
+        isSharedMap: widget.mapModel.isSharedMap,
+      );
+
+      await mapProvider.updateMapModel(widget.mapModel, newMap);
+      mapProvider.forceNotify();
+    }
+
+      Navigator.of(context).pop();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:caps_2/friend/model/friend_model.dart';
+import 'package:caps_2/map/model/my_map/my_map.dart';
 import 'package:caps_2/map/model/request_map_title/request_map_title_model.dart';
 import 'package:caps_2/map/model/request_shared_map/request_shared_map_model.dart';
 import 'package:caps_2/map/model/request_shared_map_with_friends/request_shared_map_with_friends_model.dart';
@@ -14,6 +15,12 @@ abstract class SharedMapRepository {
     Dio dio, {
     String baseUrl,
   }) = _SharedMapRepository;
+
+  @GET('/private')
+  Future<List<SharedMap>> getMyMap();
+
+  @GET('/private')
+  Future<List<MyMap>> getNewMyMap();
 
   @GET('/shared')
   Future<List<SharedMap>> getSharedMap();

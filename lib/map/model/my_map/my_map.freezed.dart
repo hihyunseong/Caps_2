@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'shared_map.dart';
+part of 'my_map.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,14 +14,13 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-SharedMap _$SharedMapFromJson(Map<String, dynamic> json) {
-  return _SharedMap.fromJson(json);
+MyMap _$MyMapFromJson(Map<String, dynamic> json) {
+  return _MyMap.fromJson(json);
 }
 
 /// @nodoc
-mixin _$SharedMap {
+mixin _$MyMap {
   int get idx => throw _privateConstructorUsedError;
-  int get ownerIdx => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get color => throw _privateConstructorUsedError;
   double get lat => throw _privateConstructorUsedError;
@@ -34,18 +33,16 @@ mixin _$SharedMap {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $SharedMapCopyWith<SharedMap> get copyWith =>
-      throw _privateConstructorUsedError;
+  $MyMapCopyWith<MyMap> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SharedMapCopyWith<$Res> {
-  factory $SharedMapCopyWith(SharedMap value, $Res Function(SharedMap) then) =
-      _$SharedMapCopyWithImpl<$Res, SharedMap>;
+abstract class $MyMapCopyWith<$Res> {
+  factory $MyMapCopyWith(MyMap value, $Res Function(MyMap) then) =
+      _$MyMapCopyWithImpl<$Res, MyMap>;
   @useResult
   $Res call(
       {int idx,
-      int ownerIdx,
       String title,
       String color,
       double lat,
@@ -58,9 +55,9 @@ abstract class $SharedMapCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$SharedMapCopyWithImpl<$Res, $Val extends SharedMap>
-    implements $SharedMapCopyWith<$Res> {
-  _$SharedMapCopyWithImpl(this._value, this._then);
+class _$MyMapCopyWithImpl<$Res, $Val extends MyMap>
+    implements $MyMapCopyWith<$Res> {
+  _$MyMapCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -71,7 +68,6 @@ class _$SharedMapCopyWithImpl<$Res, $Val extends SharedMap>
   @override
   $Res call({
     Object? idx = null,
-    Object? ownerIdx = null,
     Object? title = null,
     Object? color = null,
     Object? lat = null,
@@ -87,10 +83,6 @@ class _$SharedMapCopyWithImpl<$Res, $Val extends SharedMap>
           ? _value.idx
           : idx // ignore: cast_nullable_to_non_nullable
               as int,
-      ownerIdx: null == ownerIdx
-          ? _value.ownerIdx
-          : ownerIdx // ignore: cast_nullable_to_non_nullable
-              as int,        
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -132,16 +124,14 @@ class _$SharedMapCopyWithImpl<$Res, $Val extends SharedMap>
 }
 
 /// @nodoc
-abstract class _$$SharedMapImplCopyWith<$Res>
-    implements $SharedMapCopyWith<$Res> {
-  factory _$$SharedMapImplCopyWith(
-          _$SharedMapImpl value, $Res Function(_$SharedMapImpl) then) =
-      __$$SharedMapImplCopyWithImpl<$Res>;
+abstract class _$$MyMapImplCopyWith<$Res> implements $MyMapCopyWith<$Res> {
+  factory _$$MyMapImplCopyWith(
+          _$MyMapImpl value, $Res Function(_$MyMapImpl) then) =
+      __$$MyMapImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
       {int idx,
-      int ownerIdx,
       String title,
       String color,
       double lat,
@@ -154,18 +144,17 @@ abstract class _$$SharedMapImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$SharedMapImplCopyWithImpl<$Res>
-    extends _$SharedMapCopyWithImpl<$Res, _$SharedMapImpl>
-    implements _$$SharedMapImplCopyWith<$Res> {
-  __$$SharedMapImplCopyWithImpl(
-      _$SharedMapImpl _value, $Res Function(_$SharedMapImpl) _then)
+class __$$MyMapImplCopyWithImpl<$Res>
+    extends _$MyMapCopyWithImpl<$Res, _$MyMapImpl>
+    implements _$$MyMapImplCopyWith<$Res> {
+  __$$MyMapImplCopyWithImpl(
+      _$MyMapImpl _value, $Res Function(_$MyMapImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? idx = null,
-    Object? ownerIdx = null,
     Object? title = null,
     Object? color = null,
     Object? lat = null,
@@ -176,15 +165,11 @@ class __$$SharedMapImplCopyWithImpl<$Res>
     Object? updatedAt = null,
     Object? friends = null,
   }) {
-    return _then(_$SharedMapImpl(
+    return _then(_$MyMapImpl(
       idx: null == idx
           ? _value.idx
           : idx // ignore: cast_nullable_to_non_nullable
               as int,
-      ownerIdx: null == ownerIdx
-          ? _value.ownerIdx
-          : ownerIdx // ignore: cast_nullable_to_non_nullable
-              as int,        
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -227,10 +212,9 @@ class __$$SharedMapImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$SharedMapImpl extends _SharedMap {
-  const _$SharedMapImpl(
+class _$MyMapImpl extends _MyMap {
+  const _$MyMapImpl(
       {required this.idx,
-      required this.ownerIdx,
       required this.title,
       required this.color,
       required this.lat,
@@ -244,13 +228,11 @@ class _$SharedMapImpl extends _SharedMap {
         _friends = friends,
         super._();
 
-  factory _$SharedMapImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SharedMapImplFromJson(json);
+  factory _$MyMapImpl.fromJson(Map<String, dynamic> json) =>
+      _$$MyMapImplFromJson(json);
 
   @override
   final int idx;
-  @override
-  final int ownerIdx;
   @override
   final String title;
   @override
@@ -284,17 +266,15 @@ class _$SharedMapImpl extends _SharedMap {
 
   @override
   String toString() {
-    return 'SharedMap(idx: $idx, ownerIdx: $ownerIdx, title: $title, color: $color, lat: $lat, lon: $lon, pins: $pins, selectedDate: $selectedDate, createdAt: $createdAt, updatedAt: $updatedAt, friends: $friends)';
+    return 'MyMap(idx: $idx, title: $title, color: $color, lat: $lat, lon: $lon, pins: $pins, selectedDate: $selectedDate, createdAt: $createdAt, updatedAt: $updatedAt, friends: $friends)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SharedMapImpl &&
+            other is _$MyMapImpl &&
             (identical(other.idx, idx) || other.idx == idx) &&
-            (identical(other.ownerIdx, ownerIdx) ||
-                other.ownerIdx == ownerIdx) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.color, color) || other.color == color) &&
             (identical(other.lat, lat) || other.lat == lat) &&
@@ -314,7 +294,6 @@ class _$SharedMapImpl extends _SharedMap {
   int get hashCode => Object.hash(
       runtimeType,
       idx,
-      ownerIdx,
       title,
       color,
       lat,
@@ -328,21 +307,20 @@ class _$SharedMapImpl extends _SharedMap {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SharedMapImplCopyWith<_$SharedMapImpl> get copyWith =>
-      __$$SharedMapImplCopyWithImpl<_$SharedMapImpl>(this, _$identity);
+  _$$MyMapImplCopyWith<_$MyMapImpl> get copyWith =>
+      __$$MyMapImplCopyWithImpl<_$MyMapImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$SharedMapImplToJson(
+    return _$$MyMapImplToJson(
       this,
     );
   }
 }
 
-abstract class _SharedMap extends SharedMap {
-  const factory _SharedMap(
+abstract class _MyMap extends MyMap {
+  const factory _MyMap(
       {required final int idx,
-      required final int ownerIdx,
       required final String title,
       required final String color,
       required final double lat,
@@ -351,16 +329,13 @@ abstract class _SharedMap extends SharedMap {
       required final DateTime selectedDate,
       required final DateTime createdAt,
       required final DateTime updatedAt,
-      final List<FriendModel> friends}) = _$SharedMapImpl;
-  const _SharedMap._() : super._();
+      final List<FriendModel> friends}) = _$MyMapImpl;
+  const _MyMap._() : super._();
 
-  factory _SharedMap.fromJson(Map<String, dynamic> json) =
-      _$SharedMapImpl.fromJson;
+  factory _MyMap.fromJson(Map<String, dynamic> json) = _$MyMapImpl.fromJson;
 
   @override
   int get idx;
-  @override
-  int get ownerIdx;
   @override
   String get title;
   @override
@@ -381,6 +356,6 @@ abstract class _SharedMap extends SharedMap {
   List<FriendModel> get friends;
   @override
   @JsonKey(ignore: true)
-  _$$SharedMapImplCopyWith<_$SharedMapImpl> get copyWith =>
+  _$$MyMapImplCopyWith<_$MyMapImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

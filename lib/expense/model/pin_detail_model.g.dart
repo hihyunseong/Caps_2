@@ -16,6 +16,7 @@ _$PinDetailModelImpl _$$PinDetailModelImplFromJson(Map<String, dynamic> json) =>
       category: json['category'] as String,
       method: json['method'] as String,
       cost: json['cost'] as int,
+      day: json['day'] as int,
       place: json['place'] as String,
       list: (json['list'] as List<dynamic>)
           .map((e) => FriendInfoModel.fromJson(e as Map<String, dynamic>))
@@ -36,6 +37,7 @@ Map<String, dynamic> _$$PinDetailModelImplToJson(
       'category': instance.category,
       'method': instance.method,
       'cost': instance.cost,
+      'day': instance.day,
       'place': instance.place,
       'list': instance.list,
       'createdAt': instance.createdAt.toIso8601String(),

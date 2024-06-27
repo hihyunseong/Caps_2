@@ -1,15 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'shared_map.dart';
+part of 'my_map.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SharedMapImpl _$$SharedMapImplFromJson(Map<String, dynamic> json) =>
-    _$SharedMapImpl(
+_$MyMapImpl _$$MyMapImplFromJson(Map<String, dynamic> json) => _$MyMapImpl(
       idx: json['idx'] as int,
-      ownerIdx: json['ownerIdx'] as int,
       title: json['title'] as String,
       color: json['color'] as String,
       lat: (json['lat'] as num).toDouble(),
@@ -24,10 +22,9 @@ _$SharedMapImpl _$$SharedMapImplFromJson(Map<String, dynamic> json) =>
           const [],
     );
 
-Map<String, dynamic> _$$SharedMapImplToJson(_$SharedMapImpl instance) =>
+Map<String, dynamic> _$$MyMapImplToJson(_$MyMapImpl instance) =>
     <String, dynamic>{
       'idx': instance.idx,
-      'ownerIdx': instance.ownerIdx,
       'title': instance.title,
       'color': instance.color,
       'lat': instance.lat,

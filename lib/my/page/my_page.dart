@@ -308,7 +308,7 @@ class _MyPageState extends State<MyPage> {
             child: ListBody(
               children: <Widget>[
                 GestureDetector(
-                  child: Text('갤러리에서 선택'),
+                  child: Text('사진 보관함'),
                   onTap: () async {
                     final ImagePicker picker = ImagePicker();
                     final XFile? image = await picker.pickImage(

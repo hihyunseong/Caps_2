@@ -4,6 +4,7 @@ import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:caps_2/common/utils/app_util.dart';
 
 class MapTile extends StatelessWidget {
   final MapModel mapModel;
@@ -82,7 +83,7 @@ class MapTile extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      '최근 작성 ${_getTimeAgo(mapModel.lastExpensesUpdate ?? mapModel.selectedDate)}',
+                      '최근 작성 ${AppUtil.getTimeAgo(mapModel.selectedDate)}',
                       style: const TextStyle(
                         fontSize: 10,
                         fontFamily: 'NanumSquareNeo-Bold',

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:caps_2/add_expense/widget/custom_button.dart';
 import 'package:caps_2/vo/UrlUtil.dart';
 import 'package:caps_2/widgets/sub_title_widget.dart';
@@ -239,63 +240,63 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   void _showImagePickerDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('사진 선택'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                GestureDetector(
-                  child: const Text('갤러리에서 선택'),
-                  onTap: () async {
-                    final picker = ImagePicker();
-                    final image = await picker.pickImage(
-                      source: ImageSource.gallery,
-                      maxHeight: 128,
-                      maxWidth: 128,
-                      imageQuality: 30
-                    );
+  showCupertinoDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return CupertinoAlertDialog(
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              CupertinoButton(
+                child: const Text('사진 보관함'),
+                onPressed: () async {
+                  final picker = ImagePicker();
+                  final image = await picker.pickImage(
+                    source: ImageSource.gallery,
+                    maxHeight: 128,
+                    maxWidth: 128,
+                    imageQuality: 30,
+                  );
 
+                  if (image != null) {
                     setState(() {
-                      if(image!=null) {
-                        _image = File(image.path);
-                      }else{
-                        print('canceled');
-                      }
+                      _image = File(image.path);
                     });
-                    Navigator.of(context).pop();
-                  },
-                ),
-                const SizedBox(height: 10.0),
-                GestureDetector(
-                  child: const Text('카메라로 촬영'),
-                  onTap: () async {
-                    final ImagePicker picker = ImagePicker();
-                    final image = await picker.pickImage(
-                      source: ImageSource.camera,
-                        maxHeight: 128,
-                        maxWidth: 128,
-                      imageQuality: 30
-                    );
+                  } else {
+                    print('canceled');
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
+              
+              CupertinoButton(
+                child: const Text('사진 찍기'),
+                onPressed: () async {
+                  final picker = ImagePicker();
+                  final image = await picker.pickImage(
+                    source: ImageSource.camera,
+                    maxHeight: 128,
+                    maxWidth: 128,
+                    imageQuality: 30,
+                  );
+
+                  if (image != null) {
                     setState(() {
-                      if(image!=null) {
-                        _image = File(image.path);
-                      }else{
-                        print('canceled');
-                      }
+                      _image = File(image.path);
                     });
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
+                  } else {
+                    print('canceled');
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   Future<void> _updateProfile() async {
     print(accToken);
@@ -363,7 +364,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         await storage.write(key: 'profile', value: newProfileUrl);
         _loadFromStorage();
       } else {
-        print("change profile error:\n${response.statusCode}\n${response.body}");
+        print("change profile error:\n${response.statusCode}\n${response}");
       }
     }
   }

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:caps_2/common/enums/map_status.dart';
 import 'package:caps_2/common/utils/extensions.dart';
 import 'package:caps_2/map/model/dto/dto_model.dart';
+import 'package:caps_2/map/model/request_map_title/request_map_title_model.dart';
 import 'package:caps_2/map/model/request_shared_map/request_shared_map_model.dart';
 import 'package:caps_2/map/model/request_shared_map_with_friends/request_shared_map_with_friends_model.dart';
 import 'package:caps_2/map/repository/pin_repository.dart';
@@ -23,13 +24,27 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:widget_to_marker/widget_to_marker.dart';
 
 class MapProvider extends ChangeNotifier {
-  final _dio = Dio();
+  final _dio = Dio()
+    ..interceptors.addAll(
+      <Interceptor>[
+        PrettyDioLogger(
+          requestHeader: true,
+          requestBody: true,
+          responseBody: true,
+          responseHeader: true,
+          error: true,
+          compact: true,
+          maxWidth: 90,
+        ),
+      ],
+    );
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   SharedMapRepository sharedMapRepository =
       SharedMapRepository(Dio(), baseUrl: '');
@@ -94,14 +109,26 @@ class MapProvider extends ChangeNotifier {
   }
 
   //마이맵 불러오기
-  Future<List<Maps>> getMyMap() async {
-    final res = await _dio
-        .get(
-          '$mapUrl/private',
-        )
-        .catchError((error) => {print(error)});
-    print(res);
-    return res.data.map((e) => MapModel.fromJson(e)).cast<MapModel>().toList();
+  @Deprecated('')
+  Future<void> getMyMap() async {
+    await _initRepository();
+    final maps = await sharedMapRepository.getMyMap();
+    final updatedMaps = [...maps];
+
+    myMapList = updatedMaps.map((e) => e.toMyMapModel()).toList();
+
+    notifyListeners();
+  }
+
+  // 마이맵
+  Future<void> getNewMyMap() async {
+    await _initRepository();
+    final maps = await sharedMapRepository.getNewMyMap();
+    final updatedMaps = [...maps];
+
+    newMyMapList = updatedMaps.map((e) => e.toMyMapModel()).toList();
+
+    notifyListeners();
   }
 
   //공유맵 불러오기
@@ -117,17 +144,33 @@ class MapProvider extends ChangeNotifier {
       );
     }
     sharedMapList = updatedMaps.map((e) => e.toMapModel()).toList();
+  }
+
+  void forceNotify() {
     notifyListeners();
   }
 
   //마이맵 만들기
-  Future<void> createMyMap(String title, String color, int lat, int lon) async {
-    final res = await _dio.post('$mapUrl/private', data: {
-      'title': title,
-      'color': color,
-      'lat': lat,
-      'lon': lon,
-    });
+  Future<void> createMyMap(String title, String color, double lat, double lon,
+      DateTime parsedDate) async {
+    final formatDate =
+        "${parsedDate.toString().substring(0, 10)}T${parsedDate.toString().substring(11, 19)}";
+    const FlutterSecureStorage storage = FlutterSecureStorage();
+
+    String? accToken = await storage.read(key: 'accToken');
+    String? refToken = await storage.read(key: 'refToken');
+
+    final res = await _dio.post('$mapUrl/private',
+        data: {
+          'title': title,
+          'color': color,
+          'lat': lat,
+          'lon': lon,
+          'selectedDate': formatDate.toString()
+        },
+        options: Options(headers: {
+          'Authorization': "Bearer $accToken",
+        }));
     print(res);
   }
 
@@ -232,11 +275,13 @@ class MapProvider extends ChangeNotifier {
   }
 
   // 나의 맵
-  List<MapModel> get myMapList =>
-      mapList.where((element) => !element.isSharedMap).toList();
+  // List<MapModel> get myMapList =>
+  //     mapList.where((element) => !element.isSharedMap).toList();
 
   // 공유 맵
   List<MapModel> sharedMapList = [];
+  List<MapModel> myMapList = [];
+  List<MapModel> newMyMapList = [];
 
   // marker
   final List<Marker> _markers = [];
@@ -297,7 +342,10 @@ class MapProvider extends ChangeNotifier {
       await getSharedMap();
     } else {
       await apiService.deleteMapModel(mapModel.mapName);
-      _mapList.removeWhere((element) => element.mapName == mapModel.mapName);
+      // >> Taro
+      newMyMapList
+          .removeWhere((element) => element.mapName == mapModel.mapName);
+      // << Taro
     }
 
     // 현재 사용중인 mapModel 이 삭제되었을 경우
@@ -313,30 +361,91 @@ class MapProvider extends ChangeNotifier {
 
   Future<void> updateMapModel(
       MapModel beforeMapModel, MapModel afterMapModel) async {
-    await apiService.updateMapModel(beforeMapModel, afterMapModel);
+    // >> Taro
+    // await apiService.updateMapModel(beforeMapModel, afterMapModel);
 
-    final index = _mapList
+    DateTime parsedDate = afterMapModel.selectedDate;
+    String formattedDate =
+        '${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}T${parsedDate.hour.toString().padLeft(2, '0')}:${parsedDate.minute.toString().padLeft(2, '0')}:${parsedDate.second.toString().padLeft(2, '0')}';
+
+    print('Taro beforeMapModel.ownerId : ${beforeMapModel.ownerId}');
+
+    await sharedMapRepository.putSharedMapTitle(
+      mapIdx: beforeMapModel.ownerId,
+      model: RequestMapTitleModel(
+        title: afterMapModel.mapName,
+        color: afterMapModel.color.getColorString(),
+        lat: afterMapModel.latLng!.latitude,
+        lon: afterMapModel.latLng!.longitude,
+        selectedDate: formattedDate,
+      ),
+    );
+
+    final index = newMyMapList
         .indexWhere((element) => element.mapName == beforeMapModel.mapName);
-    _mapList[index] = afterMapModel;
+
+    newMyMapList[index] = afterMapModel;
 
     notifyListeners();
   }
 
-    Future<void> saveSharedMap(MapModel map) async {
-      final parsedDate = map.selectedDate;
-      String formattedDate =
-          '${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}T${parsedDate.hour.toString().padLeft(2, '0')}:${parsedDate.minute.toString().padLeft(2, '0')}:${parsedDate.second.toString().padLeft(2, '0')}';
+  // >> Taro
+  Future<void> editMySharedMap(MapModel map) async {
+    DateTime parsedDate = map.selectedDate;
+    String formattedDate =
+        '${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}T${parsedDate.hour.toString().padLeft(2, '0')}:${parsedDate.minute.toString().padLeft(2, '0')}:${parsedDate.second.toString().padLeft(2, '0')}';
 
-      await sharedMapRepository
-          .postSharedMap(
-            model: RequestSharedMapModel(
-              title: map.mapName,
-              color: map.color.getColorString(),
-              lat: map.latLng!.latitude,
-              lon: map.latLng!.longitude,
-              selectedDate: formattedDate,
-            ),
-          )
+    await sharedMapRepository.putSharedMapTitle(
+      mapIdx: map.ownerId,
+      model: RequestMapTitleModel(
+        title: map.mapName,
+        color: map.color.getColorString(),
+        lat: map.latLng!.latitude,
+        lon: map.latLng!.longitude,
+        selectedDate: formattedDate,
+      ),
+    );
+
+    await getSharedMap();
+    notifyListeners();
+  }
+  // << Taro
+
+  Future<void> editSharedMap(MapModel map) async {
+    DateTime parsedDate = map.selectedDate;
+    String formattedDate =
+        '${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}T${parsedDate.hour.toString().padLeft(2, '0')}:${parsedDate.minute.toString().padLeft(2, '0')}:${parsedDate.second.toString().padLeft(2, '0')}';
+
+    await sharedMapRepository.putSharedMapTitle(
+      mapIdx: map.ownerId,
+      model: RequestMapTitleModel(
+        title: map.mapName,
+        color: map.color.getColorString(),
+        lat: map.latLng!.latitude,
+        lon: map.latLng!.longitude,
+        selectedDate: formattedDate,
+      ),
+    );
+
+    await getSharedMap();
+    notifyListeners();
+  }
+
+  Future<void> saveSharedMap(MapModel map) async {
+    final parsedDate = map.selectedDate;
+    String formattedDate =
+        '${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')}T${parsedDate.hour.toString().padLeft(2, '0')}:${parsedDate.minute.toString().padLeft(2, '0')}:${parsedDate.second.toString().padLeft(2, '0')}';
+
+    await sharedMapRepository
+        .postSharedMap(
+          model: RequestSharedMapModel(
+            title: map.mapName,
+            color: map.color.getColorString(),
+            lat: map.latLng!.latitude,
+            lon: map.latLng!.longitude,
+            selectedDate: formattedDate,
+          ),
+        )
         .then(
           (value) => {
             sharedMapRepository.postSharedMapWithFriends(
@@ -404,7 +513,7 @@ class MapProvider extends ChangeNotifier {
     final polyline = Polyline(
       polylineId: const PolylineId('polyline_id'),
       points: points,
-      color: Color(0xD9FF6F61),
+      color: const Color(0xD9FF6F61),
       width: 7,
     );
 
@@ -431,7 +540,11 @@ class MapProvider extends ChangeNotifier {
           category: pinDetail.category.toCategory(),
           content: pinDetail.title,
           memo: pinDetail.memo,
-          date: DateTime.now(),
+          date: DateTime(
+            pin.day ~/ 10000,
+            (pin.day % 10000) ~/ 100,
+            pin.day % 100,
+          ),
           imagePath: pinDetail.file,
           latitude: pin.lat,
           longitude: pin.lon,
@@ -474,9 +587,10 @@ class MapProvider extends ChangeNotifier {
         place: expense.expenseLocationName,
         header: expense.expenseLocationName,
         title: expense.content,
-        method: expense.payMethod.toString(),
-        category: expense.category.toString(),
+        method: expense.payMethod.name,
+        category: expense.category.text,
         memo: expense.memo,
+        day: int.parse(DateFormat('yyyyMMdd').format(expense.date)),
         cost: expense.amount.toInt(),
         lat: expense.latitude,
         lon: expense.longitude,
@@ -585,14 +699,18 @@ class MapProvider extends ChangeNotifier {
     double northEastLng = markers.first.position.longitude;
 
     for (Marker marker in markers) {
-      if (marker.position.latitude < southWestLat)
+      if (marker.position.latitude < southWestLat) {
         southWestLat = marker.position.latitude;
-      if (marker.position.longitude < southWestLng)
+      }
+      if (marker.position.longitude < southWestLng) {
         southWestLng = marker.position.longitude;
-      if (marker.position.latitude > northEastLat)
+      }
+      if (marker.position.latitude > northEastLat) {
         northEastLat = marker.position.latitude;
-      if (marker.position.longitude > northEastLng)
+      }
+      if (marker.position.longitude > northEastLng) {
         northEastLng = marker.position.longitude;
+      }
     }
 
     return LatLngBounds(
@@ -719,7 +837,7 @@ class MapProvider extends ChangeNotifier {
     Category.beauty,
     Category.transport,
     Category.etc,
-  ];
+  ];  
 
   List<Category> get hiddenCategories => _hiddenCategories;
 

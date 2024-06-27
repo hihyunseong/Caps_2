@@ -26,8 +26,10 @@ mixin _$PinModel {
   String get memo => throw _privateConstructorUsedError;
   String get category => throw _privateConstructorUsedError;
   int get cost => throw _privateConstructorUsedError;
+  int get day => throw _privateConstructorUsedError;
   double get lat => throw _privateConstructorUsedError;
   double get lon => throw _privateConstructorUsedError;
+  DateTime get createdAt => throw _privateConstructorUsedError;
   String? get file => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -48,8 +50,10 @@ abstract class $PinModelCopyWith<$Res> {
       String memo,
       String category,
       int cost,
+      int day,
       double lat,
       double lon,
+      DateTime createdAt,
       String? file});
 }
 
@@ -72,8 +76,10 @@ class _$PinModelCopyWithImpl<$Res, $Val extends PinModel>
     Object? memo = null,
     Object? category = null,
     Object? cost = null,
+    Object? day = null,
     Object? lat = null,
     Object? lon = null,
+    Object? createdAt = null,
     Object? file = freezed,
   }) {
     return _then(_value.copyWith(
@@ -101,6 +107,10 @@ class _$PinModelCopyWithImpl<$Res, $Val extends PinModel>
           ? _value.cost
           : cost // ignore: cast_nullable_to_non_nullable
               as int,
+      day: null == day
+          ? _value.day
+          : day // ignore: cast_nullable_to_non_nullable
+              as int,        
       lat: null == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
@@ -109,6 +119,10 @@ class _$PinModelCopyWithImpl<$Res, $Val extends PinModel>
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
               as double,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,        
       file: freezed == file
           ? _value.file
           : file // ignore: cast_nullable_to_non_nullable
@@ -132,8 +146,10 @@ abstract class _$$PinModelImplCopyWith<$Res>
       String memo,
       String category,
       int cost,
+      int day,
       double lat,
       double lon,
+      DateTime createdAt,
       String? file});
 }
 
@@ -154,8 +170,10 @@ class __$$PinModelImplCopyWithImpl<$Res>
     Object? memo = null,
     Object? category = null,
     Object? cost = null,
+    Object? day = null,
     Object? lat = null,
     Object? lon = null,
+    Object? createdAt = null,
     Object? file = freezed,
   }) {
     return _then(_$PinModelImpl(
@@ -183,6 +201,10 @@ class __$$PinModelImplCopyWithImpl<$Res>
           ? _value.cost
           : cost // ignore: cast_nullable_to_non_nullable
               as int,
+      day: null == day
+          ? _value.day
+          : day // ignore: cast_nullable_to_non_nullable
+              as int,        
       lat: null == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
@@ -191,6 +213,10 @@ class __$$PinModelImplCopyWithImpl<$Res>
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
               as double,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,        
       file: freezed == file
           ? _value.file
           : file // ignore: cast_nullable_to_non_nullable
@@ -209,8 +235,10 @@ class _$PinModelImpl implements _PinModel {
       required this.memo,
       required this.category,
       required this.cost,
+      required this.day,
       required this.lat,
       required this.lon,
+      required this.createdAt,
       this.file});
 
   factory _$PinModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -229,15 +257,19 @@ class _$PinModelImpl implements _PinModel {
   @override
   final int cost;
   @override
+  final int day;
+  @override
   final double lat;
   @override
   final double lon;
   @override
+  final DateTime createdAt;
+  @override
   final String? file;
 
-  @override
+   @override
   String toString() {
-    return 'PinModel(pinIdx: $pinIdx, header: $header, title: $title, memo: $memo, category: $category, cost: $cost, lat: $lat, lon: $lon, file: $file)';
+    return 'PinModel(pinIdx: $pinIdx, header: $header, title: $title, memo: $memo, category: $category, cost: $cost, day: $day, lat: $lat, lon: $lon, createdAt: $createdAt, file: $file)';
   }
 
   @override
@@ -252,15 +284,18 @@ class _$PinModelImpl implements _PinModel {
             (identical(other.category, category) ||
                 other.category == category) &&
             (identical(other.cost, cost) || other.cost == cost) &&
+            (identical(other.day, day) || other.day == day) &&
             (identical(other.lat, lat) || other.lat == lat) &&
             (identical(other.lon, lon) || other.lon == lon) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
             (identical(other.file, file) || other.file == file));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, pinIdx, header, title, memo, category, cost, lat, lon, file);
+  int get hashCode => Object.hash(runtimeType, pinIdx, header, title, memo,
+      category, cost, day, lat, lon, createdAt, file);
 
   @JsonKey(ignore: true)
   @override
@@ -284,8 +319,10 @@ abstract class _PinModel implements PinModel {
       required final String memo,
       required final String category,
       required final int cost,
+      required final int day,
       required final double lat,
       required final double lon,
+      required final DateTime createdAt,
       final String? file}) = _$PinModelImpl;
 
   factory _PinModel.fromJson(Map<String, dynamic> json) =
@@ -304,9 +341,13 @@ abstract class _PinModel implements PinModel {
   @override
   int get cost;
   @override
+  int get day;
+  @override
   double get lat;
   @override
   double get lon;
+  @override
+  DateTime get createdAt;
   @override
   String? get file;
   @override

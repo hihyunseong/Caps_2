@@ -28,6 +28,7 @@ mixin _$PinDetailModel {
   String get category => throw _privateConstructorUsedError;
   String get method => throw _privateConstructorUsedError;
   int get cost => throw _privateConstructorUsedError;
+  int get day => throw _privateConstructorUsedError;
   String get place => throw _privateConstructorUsedError;
   List<FriendInfoModel> get list => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
@@ -55,6 +56,7 @@ abstract class $PinDetailModelCopyWith<$Res> {
       String category,
       String method,
       int cost,
+      int day,
       String place,
       List<FriendInfoModel> list,
       DateTime createdAt,
@@ -83,6 +85,7 @@ class _$PinDetailModelCopyWithImpl<$Res, $Val extends PinDetailModel>
     Object? category = null,
     Object? method = null,
     Object? cost = null,
+    Object? day = null,
     Object? place = null,
     Object? list = null,
     Object? createdAt = null,
@@ -122,6 +125,10 @@ class _$PinDetailModelCopyWithImpl<$Res, $Val extends PinDetailModel>
           ? _value.cost
           : cost // ignore: cast_nullable_to_non_nullable
               as int,
+      day: null == day
+          ? _value.day
+          : day // ignore: cast_nullable_to_non_nullable
+              as int,       
       place: null == place
           ? _value.place
           : place // ignore: cast_nullable_to_non_nullable
@@ -163,6 +170,7 @@ abstract class _$$PinDetailModelImplCopyWith<$Res>
       String category,
       String method,
       int cost,
+      int day,
       String place,
       List<FriendInfoModel> list,
       DateTime createdAt,
@@ -189,6 +197,7 @@ class __$$PinDetailModelImplCopyWithImpl<$Res>
     Object? category = null,
     Object? method = null,
     Object? cost = null,
+    Object? day = null,
     Object? place = null,
     Object? list = null,
     Object? createdAt = null,
@@ -228,6 +237,10 @@ class __$$PinDetailModelImplCopyWithImpl<$Res>
           ? _value.cost
           : cost // ignore: cast_nullable_to_non_nullable
               as int,
+      day: null == day
+          ? _value.day
+          : day // ignore: cast_nullable_to_non_nullable
+              as int,         
       place: null == place
           ? _value.place
           : place // ignore: cast_nullable_to_non_nullable
@@ -264,6 +277,7 @@ class _$PinDetailModelImpl implements _PinDetailModel {
       required this.category,
       required this.method,
       required this.cost,
+      required this.day,
       required this.place,
       required final List<FriendInfoModel> list,
       required this.createdAt,
@@ -290,6 +304,8 @@ class _$PinDetailModelImpl implements _PinDetailModel {
   final String method;
   @override
   final int cost;
+  @override
+  final int day;
   @override
   final String place;
   final List<FriendInfoModel> _list;
@@ -326,6 +342,7 @@ class _$PinDetailModelImpl implements _PinDetailModel {
                 other.category == category) &&
             (identical(other.method, method) || other.method == method) &&
             (identical(other.cost, cost) || other.cost == cost) &&
+            (identical(other.day, day) || other.day == day) &&
             (identical(other.place, place) || other.place == place) &&
             const DeepCollectionEquality().equals(other._list, _list) &&
             (identical(other.createdAt, createdAt) ||
@@ -347,6 +364,7 @@ class _$PinDetailModelImpl implements _PinDetailModel {
       category,
       method,
       cost,
+      day,
       place,
       const DeepCollectionEquality().hash(_list),
       createdAt,
@@ -378,6 +396,7 @@ abstract class _PinDetailModel implements PinDetailModel {
       required final String category,
       required final String method,
       required final int cost,
+      required final int day,
       required final String place,
       required final List<FriendInfoModel> list,
       required final DateTime createdAt,
@@ -403,6 +422,8 @@ abstract class _PinDetailModel implements PinDetailModel {
   String get method;
   @override
   int get cost;
+  @override
+  int get day;
   @override
   String get place;
   @override

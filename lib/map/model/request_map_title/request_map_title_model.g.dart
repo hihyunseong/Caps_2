@@ -10,18 +10,18 @@ _$RequestMapTitleModelImpl _$$RequestMapTitleModelImplFromJson(
         Map<String, dynamic> json) =>
     _$RequestMapTitleModelImpl(
       title: json['title'] as String,
-      color: const ColorConverter().fromJson(json['color'] as String),
-      lat: json['lat'] as int,
-      lon: json['lon'] as int,
-      selectedDate: DateTime.parse(json['selectedDate'] as String),
+      color: json['color'] as String,
+      lat: (json['lat'] as num).toDouble(),
+      lon: (json['lon'] as num).toDouble(),
+      selectedDate: json['selectedDate'] as String,
     );
 
 Map<String, dynamic> _$$RequestMapTitleModelImplToJson(
         _$RequestMapTitleModelImpl instance) =>
     <String, dynamic>{
       'title': instance.title,
-      'color': const ColorConverter().toJson(instance.color),
+      'color': instance.color,
       'lat': instance.lat,
       'lon': instance.lon,
-      'selectedDate': instance.selectedDate.toIso8601String(),
+      'selectedDate': instance.selectedDate,
     };

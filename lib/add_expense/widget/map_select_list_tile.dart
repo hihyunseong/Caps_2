@@ -6,7 +6,7 @@ class MapSelectListTile extends StatelessWidget {
   final Function()? onTap;
   final bool isSelected;
 
-  const MapSelectListTile({super.key, required this.mapModel, this.onTap, required this.isSelected,});
+  const MapSelectListTile({super.key, required this.mapModel, this.onTap, required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class MapSelectListTile extends StatelessWidget {
                         const SizedBox(width: 4),
                         mapModel.friends.isNotEmpty
                             ? Text(
-                                (mapModel.friends.length).toString(),
+                                mapModel.friends.length.toString(),
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontFamily: 'NanumSquareNeo-Bold',

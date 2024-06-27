@@ -10,6 +10,7 @@ _$MapModelImpl _$$MapModelImplFromJson(Map<String, dynamic> json) =>
     _$MapModelImpl(
       mapName: json['mapName'] as String,
       ownerId: json['ownerId'] as int,
+      sharedOwnerId: json['sharedOwnerId'] as int? ?? 0,
       friends: (json['friends'] as List<dynamic>)
           .map((e) => FriendModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -29,6 +30,7 @@ Map<String, dynamic> _$$MapModelImplToJson(_$MapModelImpl instance) =>
     <String, dynamic>{
       'mapName': instance.mapName,
       'ownerId': instance.ownerId,
+      'sharedOwnerId': instance.sharedOwnerId,
       'friends': instance.friends,
       'location': instance.location,
       'selectedDate': instance.selectedDate.toIso8601String(),

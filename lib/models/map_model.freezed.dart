@@ -22,6 +22,7 @@ MapModel _$MapModelFromJson(Map<String, dynamic> json) {
 mixin _$MapModel {
   String get mapName => throw _privateConstructorUsedError;
   int get ownerId => throw _privateConstructorUsedError;
+  int get sharedOwnerId => throw _privateConstructorUsedError;
   List<FriendModel> get friends => throw _privateConstructorUsedError;
   Prediction get location => throw _privateConstructorUsedError;
   DateTime get selectedDate => throw _privateConstructorUsedError;
@@ -45,6 +46,7 @@ abstract class $MapModelCopyWith<$Res> {
   $Res call(
       {String mapName,
       int ownerId,
+      int sharedOwnerId,
       List<FriendModel> friends,
       Prediction location,
       DateTime selectedDate,
@@ -69,6 +71,7 @@ class _$MapModelCopyWithImpl<$Res, $Val extends MapModel>
   $Res call({
     Object? mapName = null,
     Object? ownerId = null,
+    Object? sharedOwnerId = null,
     Object? friends = null,
     Object? location = null,
     Object? selectedDate = null,
@@ -86,6 +89,10 @@ class _$MapModelCopyWithImpl<$Res, $Val extends MapModel>
           ? _value.ownerId
           : ownerId // ignore: cast_nullable_to_non_nullable
               as int,
+      sharedOwnerId: null == sharedOwnerId
+          ? _value.sharedOwnerId
+          : sharedOwnerId // ignore: cast_nullable_to_non_nullable
+              as int,        
       friends: null == friends
           ? _value.friends
           : friends // ignore: cast_nullable_to_non_nullable
@@ -129,6 +136,7 @@ abstract class _$$MapModelImplCopyWith<$Res>
   $Res call(
       {String mapName,
       int ownerId,
+      int sharedOwnerId,
       List<FriendModel> friends,
       Prediction location,
       DateTime selectedDate,
@@ -151,6 +159,7 @@ class __$$MapModelImplCopyWithImpl<$Res>
   $Res call({
     Object? mapName = null,
     Object? ownerId = null,
+    Object? sharedOwnerId = null,
     Object? friends = null,
     Object? location = null,
     Object? selectedDate = null,
@@ -168,10 +177,14 @@ class __$$MapModelImplCopyWithImpl<$Res>
           ? _value.ownerId
           : ownerId // ignore: cast_nullable_to_non_nullable
               as int,
+      sharedOwnerId: null == sharedOwnerId
+          ? _value.sharedOwnerId
+          : sharedOwnerId // ignore: cast_nullable_to_non_nullable
+              as int,        
       friends: null == friends
           ? _value._friends
           : friends // ignore: cast_nullable_to_non_nullable
-              as List<FriendModel>,
+              as List<FriendModel>,             
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -206,6 +219,7 @@ class _$MapModelImpl extends _MapModel {
   _$MapModelImpl(
       {required this.mapName,
       required this.ownerId,
+      this.sharedOwnerId = 0,
       required final List<FriendModel> friends,
       required this.location,
       required this.selectedDate,
@@ -224,6 +238,9 @@ class _$MapModelImpl extends _MapModel {
   final String mapName;
   @override
   final int ownerId;
+  @override
+  @JsonKey()
+  final int sharedOwnerId;
   final List<FriendModel> _friends;
   @override
   List<FriendModel> get friends {
@@ -254,7 +271,7 @@ class _$MapModelImpl extends _MapModel {
 
   @override
   String toString() {
-    return 'MapModel(mapName: $mapName, ownerId: $ownerId, friends: $friends, location: $location, selectedDate: $selectedDate, expenses: $expenses, isSharedMap: $isSharedMap, lastExpensesUpdate: $lastExpensesUpdate, color: $color)';
+    return 'MapModel(mapName: $mapName, ownerId: $ownerId, sharedOwnerId: $sharedOwnerId, friends: $friends, location: $location, selectedDate: $selectedDate, expenses: $expenses, isSharedMap: $isSharedMap, lastExpensesUpdate: $lastExpensesUpdate, color: $color)';
   }
 
   @override
@@ -264,6 +281,8 @@ class _$MapModelImpl extends _MapModel {
             other is _$MapModelImpl &&
             (identical(other.mapName, mapName) || other.mapName == mapName) &&
             (identical(other.ownerId, ownerId) || other.ownerId == ownerId) &&
+            (identical(other.sharedOwnerId, sharedOwnerId) ||
+                other.sharedOwnerId == sharedOwnerId) &&
             const DeepCollectionEquality().equals(other._friends, _friends) &&
             (identical(other.location, location) ||
                 other.location == location) &&
@@ -283,6 +302,7 @@ class _$MapModelImpl extends _MapModel {
       runtimeType,
       mapName,
       ownerId,
+      sharedOwnerId,
       const DeepCollectionEquality().hash(_friends),
       location,
       selectedDate,
@@ -309,6 +329,7 @@ abstract class _MapModel extends MapModel {
   factory _MapModel(
       {required final String mapName,
       required final int ownerId,
+      final int sharedOwnerId,
       required final List<FriendModel> friends,
       required final Prediction location,
       required final DateTime selectedDate,
@@ -325,6 +346,8 @@ abstract class _MapModel extends MapModel {
   String get mapName;
   @override
   int get ownerId;
+  @override
+  int get sharedOwnerId;
   @override
   List<FriendModel> get friends;
   @override

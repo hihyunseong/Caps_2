@@ -3,50 +3,37 @@ import 'package:caps_2/models/map_model.dart';
 import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
-class UpdateMapListTile extends StatefulWidget {
+class UpdateMapListTile extends StatelessWidget {
   final MapModel mapModel;
   final Function() onTap;
+  final int memberId;
 
   const UpdateMapListTile({
     super.key,
     required this.mapModel,
     required this.onTap,
+    required this.memberId,
   });
 
   @override
-  State<UpdateMapListTile> createState() => _UpdateMapListTileState();
-}
-
-class _UpdateMapListTileState extends State<UpdateMapListTile> {
-  int? memberId;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFromStorage();
-  }
-
-  Future<void> _loadFromStorage() async {
-    const storage = FlutterSecureStorage();
-
-    final loadIdx = await storage.read(key: 'idx');
-    setState(() {
-      memberId = int.parse(loadIdx ?? '0');
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // >> Taro 미사용 처리
+    final memberOwnerId =
+        mapModel.isSharedMap ? mapModel.sharedOwnerId : mapModel.ownerId;
+
+    print(
+        'Taro memberOwnerId : $memberOwnerId, mapModel.ownerId : ${mapModel.ownerId} ');
+
+    // << Taro
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: widget.mapModel.color,
+          color: mapModel.color,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -55,9 +42,13 @@ class _UpdateMapListTileState extends State<UpdateMapListTile> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                memberId == widget.mapModel.ownerId
+                // >> Taro
+                // memberId == memberOwnerId
+                (mapModel.isSharedMap && memberId == memberOwnerId) ||
+                        !mapModel.isSharedMap
+                    // << Taro
                     ? InkWell(
-                        onTap: widget.onTap,
+                        onTap: onTap,
                         child: Image.asset(
                           'assets/images/edit.png',
                           color: Colors.white,
@@ -90,7 +81,7 @@ class _UpdateMapListTileState extends State<UpdateMapListTile> {
                       Row(
                         children: [
                           Text(
-                            widget.mapModel.mapName,
+                            mapModel.mapName,
                             style: const TextStyle(
                               fontSize: 18,
                               fontFamily: 'NanumSquareNeo-Bold',
@@ -98,7 +89,7 @@ class _UpdateMapListTileState extends State<UpdateMapListTile> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          widget.mapModel.friends.isNotEmpty
+                          mapModel.friends.isNotEmpty
                               ? Image.asset(
                                   'assets/images/person.png',
                                   width: 14,
@@ -112,9 +103,9 @@ class _UpdateMapListTileState extends State<UpdateMapListTile> {
                                   color: Colors.white,
                                 ),
                           const SizedBox(width: 4),
-                          widget.mapModel.friends.isNotEmpty
+                          mapModel.friends.isNotEmpty
                               ? Text(
-                                  (widget.mapModel.friends.length).toString(),
+                                  (mapModel.friends.length).toString(),
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontFamily: 'NanumSquareNeo-Bold',
@@ -132,7 +123,7 @@ class _UpdateMapListTileState extends State<UpdateMapListTile> {
                         ],
                       ),
                       Text(
-                        '최근 작성 ${AppUtil.getTimeAgo(widget.mapModel.selectedDate)}',
+                        '최근 작성 ${AppUtil.getTimeAgo(mapModel.selectedDate)}',
                         style: const TextStyle(
                           fontSize: 10,
                           fontFamily: 'NanumSquareNeo-Bold',
@@ -167,22 +158,22 @@ class _UpdateMapListTileState extends State<UpdateMapListTile> {
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text(
+          title: const Text(
             '맵 나가기',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text(
+          content: const Text(
             '맵을 나가시겠어요?\n맵을 나가면 소비 기록을 더 이상 볼 수 없어요.',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
             ),
           ),
           actions: <Widget>[
             CupertinoDialogAction(
-              child: Text(
+              child: const Text(
                 '취소',
                 style:
                     TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
@@ -193,13 +184,13 @@ class _UpdateMapListTileState extends State<UpdateMapListTile> {
             ),
             CupertinoDialogAction(
               isDefaultAction: true,
-              child: Text(
+              child: const Text(
                 '나가기',
                 style:
                     TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
               ),
               onPressed: () {
-                context.read<MapProvider>().deleteMapModel(widget.mapModel);
+                context.read<MapProvider>().deleteMapModel(mapModel);
                 Navigator.of(context).pop();
               },
             ),

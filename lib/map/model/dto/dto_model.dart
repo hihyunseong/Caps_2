@@ -14,6 +14,7 @@ class DtoModel with _$DtoModel {
     required String category,
     required String memo,
     required int cost,
+    required int day,
     required double lat,
     required double lon,
     required List<int> list,

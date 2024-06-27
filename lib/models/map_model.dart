@@ -14,6 +14,7 @@ class MapModel with _$MapModel {
   factory MapModel({
     required String mapName,
     required int ownerId,
+    @Default(0) int sharedOwnerId,
     required List<FriendModel> friends,
     required Prediction location,
     required DateTime selectedDate,

@@ -96,10 +96,10 @@ class _ExpenseDetailsViewState extends State<ExpenseDetailsView> {
                             _PriceView(
                               pinDetailModel: state.pinDetailModel,
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             _ContentView(pinDetailModel: state.pinDetailModel),
                             const SizedBox(height: 10),
-                            const Divider(color: Colors.black, thickness: 1),
+                            const Divider(color: Color.fromARGB(255, 164, 140, 140), thickness: 1),
                             const SizedBox(height: 10),
                             const Expanded(child: _CommentListView()),
                           ],
@@ -157,7 +157,7 @@ class _LocationAndDateSelectView extends StatelessWidget {
             Text(
               '📍${pinDetailModel.place}',
               style: const TextStyle(
-                fontSize: 16.0,
+                fontSize: 12.0,
                 fontFamily: 'NanumSquareNeo-Bold',
                 color: Colors.black,
                 fontWeight: FontWeight.w900,
@@ -166,7 +166,7 @@ class _LocationAndDateSelectView extends StatelessWidget {
             const Text(
               ' 에서',
               style: TextStyle(
-                fontSize: 16.0,
+                fontSize: 12.0,
                 fontFamily: 'NanumSquareNeo-Bold',
                 color: Colors.grey,
               ),
@@ -175,7 +175,7 @@ class _LocationAndDateSelectView extends StatelessWidget {
             const Text(
               '🗓',
               style: TextStyle(
-                fontSize: 16.0,
+                fontSize: 12.0,
                 fontFamily: 'NanumSquareNeo-Bold',
                 color: Colors.black,
               ),
@@ -186,7 +186,7 @@ class _LocationAndDateSelectView extends StatelessWidget {
                   DateFormat('yyyy.MM.dd').format(pinDetailModel.createdAt),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontSize: 16.0,
+                    fontSize: 12.0,
                     fontWeight: FontWeight.w900,
                     fontFamily: 'NanumSquareNeo-Bold',
                   ),
@@ -197,7 +197,7 @@ class _LocationAndDateSelectView extends StatelessWidget {
             const Text(
               '의 소비 기록',
               style: TextStyle(
-                fontSize: 16.0,
+                fontSize: 12.0,
                 fontFamily: 'NanumSquareNeo-Bold',
                 color: Colors.black,
               ),
@@ -209,7 +209,7 @@ class _LocationAndDateSelectView extends StatelessWidget {
             Text(
               '✏${pinDetailModel.writer}님이 작성',
               style: const TextStyle(
-                fontSize: 16.0,
+                fontSize: 12.0,
                 fontFamily: 'NanumSquareNeo-Bold',
                 fontWeight: FontWeight.w900,
                 color: Colors.black,
@@ -219,7 +219,7 @@ class _LocationAndDateSelectView extends StatelessWidget {
               Text(
                 ' - ${pinDetailModel.list.first.name}님 외 ${pinDetailModel.list.length - 1}명',
                 style: const TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 12.0,
                   fontFamily: 'NanumSquareNeo-Bold',
                   fontWeight: FontWeight.w900,
                   color: Colors.black,
@@ -301,7 +301,7 @@ class _ContentView extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                '${pinDetailModel.createdAt.hour}:${pinDetailModel.createdAt.minute} | ${pinDetailModel.method}',
+                '${pinDetailModel.createdAt.hour}:${pinDetailModel.createdAt.minute} | ${pinDetailModel.method} | ${pinDetailModel.header}',
                 style: const TextStyle(
                   fontSize: 10.0,
                   fontFamily: 'NanumSquareNeo-Bold',
@@ -313,7 +313,7 @@ class _ContentView extends StatelessWidget {
               const Text(
                 '메모',
                 style: TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 12.0,
                   fontFamily: 'NanumSquareNeo-Bold',
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -324,6 +324,9 @@ class _ContentView extends StatelessWidget {
               if (pinDetailModel.file != null)
                 Image(
                   image: NetworkImage(pinDetailModel.file ?? ''),
+                  width: 240, 
+                  height: 240,
+                  fit: BoxFit.cover,
                 ),
               if (pinDetailModel.file != null) const SizedBox(height: 4),
               Text(
@@ -332,6 +335,7 @@ class _ContentView extends StatelessWidget {
                   fontSize: 14.0,
                   fontFamily: 'NanumSquareNeo-Bold',
                   color: Colors.black,
+                  fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.start,
                 softWrap: true,
@@ -369,7 +373,7 @@ class _CommentListView extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '(${state.comments.length})',
+                      '${state.comments.length}',
                       style: const TextStyle(
                         fontSize: 12,
                         fontFamily: 'NanumSquareNeo-Bold',

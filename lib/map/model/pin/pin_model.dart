@@ -12,8 +12,10 @@ class PinModel with _$PinModel {
     required String memo,
     required String category,
     required int cost,
+    required int day,
     required double lat,
     required double lon,
+    required DateTime createdAt,
     String? file,
   }) = _PinModel;
 

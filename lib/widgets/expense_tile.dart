@@ -15,8 +15,8 @@ class ExpenseTile extends StatelessWidget {
     super.key,
     required this.expense,
     required this.onTap,
-    this.imageHeight = 180,
-    this.imageWidth = 180,
+    this.imageHeight = 140,
+    this.imageWidth = 140,
   });
 
   @override
@@ -58,7 +58,7 @@ class ExpenseTile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        '${DateFormat('HH:mm').format(expense.date)} | ',
+                        '${DateFormat('HH:mm').format(expense.createdAt)} | ',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -92,8 +92,8 @@ class ExpenseTile extends StatelessWidget {
                   ),
                   if (expense.imagePath != null) ...[
                     const SizedBox(height: 10),
-                    Image.file(
-                      File(expense.imagePath!),
+                    Image.network(
+                      expense.imagePath!,
                       width: imageWidth,
                       height: imageHeight,
                       fit: BoxFit.cover,

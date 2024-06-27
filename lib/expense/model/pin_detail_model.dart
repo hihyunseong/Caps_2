@@ -15,6 +15,7 @@ class PinDetailModel with _$PinDetailModel {
     required String category,
     required String method,
     required int cost,
+    required int day,
     required String place,
     required List<FriendInfoModel> list,
     required DateTime createdAt,
@@ -24,9 +25,4 @@ class PinDetailModel with _$PinDetailModel {
 
   factory PinDetailModel.fromJson(Map<String, dynamic> json) =>
       _$PinDetailModelFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return super.toJson();
-  }
 }

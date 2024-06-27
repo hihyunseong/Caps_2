@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:caps_2/common/enums/map_status.dart';
 import 'package:caps_2/friend/provider/friend_provider.dart';
@@ -10,25 +9,25 @@ import 'package:caps_2/models/daily_expense.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:caps_2/widgets/daily_expense_panel.dart';
 import 'package:caps_2/widgets/expense_details_panel.dart';
-import 'package:caps_2/widgets/map_details_panel.dart';
 import 'package:caps_2/widgets/expenses_panel.dart';
+import 'package:caps_2/widgets/map_details_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/place_details.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:widget_to_marker/widget_to_marker.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'add_expense/page/expense_amount_page.dart';
+import 'map_plus.dart';
+import 'my/page/my_page.dart';
 import 'provider/map_provider.dart';
 import 'widgets/map_tile.dart';
 import 'widgets/my_marker.dart';
-import 'my/page/my_page.dart';
-import 'add_expense/page/expense_amount_page.dart';
-import 'map_plus.dart';
-
-import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -65,6 +64,8 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     context.read<MapProvider>().getSharedMap();
+    // context.read<MapProvider>().getMyMap();
+    context.read<MapProvider>().getNewMyMap();
   }
 
   @override
@@ -163,17 +164,14 @@ class _HomeState extends State<Home> {
   }
 
   void _goToCurrentLocation() {
-    if (_currentPosition != null) {
-      _mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target:
-                LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-            zoom: 19,
-          ),
+    _mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(_currentPosition.latitude, _currentPosition.longitude),
+          zoom: 19,
         ),
-      );
-    }
+      ),
+    );
   }
 
   void _onItemTapped(int index) {
@@ -245,8 +243,8 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
-        selectedLabelStyle: TextStyle(fontFamily: "NanumSquareNeo-Bold"),
-        unselectedLabelStyle: TextStyle(fontFamily: "NanumSquareNeo-Bold"),
+        selectedLabelStyle: const TextStyle(fontFamily: "NanumSquareNeo-Bold"),
+        unselectedLabelStyle: const TextStyle(fontFamily: "NanumSquareNeo-Bold"),
         selectedFontSize: 12,
         unselectedFontSize: 12,
         selectedItemColor: const Color(0xFFFF6F61),
@@ -309,7 +307,7 @@ class _HomeState extends State<Home> {
               panelController: _mainPanelController,
               googleMapController: _mapController,
             ),
-          MapStatus.dailyExpense => DailyExpensePanel(),
+          MapStatus.dailyExpense => const DailyExpensePanel(),
           MapStatus.mapDetails => const MapDetailsPanel(),
           MapStatus.expenseDetails => const ExpenseDetailsPanel(),
           MapStatus() => throw UnimplementedError(),
@@ -320,7 +318,7 @@ class _HomeState extends State<Home> {
               panelController: _mainPanelController,
               googleMapController: _mapController,
             ),
-          MapStatus.dailyExpense => DailyExpensePanel(),
+          MapStatus.dailyExpense => const DailyExpensePanel(),
           MapStatus.mapDetails => const MapDetailsPanel(),
           MapStatus.expenseDetails => const ExpenseDetailsPanel(),
           MapStatus() => throw UnimplementedError(),
@@ -399,7 +397,7 @@ class _HomeState extends State<Home> {
                 itemCount: dailyExpense.expenses.length,
                 itemBuilder: (context, index) {
                   final expense = dailyExpense.expenses[index];
-                  
+
                   return Column(
                     children: [
                       ListTile(
@@ -435,8 +433,8 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       expense.imagePath != null
-                          ? Image.file(
-                              File(expense.imagePath!),
+                          ? Image.network(
+                              expense.imagePath!,
                               width: 100,
                               height: 100,
                             )
@@ -446,10 +444,10 @@ class _HomeState extends State<Home> {
                 },
               ),
             ),
-          ],
-        ),
-      );
-    }
+        ],
+      ),
+    );
+  }
 
   Widget _myMapPanel() {
     final mapProvider = context.watch<MapProvider>();
@@ -467,8 +465,8 @@ class _HomeState extends State<Home> {
               fontFamily: 'NanumSquareNeo-Bold',
             ),
           ),
-          Text(
-            '나만의 소비를 기록해 보세요!', 
+          const Text(
+            '나만의 소비를 기록해 보세요!',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 10,
@@ -477,14 +475,19 @@ class _HomeState extends State<Home> {
             ),
           ),
           GestureDetector(
-            onTap: () {
+            onTap: () async {
+              const storage = FlutterSecureStorage();
+              final loadIdx = await storage.read(key: 'idx');
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const UpdateMyMapListPage()),
+                  builder: (context) => UpdateMyMapListPage(
+                    memberId: loadIdx ?? '0',
+                  ),
+                ),
               );
             },
-            child: Text(
+            child: const Text(
               '편집',
               textAlign: TextAlign.end,
               style: TextStyle(
@@ -506,7 +509,7 @@ class _HomeState extends State<Home> {
               ),
               const SizedBox(width: 8),
               Text(
-                '${mapProvider.myMapList.length}',
+                '${mapProvider.newMyMapList.length}',
                 style: const TextStyle(
                   color: Color(0xFFFF6F61),
                   fontSize: 16.0,
@@ -523,7 +526,7 @@ class _HomeState extends State<Home> {
               ),
             ],
           ),
-          mapProvider.myMapList.isEmpty
+          mapProvider.newMyMapList.isEmpty
               ? const Expanded(
                   child: Center(
                   child: Text(
@@ -538,9 +541,9 @@ class _HomeState extends State<Home> {
                   child: ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
-                    itemCount: mapProvider.myMapList.length,
+                    itemCount: mapProvider.newMyMapList.length,
                     itemBuilder: (context, index) {
-                      final mapModel = mapProvider.myMapList[index];
+                      final mapModel = mapProvider.newMyMapList[index];
 
                       return MapTile(
                         mapModel: mapModel,
@@ -553,16 +556,16 @@ class _HomeState extends State<Home> {
                     },
                   ),
                 ),
-              ],
-            ),
-          );
-        }
+        ],
+      ),
+    );
+  }
 
   Widget _sharedMapPanel() {
     final mapProvider = context.watch<MapProvider>();
     final frinedProvider = context.read<FriendProvider>();
     mapProvider.getSharedMap();
-    
+
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -576,8 +579,8 @@ class _HomeState extends State<Home> {
               fontFamily: 'NanumSquareNeo-Bold',
             ),
           ),
-          Text(
-            '친구들과 함께 소비를 기록해 보세요!', 
+          const Text(
+            '친구들과 함께 소비를 기록해 보세요!',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 10,
@@ -586,14 +589,19 @@ class _HomeState extends State<Home> {
             ),
           ),
           GestureDetector(
-            onTap: () {
+            onTap: () async {
+              const storage = FlutterSecureStorage();
+              final loadIdx = await storage.read(key: 'idx');
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const UpdateShareMapListPage()),
+                  builder: (context) => UpdateShareMapListPage(
+                    memberId: loadIdx ?? '0',
+                  ),
+                ),
               );
             },
-            child: Text(
+            child: const Text(
               '편집',
               textAlign: TextAlign.end,
               style: TextStyle(
@@ -667,10 +675,10 @@ class _HomeState extends State<Home> {
                     },
                   ),
                 ),
-              ],
-            ),
-          );
-        }
+        ],
+      ),
+    );
+  }
 
   Widget _myPagePanel() {
     return Container(
@@ -729,6 +737,19 @@ class _HomeState extends State<Home> {
                 myLocationButtonEnabled: false,
                 zoomControlsEnabled: false,
                 onTap: _onMapTap,
+                style: '''
+                [
+                  {
+                    "featureType": "poi",
+                    "elementType": "labels.icon",
+                    "stylers": [
+                      {
+                        "visibility": "on"
+                      }
+                    ]
+                  }
+                ]
+                ''',
                 markers: Set<Marker>.of(markers),
                 polylines: Set<Polyline>.of(polylines),
                 onCameraMove: (position) {},
@@ -762,12 +783,19 @@ class _HomeState extends State<Home> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset('assets/images/logo2.png', width: 27, height: 24,
+                    Image.asset(
+                      'assets/images/logo2.png',
+                      width: 27,
+                      height: 24,
                     ),
                     const SizedBox(width: 8),
-                    Text(
+                    const Text(
                       '여기에 핀 콕 꽂기',
-                      style: TextStyle(fontFamily: "", fontSize: 16.0, color: Colors.white, fontWeight: FontWeight.w700,
+                      style: TextStyle(
+                        fontFamily: "",
+                        fontSize: 14.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -837,7 +865,7 @@ class _HomeState extends State<Home> {
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.2),
-                  offset: Offset(0, 2),
+                  offset: const Offset(0, 2),
                   blurRadius: 8,
                   spreadRadius: 0,
                 ),
@@ -859,7 +887,7 @@ class _HomeState extends State<Home> {
                       setState(() {
                         _locationController.text = prediction.description ?? '';
                       });
-                      
+
                       if (prediction.placeId != null) {
                         await _gotoLocation(prediction.placeId!);
                       }
@@ -867,7 +895,7 @@ class _HomeState extends State<Home> {
                     showError: false,
                   ),
                 ),
-                SizedBox(width: 8.0), 
+                const SizedBox(width: 8.0),
                 Image.asset(
                   'assets/images/search/Iconly/Regular/Light/Search.png',
                   width: 24,
@@ -881,8 +909,7 @@ class _HomeState extends State<Home> {
         // 고정 핀 이미지
         Positioned(
           top: MediaQuery.of(context).size.height * 0.5 - 70,
-          child: Image.asset('assets/images/pin.png',
-              width: 50, height: 50),
+          child: Image.asset('assets/images/pin.png', width: 50, height: 50),
         ),
       ],
     );

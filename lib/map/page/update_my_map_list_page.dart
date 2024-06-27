@@ -5,7 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class UpdateMyMapListPage extends StatelessWidget {
-  const UpdateMyMapListPage({super.key});
+  const UpdateMyMapListPage({
+    super.key,
+    required this.memberId,
+  });
+
+  final String memberId;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +39,7 @@ class UpdateMyMapListPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView.builder(
-          itemCount: mapProvider.myMapList.length,
+          itemCount: mapProvider.newMyMapList.length,
           itemBuilder: (context, index) {
             return UpdateMapListTile(
               onTap: () {
@@ -42,12 +47,13 @@ class UpdateMyMapListPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => UpdateMapPage(
-                      mapModel: mapProvider.myMapList[index],
+                      mapModel: mapProvider.newMyMapList[index],
                     ),
                   ),
                 );
               },
-              mapModel: mapProvider.myMapList[index],
+              mapModel: mapProvider.newMyMapList[index],
+              memberId: int.parse(memberId),
             );
           },
         ),
