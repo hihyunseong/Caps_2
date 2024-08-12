@@ -56,4 +56,9 @@ abstract class SharedMapRepository {
   Future<void> deleteSharedMap({
     @Path('mapIdx') required int mapIdx,
   });
+
+  @DELETE('/{mapIdx}')
+  Future<void> deleteMyMap({
+    @Path('mapIdx') required int mapIdx,
+  });
 }

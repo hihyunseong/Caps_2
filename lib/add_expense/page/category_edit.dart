@@ -48,12 +48,12 @@ class CategoryEdit extends StatelessWidget {
                   const Text(
                     '표시할 카테고리',
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 12.0,
                       fontWeight: FontWeight.w900,
                       fontFamily: 'NanumSquareNeo-Bold',
                     ),
                   ),
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 10.0),
 
                   // 카테고리 리스트
                   GridView.builder(
@@ -79,8 +79,8 @@ class CategoryEdit extends StatelessWidget {
                             Column(
                               children: [
                                 Container(
-                                  width: 50.0,
-                                  height: 50.0,
+                                  width: 40.0,
+                                  height: 40.0,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
@@ -118,13 +118,12 @@ class CategoryEdit extends StatelessWidget {
                       );
                     },
                   ),
-                  const SizedBox(height: 50.0),
+                  const SizedBox(height: 40.0),
 
-                  //
                   const Text(
                     '숨겨진 카테고리',
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 12.0,
                       fontWeight: FontWeight.w900,
                       fontFamily: 'NanumSquareNeo-Bold',
                     ),
@@ -156,8 +155,8 @@ class CategoryEdit extends StatelessWidget {
                             Column(
                               children: [
                                 Container(
-                                  width: 50.0,
-                                  height: 50.0,
+                                  width: 40.0,
+                                  height: 40.0,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),

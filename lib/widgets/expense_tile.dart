@@ -15,8 +15,8 @@ class ExpenseTile extends StatelessWidget {
     super.key,
     required this.expense,
     required this.onTap,
-    this.imageHeight = 140,
-    this.imageWidth = 140,
+    this.imageHeight = 120,
+    this.imageWidth = 120,
   });
 
   @override
@@ -49,7 +49,7 @@ class ExpenseTile extends StatelessWidget {
                   Text(
                     expense.content,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 12,
                       fontFamily: 'NanumSquareNeo-Bold',
                     ),
                     maxLines: 1,
@@ -58,46 +58,44 @@ class ExpenseTile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        '${DateFormat('HH:mm').format(expense.createdAt)} | ',
+                        '${DateFormat('HH:mm').format(expense.date)} | ',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontSize: 12,
+                          fontSize: 9,
                           fontFamily: 'NanumSquareNeo-Bold',
                           color: Colors.grey,
                         ),
                       ),
                       Text(
-                        '${expense.payMethod.name} | ',
+                        '${expense.payMethod.name} ',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontSize: 12,
+                          fontSize: 9,
                           fontFamily: 'NanumSquareNeo-Bold',
                           color: Colors.grey,
                         ),
                       ),
-                      if (expense.expenseLocationName != null)
-                        Text(
-                          expense.expenseLocationName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'NanumSquareNeo-Bold',
-                            color: Colors.grey,
-                          ),
-                        ),
                     ],
                   ),
                   if (expense.imagePath != null) ...[
                     const SizedBox(height: 10),
-                    Image.network(
-                      expense.imagePath!,
-                      width: imageWidth,
-                      height: imageHeight,
-                      fit: BoxFit.cover,
-                    ),
+                    if (expense.imagePath!.startsWith('http')) ...[
+                      Image.network(
+                        expense.imagePath!,
+                        width: imageWidth,
+                        height: imageHeight,
+                        fit: BoxFit.cover,
+                      ),
+                    ] else ...[
+                      Image.file(
+                        File(expense.imagePath!),
+                        width: imageWidth,
+                        height: imageHeight,
+                        fit: BoxFit.cover,
+                      ),
+                    ],      
                   ],
                   const SizedBox(height: 10),
                   Text(
@@ -105,7 +103,7 @@ class ExpenseTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 11,
                       fontFamily: 'NanumSquareNeo-Bold',
                     ),
                   ),
@@ -116,9 +114,9 @@ class ExpenseTile extends StatelessWidget {
               ),
             ),
             Text(
-              '₩${NumberFormat('###,###').format(expense.amount.toInt())}',
+              '₩ ${NumberFormat('###,###').format(expense.amount.toInt())}',
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 fontFamily: 'NanumSquareNeo-Bold',
               ),
             ),

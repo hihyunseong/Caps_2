@@ -27,33 +27,33 @@ enum Category {
   String toString() {
     switch (this) {
       case Category.food:
-        return 'MEAL';
+        return '식사';
       case Category.cafe:
-        return 'CAFE';
+        return '카페';
       case Category.alcohol:
-        return 'BEVERAGE';
+        return '주류';
       case Category.photo:
-        return 'PICTURE';
+        return '사진';
       case Category.shopping:
-        return 'SHOPPING';
+        return '쇼핑';
       case Category.gift:
-        return 'PRESENT';
+        return '선물';
       case Category.culture:
-        return 'CULTURE';
+        return '문화생활';
       case Category.accommodations:
-        return 'ACCOMMODATIONS';
+        return '숙소';
       case Category.mart:
-        return 'MART';
+        return '마트';
       case Category.flower:
-        return 'FLOWER';
+        return '꽃';
       case Category.medicine:
-        return 'MEDICINE';
+        return '의료';
       case Category.tip:
-        return 'TIP';
+        return '팁';
       case Category.beauty:
-        return 'BEAUTY';
+        return '미용';
       case Category.transport:
-        return 'TRANSPORT';
+        return '교통';
       case Category.etc:
         return '기타';
     }

@@ -13,15 +13,15 @@ enum PayMethod {
   String toString() {
     switch (this) {
       case PayMethod.creditCatd:
-        return 'CREDIT_CARD';
+        return '신용카드';
       case PayMethod.checkCard:
-        return 'DEBIT_CARD';
+        return '체크카드';
       case PayMethod.cash:
-        return 'CASH';
+        return '현금';
       case PayMethod.accountTransfer:
-        return 'BANK_TRANSFER';
+        return '계좌이체';
       case PayMethod.none:
-        return 'NONE';
+        return '없음';
     }
   }
 }

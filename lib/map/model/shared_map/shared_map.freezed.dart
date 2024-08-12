@@ -90,7 +90,7 @@ class _$SharedMapCopyWithImpl<$Res, $Val extends SharedMap>
       ownerIdx: null == ownerIdx
           ? _value.ownerIdx
           : ownerIdx // ignore: cast_nullable_to_non_nullable
-              as int,        
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -184,7 +184,7 @@ class __$$SharedMapImplCopyWithImpl<$Res>
       ownerIdx: null == ownerIdx
           ? _value.ownerIdx
           : ownerIdx // ignore: cast_nullable_to_non_nullable
-              as int,        
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable

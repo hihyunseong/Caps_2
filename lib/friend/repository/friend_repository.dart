@@ -115,7 +115,7 @@ class FriendRepository {
   // 친구 추가를 위해 이메일로 유저 검색
   Future<FriendModel> searchFriend(String email) async {
     final res = await _dio.get('$memberUrl/search/$email');
-
+    print(res);
     return FriendModel.fromJson(res.data);
   }
 }

@@ -60,7 +60,7 @@ class _FindPw2State extends State<FindPw2> {
           title: Text(
             title,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
@@ -72,7 +72,7 @@ class _FindPw2State extends State<FindPw2> {
               Text(
                 content,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 12,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -168,7 +168,7 @@ class _FindPw2State extends State<FindPw2> {
                   ),
                 ),
               ),
-              SizedBox(height: 325.0),
+              SizedBox(height: 245.0),
               ElevatedButton(
                 onPressed: _onConfirm,
                 child: Text(

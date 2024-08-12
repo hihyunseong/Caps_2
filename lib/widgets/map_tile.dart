@@ -43,7 +43,7 @@ class MapTile extends StatelessWidget {
                         Text(
                           mapModel.mapName,
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 12,
                             fontFamily: 'NanumSquareNeo-Bold',
                             color: Colors.white,
                           ),
@@ -52,14 +52,14 @@ class MapTile extends StatelessWidget {
                         mapModel.friends.isNotEmpty
                             ? Image.asset(
                                 'assets/images/person.png',
-                                width: 14,
-                                height: 14,
+                                width: 10,
+                                height: 10,
                                 color: Colors.white,
                               )
                             : Image.asset(
                                 'assets/images/person2.png',
-                                width: 14,
-                                height: 14,
+                                width: 10,
+                                height: 10,
                                 color: Colors.white,
                               ),
                         const SizedBox(width: 4),

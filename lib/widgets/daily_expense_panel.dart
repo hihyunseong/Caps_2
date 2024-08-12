@@ -4,6 +4,7 @@ import 'package:caps_2/provider/map_provider.dart';
 import 'package:caps_2/widgets/expense_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 // expenses_panel 에서 날짜 클릭 했을 때 보이는 페이지 위젯
@@ -56,7 +57,7 @@ class DailyExpensePanel extends StatelessWidget {
                           Text(
                             mapModel.mapName,
                             style: const TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontFamily: 'NanumSquareNeo-Bold',
                             ),
                           ),
@@ -66,8 +67,8 @@ class DailyExpensePanel extends StatelessWidget {
                               children: [
                                 Image.asset(
                                   'assets/images/person.png',
-                                  width: 16,
-                                  height: 16,
+                                  width: 14,
+                                  height: 14,
                                   color: const Color(0xFFAF55A6),
                                 ),
                                 const SizedBox(width: 4),
@@ -112,9 +113,9 @@ class DailyExpensePanel extends StatelessWidget {
                   ),
                   const SizedBox(height: 20.0),
                   Text(
-                    '${DateFormat('yyyy년 M월 d일').format(dailyExpense.tourDay)}의 소비 기록',
+                    '${DateFormat('yyyy-MM-dd(EEE)','ko_KR').format(dailyExpense.tourDay)}의 소비 기록',
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontFamily: 'NanumSquareNeo-Bold',
                     ),
                   ),

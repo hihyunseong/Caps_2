@@ -79,7 +79,7 @@ class _SharedMapRepository implements SharedMapRepository {
   @override
   Future<List<SharedMap>> getSharedMap() async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};  
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result =
@@ -246,6 +246,30 @@ class _SharedMapRepository implements SharedMapRepository {
 
   @override
   Future<void> deleteSharedMap({required int mapIdx}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/${mapIdx}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+  }
+
+  @override
+  Future<void> deleteMyMap({required int mapIdx}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};

@@ -345,7 +345,7 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(height: 50),
         Row(
           children: [
-            SizedBox(width: 97),
+            SizedBox(width: 60),
             Image.asset(
               'assets/images/frame.png',
               width: 55,
@@ -488,7 +488,7 @@ class _LoginPageState extends State<LoginPage> {
         Row(
           children: [
             Container(
-              width: 54,
+              width: 50,
               height: 1,
               color: Colors.grey,
             ),
@@ -497,7 +497,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Text(
                 "SNS 계정으로 간편 로그인/가입하기",
                 style: TextStyle(
-                  fontSize: 14.5,
+                  fontSize: 9.5,
                   fontFamily: 'NanumSquareNeo-Bold',
                   color: Colors.black,
                 ),
@@ -511,7 +511,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-        SizedBox(height: 16),
+        SizedBox(height: 10),
         Center(
             child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -531,7 +531,7 @@ class _LoginPageState extends State<LoginPage> {
           ],
         )),
         SizedBox(
-          height: 80,
+          height: 10,
         )
       ],
     );
@@ -548,6 +548,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Text(
         "회원가입",
         style: TextStyle(
+          fontSize: 11, 
           fontFamily: 'NanumSquareNeo-Bold',
           color: Colors.black,
         ),
@@ -566,6 +567,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Text(
         "아이디 찾기",
         style: TextStyle(
+          fontSize: 11, 
           fontFamily: 'NanumSquareNeo-Bold',
           color: Colors.black,
         ),
@@ -584,6 +586,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Text(
         "비밀번호 찾기",
         style: TextStyle(
+          fontSize: 11, 
           fontFamily: 'NanumSquareNeo-Bold',
           color:Colors.black,
         ),

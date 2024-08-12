@@ -8,6 +8,7 @@ import 'package:caps_2/models/category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class ExpenseDetailsView extends StatefulWidget {
   const ExpenseDetailsView({
@@ -63,7 +64,6 @@ class _ExpenseDetailsViewState extends State<ExpenseDetailsView> {
               ),
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.max,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,26 +83,26 @@ class _ExpenseDetailsViewState extends State<ExpenseDetailsView> {
                 Expanded(
                   child: BlocBuilder<ExpenseDetailBloc, ExpenseDetailState>(
                     builder: (context, state) => state.maybeMap(
-                      success: (state) => Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _LocationAndDateSelectView(
-                              pinDetailModel: state.pinDetailModel,
-                            ),
-                            const SizedBox(height: 20),
-                            _PriceView(
-                              pinDetailModel: state.pinDetailModel,
-                            ),
-                            const SizedBox(height: 10),
-                            _ContentView(pinDetailModel: state.pinDetailModel),
-                            const SizedBox(height: 10),
-                            const Divider(color: Color.fromARGB(255, 164, 140, 140), thickness: 1),
-                            const SizedBox(height: 10),
-                            const Expanded(child: _CommentListView()),
-                          ],
+                      success: (state) => SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _LocationAndDateSelectView(
+                                pinDetailModel: state.pinDetailModel,
+                              ),
+                              const SizedBox(height: 6),
+                              _PriceView(
+                                pinDetailModel: state.pinDetailModel,
+                              ),
+                              const SizedBox(height: 10),
+                              _ContentView(pinDetailModel: state.pinDetailModel),
+                              const SizedBox(height: 10),
+                              const Divider(color: Colors.black, thickness: 1),
+                              const _CommentListView(),
+                            ],
+                          ),
                         ),
                       ),
                       orElse: () => const Center(
@@ -154,52 +154,35 @@ class _LocationAndDateSelectView extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(
-              '📍${pinDetailModel.place}',
-              style: const TextStyle(
-                fontSize: 12.0,
-                fontFamily: 'NanumSquareNeo-Bold',
-                color: Colors.black,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const Text(
-              ' 에서',
-              style: TextStyle(
-                fontSize: 12.0,
-                fontFamily: 'NanumSquareNeo-Bold',
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(width: 2),
             const Text(
               '🗓',
               style: TextStyle(
-                fontSize: 12.0,
+                fontSize: 11.0,
                 fontFamily: 'NanumSquareNeo-Bold',
                 color: Colors.black,
               ),
             ),
+            const SizedBox(width: 4),
             Row(
               children: [
                 Text(
-                  DateFormat('yyyy.MM.dd').format(pinDetailModel.createdAt),
+                  DateFormat('yyyy-MM-dd(EEE)','ko_KR').format(pinDetailModel.createdAt),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontSize: 12.0,
+                    fontSize: 11.0,
                     fontWeight: FontWeight.w900,
                     fontFamily: 'NanumSquareNeo-Bold',
                   ),
                 ),
               ],
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 2),
             const Text(
               '의 소비 기록',
               style: TextStyle(
-                fontSize: 12.0,
+                fontSize: 11.0,
                 fontFamily: 'NanumSquareNeo-Bold',
-                color: Colors.black,
+                color: Colors.grey,
               ),
             ),
           ],
@@ -207,9 +190,9 @@ class _LocationAndDateSelectView extends StatelessWidget {
         Row(
           children: [
             Text(
-              '✏${pinDetailModel.writer}님이 작성',
+              '✏ ${pinDetailModel.writer}님이 작성',
               style: const TextStyle(
-                fontSize: 12.0,
+                fontSize: 11.0,
                 fontFamily: 'NanumSquareNeo-Bold',
                 fontWeight: FontWeight.w900,
                 color: Colors.black,
@@ -217,14 +200,15 @@ class _LocationAndDateSelectView extends StatelessWidget {
             ),
             if (pinDetailModel.list.isNotEmpty)
               Text(
-                ' - ${pinDetailModel.list.first.name}님 외 ${pinDetailModel.list.length - 1}명',
+                ' - ${pinDetailModel.list.first.name}님 외 ${pinDetailModel.list.length - 1}명과 함께',
                 style: const TextStyle(
-                  fontSize: 12.0,
+                  fontSize: 11.0,
                   fontFamily: 'NanumSquareNeo-Bold',
                   fontWeight: FontWeight.w900,
                   color: Colors.black,
                 ),
               ),
+              
           ],
         ),
       ],
@@ -247,14 +231,14 @@ class _PriceView extends StatelessWidget {
       children: [
         Image.asset(
           'assets/images/frame.png',
-          width: 24.0, 
-          height: 24.0, 
+          width: 20.0, 
+          height: 20.0, 
         ),
         const SizedBox(width: 8.0),
         Text(
           '₩${_formatNumber(pinDetailModel.cost.toString())}',
           style: const TextStyle(
-            fontSize: 16.0,
+            fontSize: 12.0,
             fontFamily: 'NanumSquareNeo-Bold',
             color: Colors.red,
             fontWeight: FontWeight.w900,
@@ -285,7 +269,7 @@ class _ContentView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Category.getIcon(pinDetailModel.category),
-        const SizedBox(width: 8),
+        const SizedBox(width: 6),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,7 +277,7 @@ class _ContentView extends StatelessWidget {
               Text(
                 pinDetailModel.title,
                 style: const TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 14.0,
                   fontFamily: 'NanumSquareNeo-Bold',
                   color: Colors.black,
                 ),
@@ -301,41 +285,39 @@ class _ContentView extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                '${pinDetailModel.createdAt.hour}:${pinDetailModel.createdAt.minute} | ${pinDetailModel.method} | ${pinDetailModel.header}',
+                '${pinDetailModel.createdAt.hour}:${pinDetailModel.createdAt.minute.toString().padLeft(2, '0')} | ${pinDetailModel.method}',
                 style: const TextStyle(
                   fontSize: 10.0,
                   fontFamily: 'NanumSquareNeo-Bold',
                   color: Colors.grey,
                 ),
                 textAlign: TextAlign.start,
-              ),
-              const SizedBox(height: 8),
-              const Text(
+              ),      
+              const SizedBox(height: 4),
+              if (pinDetailModel.file != null)
+                Image(
+                  image: NetworkImage(pinDetailModel.file ?? ''),
+                  width: 160, 
+                  height: 160,
+                  fit: BoxFit.cover,
+                ),
+                const Text(
                 '메모',
                 style: TextStyle(
-                  fontSize: 12.0,
-                  fontFamily: 'NanumSquareNeo-Bold',
+                  fontSize: 11.0,
+                  fontFamily: 'NanumSquareNeo',
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.start,
               ),
-              const SizedBox(height: 4),
               if (pinDetailModel.file != null)
-                Image(
-                  image: NetworkImage(pinDetailModel.file ?? ''),
-                  width: 240, 
-                  height: 240,
-                  fit: BoxFit.cover,
-                ),
-              if (pinDetailModel.file != null) const SizedBox(height: 4),
               Text(
                 pinDetailModel.memo,
                 style: const TextStyle(
-                  fontSize: 14.0,
-                  fontFamily: 'NanumSquareNeo-Bold',
+                  fontSize: 10.0,
+                  fontFamily: 'NanumSquareNeo',
                   color: Colors.black,
-                  fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.start,
                 softWrap: true,
@@ -383,19 +365,18 @@ class _CommentListView extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
                 if (state.comments.isEmpty)
-                  const Expanded(child: Center(child: Text('댓글이 없습니다.'))),
-                Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 16),
-                    itemCount: state.comments.length,
-                    itemBuilder: (context, index) {
-                      final comment = state.comments[index];
-                      return _CommentView(comment: comment);
-                    },
-                  ),
+                  const Center(child: Text('댓글이 없습니다.')),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 16),
+                  itemCount: state.comments.length,
+                  itemBuilder: (context, index) {
+                    final comment = state.comments[index];
+                    return _CommentView(comment: comment);
+                  },
                 ),
               ],
             ),
@@ -450,7 +431,7 @@ class _CommentView extends StatelessWidget {
             Text(
               comment.writer,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 fontFamily: 'NanumSquareNeo-Bold',
                 fontWeight: FontWeight.bold,
               ),
@@ -458,7 +439,7 @@ class _CommentView extends StatelessWidget {
             Text(
               comment.content,
               style: const TextStyle(
-                fontSize: 12,
+                fontSize: 10,
                 fontFamily: 'NanumSquareNeo-Bold',
               ),
             ),

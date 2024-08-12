@@ -93,7 +93,7 @@ class _SignupPageState extends State<SignupPage> {
                         Text(
                           '전체 동의',
                           style: TextStyle(
-                            fontSize: 16.0,
+                            fontSize: 14.0,
                             fontFamily: 'NanumSquareNeo-bold',                 
                           ),
                         ),
@@ -117,7 +117,7 @@ class _SignupPageState extends State<SignupPage> {
                         Text(
                           '만 14세 이상입니다. (필수)',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 12.0,
                             fontFamily: 'NanumSquareNeo',
                             fontWeight: FontWeight.bold,
                           ),
@@ -142,7 +142,7 @@ class _SignupPageState extends State<SignupPage> {
                         Text(
                           '서비스 이용약관 동의(필수)',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 12.0,
                             fontFamily: 'NanumSquareNeo',
                             fontWeight: FontWeight.bold,
                           ),
@@ -167,7 +167,7 @@ class _SignupPageState extends State<SignupPage> {
                         Text(
                           '개인정보 수집 및 이용 동의 (필수)',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 12.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -192,7 +192,7 @@ class _SignupPageState extends State<SignupPage> {
                         Text(
                           '앱 푸시 및 마케팅/이벤트 수신 동의(선택)',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 12.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -201,7 +201,7 @@ class _SignupPageState extends State<SignupPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 220.0),
+              SizedBox(height: 140.0),
               ElevatedButton(
                 onPressed: _ageChecked && _serviceChecked && _privacyChecked
                     ? () {
@@ -368,8 +368,8 @@ class _SignupFormPageState extends State<SignupFormPage> {
                     6,
                     (index) {
                       return Container(
-                        width: 10,
-                        height: 10,
+                        width: 8,
+                        height: 8,
                         margin: const EdgeInsets.only(left: 10),
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
@@ -384,7 +384,7 @@ class _SignupFormPageState extends State<SignupFormPage> {
               Row(
                 children: [
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.2,
+                    width: MediaQuery.of(context).size.width * 0.24,
                     child: DropdownButtonFormField<String>(
                       value: _selectedCountryCode,
                       onChanged: (value) {
@@ -417,7 +417,7 @@ class _SignupFormPageState extends State<SignupFormPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 252),
+              SizedBox(height: 172),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -693,7 +693,7 @@ class _InformationPageState extends State<InformationPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 260),
+                    SizedBox(height: 180),
                     ElevatedButton(
                       onPressed: () {
                         String password = _passwordController.text;

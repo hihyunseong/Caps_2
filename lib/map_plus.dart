@@ -216,8 +216,8 @@ class _MapPlusState extends State<MapPlus> {
         });
       },
       child: Container(
-        width: 65.0,
-        height: 65.0,
+        width: 60.0,
+        height: 60.0,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(8.0),
@@ -240,8 +240,8 @@ class _MapPlusState extends State<MapPlus> {
                   (friend.profile != null)
                       ? Image.network(
                           friend.profile!,
-                          height: 70,
-                          width: 70,
+                          height: 45,
+                          width: 45,
                         )
                       : const Icon(
                           Icons.person,
@@ -433,8 +433,12 @@ class _MapPlusState extends State<MapPlus> {
     final mapProvider = context.read<MapProvider>();
     if (widget.isSharedMap) {
       await mapProvider.saveSharedMap(newMap);
-    } else {
-      await mapProvider.getNewMyMap();
+    } else {    
+      await mapProvider.createMyMap(newMap);
+
+      // await mapProvider.getMyMap();
+      // await mapProvider.getNewMyMap();
+      mapProvider.newMyMapList.add(newMap);
     }
 
     Navigator.of(context).pop(newMap);

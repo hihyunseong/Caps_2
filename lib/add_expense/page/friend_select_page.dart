@@ -196,8 +196,8 @@ class _FriendSelectPageState extends State<FriendSelectPage> {
               (friend.profile != null)
                   ? Image.network(
                       friend.profile!,
-                      height: 70,
-                      width: 70,
+                      height: 50,
+                      width: 50,
                     )
                   : const Icon(
                       Icons.person,

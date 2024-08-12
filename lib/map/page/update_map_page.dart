@@ -5,6 +5,7 @@ import 'package:caps_2/friend/widget/friend_text_field.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:caps_2/provider/map_provider.dart';
 import 'package:caps_2/widgets/sub_title_widget.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
@@ -188,8 +189,8 @@ class _UpdateMapPageState extends State<UpdateMapPage> {
         });
       },
       child: Container(
-        width: 65.0,
-        height: 65.0,
+        width: 60.0,
+        height: 60.0,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(8.0),
@@ -212,8 +213,8 @@ class _UpdateMapPageState extends State<UpdateMapPage> {
                   (friend.profile != null)
                       ? Image.network(
                           friend.profile!,
-                          height: 70,
-                          width: 70,
+                          height: 45,
+                          width: 45,
                         )
                       : const Icon(
                           Icons.person,
@@ -376,7 +377,7 @@ class _UpdateMapPageState extends State<UpdateMapPage> {
     }
     final mapProvider = context.read<MapProvider>();
 
-     if (widget.mapModel.isSharedMap) {
+    if (widget.mapModel.isSharedMap) {
       await mapProvider.editSharedMap(widget.mapModel.copyWith(
         mapName: _mapNameController.text,
         friends: selectedFriends,
@@ -386,11 +387,11 @@ class _UpdateMapPageState extends State<UpdateMapPage> {
     } else {
       final storage = const FlutterSecureStorage();
 
-      final loadIdx = await storage.read(key: 'idx');
-
       final newMap = MapModel(
         mapName: _mapNameController.text,
-        ownerId: int.parse(loadIdx ?? ''),
+ 
+        ownerId: widget.mapModel.ownerId,
+
         friends: selectedFriends,
         location: selectedLocation!,
         selectedDate: selectedDate,
@@ -403,6 +404,6 @@ class _UpdateMapPageState extends State<UpdateMapPage> {
       mapProvider.forceNotify();
     }
 
-      Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 }

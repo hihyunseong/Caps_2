@@ -46,7 +46,7 @@ class _FindIdState extends State<FindId> {
               Row(
                 children: [
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.2, 
+                  width: MediaQuery.of(context).size.width * 0.24, 
                   child: DropdownButtonFormField<String>(
                     value: _selectedCountryCode,
                     onChanged: (value) {
@@ -78,7 +78,7 @@ class _FindIdState extends State<FindId> {
                 ),
               ],
             ),
-            SizedBox(height: 420),
+            SizedBox(height: 340),
             ElevatedButton(
               onPressed: () {},
               child: Text('아이디 찾기', style: TextStyle(color: Colors.white)),

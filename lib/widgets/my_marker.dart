@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:caps_2/models/category.dart';
 import 'package:flutter/material.dart';
 
@@ -23,40 +21,27 @@ class MyMarker extends StatelessWidget {
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: Colors.green[100],
             shape: BoxShape.circle,
             border: Border.all(
-              color: Colors.white,
-              width: 5,
+              color: Colors.transparent,
             ),
           ),
           child: Center(
-            // 이미지 파일이 있으면 원형이미지로 표시
-            child: imagePath != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(25),
-                    child: Image.network(
-                      imagePath!,
-                      width: 40,
-                      height: 40,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                : Image.asset(
-                    category.iconPath,
-                    width: 40,
-                    height: 40,
-                  ),
+            child: Image.asset(
+              category.iconPath,
+              width: 50,
+              height: 50,
+            ),
           ),
         ),
         Positioned(
           top: 0,
           left: 0,
           child: Container(
-            width: 20,
-            height: 20,
+            width: 17,
+            height: 17,
             decoration: const BoxDecoration(
-              color: Colors.black,
+              color: Color(0xFFFFD700),
               shape: BoxShape.circle,
             ),
             child: Center(

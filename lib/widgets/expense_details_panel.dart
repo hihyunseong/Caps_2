@@ -7,6 +7,7 @@ import 'package:caps_2/widgets/expense_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 // expenses_panel > daily_expense_panel 후 상세기록 보는 페이지 위젯
@@ -39,7 +40,7 @@ class ExpenseDetailsPanel extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.0),
             ),
           ),
-          const SizedBox(height: 10.0),
+
 
           // title
           Row(
@@ -63,7 +64,7 @@ class ExpenseDetailsPanel extends StatelessWidget {
               ),
 
               // expense details
-              const SizedBox(height: 10),
+              
               Expanded(
                 child: ListView(
                   children: [
@@ -71,28 +72,15 @@ class ExpenseDetailsPanel extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         _locationAndDateSelectWidget(expense),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         _priceWidget(expense),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         ExpenseTile(
                           expense: expense,
-                          imageHeight: 200,
-                          imageWidth: 200,
+                          imageHeight: 180,
+                          imageWidth: 180,
                           onTap: () {},
                         ),
-                        Divider(
-                          color: Colors.black,
-                          thickness: 1,
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          '댓글',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'NanumSquareNeo-Bold',
-                          ),
-                        ),
-                        SizedBox(height: 100.0),
                       ],
                     ),
                   ],
@@ -106,32 +94,12 @@ class ExpenseDetailsPanel extends StatelessWidget {
   Widget _locationAndDateSelectWidget(Expense expense) {
     return Row(
       children: [
-        Text(
-          '📍',
-          style: TextStyle(fontSize: 16.0),
-        ),
-        Text(
-          expense.expenseLocationName,
-          style: const TextStyle(
-            fontSize: 12.0,
-            fontWeight: FontWeight.w900,
-            fontFamily: 'NanumSquareNeo-Bold',
-          ),
-        ),
-        const Text(
-          ' 에서',
-          style: TextStyle(
-            fontSize: 12.0,
-            fontFamily: 'NanumSquareNeo-Bold',
-            color: Colors.grey,
-          ),
-        ),
         const SizedBox(width: 2),
         Text(
           '🗓',
-          style: TextStyle(fontSize: 16.0),
+          style: TextStyle(fontSize: 10.0),
         ),
-        
+        SizedBox(width: 4.0),
         InkWell(
           onTap: () {
             // _editRecord();
@@ -140,10 +108,10 @@ class ExpenseDetailsPanel extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                '${DateFormat('yyyy.MM.dd').format(expense.date)}',
+                '${DateFormat('yyyy-MM-dd(EEE)','ko_KR').format(expense.date)}',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 12.0,
+                  fontSize: 10.0,
                   fontWeight: FontWeight.w900,
                   fontFamily: 'NanumSquareNeo-Bold',
                 ),
@@ -157,11 +125,11 @@ class ExpenseDetailsPanel extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 2),
         const Text(
           '의 소비 기록',
           style: TextStyle(
-            fontSize: 12.0,
+            fontSize: 10.0,
             fontFamily: 'NanumSquareNeo-Bold',
             color: Colors.grey,
           ),
@@ -176,14 +144,14 @@ class ExpenseDetailsPanel extends StatelessWidget {
       children: [
         Image.asset(
           'assets/images/frame.png',
-          width: 24.0, 
-          height: 24.0, 
+          width: 20.0, 
+          height: 20.0, 
         ),
         const SizedBox(width: 8.0),
         Text(
           '₩${_formatNumber(expense.amount.toString())}',
           style: const TextStyle(
-            fontSize: 16.0,
+            fontSize: 12.0,
             fontFamily: 'NanumSquareNeo-Bold',
             color: Colors.red,
             ),

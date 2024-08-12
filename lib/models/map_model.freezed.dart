@@ -92,7 +92,7 @@ class _$MapModelCopyWithImpl<$Res, $Val extends MapModel>
       sharedOwnerId: null == sharedOwnerId
           ? _value.sharedOwnerId
           : sharedOwnerId // ignore: cast_nullable_to_non_nullable
-              as int,        
+              as int,
       friends: null == friends
           ? _value.friends
           : friends // ignore: cast_nullable_to_non_nullable
@@ -180,11 +180,11 @@ class __$$MapModelImplCopyWithImpl<$Res>
       sharedOwnerId: null == sharedOwnerId
           ? _value.sharedOwnerId
           : sharedOwnerId // ignore: cast_nullable_to_non_nullable
-              as int,        
+              as int,
       friends: null == friends
           ? _value._friends
           : friends // ignore: cast_nullable_to_non_nullable
-              as List<FriendModel>,             
+              as List<FriendModel>,
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable

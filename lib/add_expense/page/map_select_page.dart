@@ -109,7 +109,7 @@ class _MapSelectPageState extends State<MapSelectPage> {
                     valueListenable: _searchText,
                     builder: (context, searchText, child) {
                       final filteredMapList =
-                          (mapProvider.myMapList + mapProvider.sharedMapList)
+                          (mapProvider.newMyMapList + mapProvider.sharedMapList)
                               .where((map) {
                         return map.mapName.contains(searchText);
                       }).toList();
@@ -178,7 +178,7 @@ class _MapSelectPageState extends State<MapSelectPage> {
                           date: widget.date,
                           expenseLocationName: widget.expenseLocationName,
                           mapModel: selectedMapModel!,
-                          selectedFriends: [],
+                          selectedFriends: const [],
                         ),
                       ),
                     );

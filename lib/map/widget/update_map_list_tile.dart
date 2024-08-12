@@ -19,14 +19,9 @@ class UpdateMapListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // >> Taro 미사용 처리
     final memberOwnerId =
         mapModel.isSharedMap ? mapModel.sharedOwnerId : mapModel.ownerId;
 
-    print(
-        'Taro memberOwnerId : $memberOwnerId, mapModel.ownerId : ${mapModel.ownerId} ');
-
-    // << Taro
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Container(
@@ -41,12 +36,10 @@ class UpdateMapListTile extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // >> Taro
-                // memberId == memberOwnerId
+              children: [               
                 (mapModel.isSharedMap && memberId == memberOwnerId) ||
                         !mapModel.isSharedMap
-                    // << Taro
+                   
                     ? InkWell(
                         onTap: onTap,
                         child: Image.asset(
@@ -74,7 +67,7 @@ class UpdateMapListTile extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  flex: 6,
+                  flex: 15,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -83,7 +76,7 @@ class UpdateMapListTile extends StatelessWidget {
                           Text(
                             mapModel.mapName,
                             style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: 12,
                               fontFamily: 'NanumSquareNeo-Bold',
                               color: Colors.white,
                             ),
@@ -92,14 +85,14 @@ class UpdateMapListTile extends StatelessWidget {
                           mapModel.friends.isNotEmpty
                               ? Image.asset(
                                   'assets/images/person.png',
-                                  width: 14,
-                                  height: 14,
+                                  width: 10,
+                                  height: 10,
                                   color: Colors.white,
                                 )
                               : Image.asset(
                                   'assets/images/person2.png',
-                                  width: 14,
-                                  height: 14,
+                                  width: 10,
+                                  height: 10,
                                   color: Colors.white,
                                 ),
                           const SizedBox(width: 4),
@@ -161,14 +154,14 @@ class UpdateMapListTile extends StatelessWidget {
           title: const Text(
             '맵 나가기',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
             ),
           ),
           content: const Text(
             '맵을 나가시겠어요?\n맵을 나가면 소비 기록을 더 이상 볼 수 없어요.',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 11,
             ),
           ),
           actions: <Widget>[

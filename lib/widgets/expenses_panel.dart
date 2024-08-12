@@ -4,6 +4,7 @@ import 'package:caps_2/provider/map_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -63,7 +64,7 @@ class ExpensesPanel extends StatelessWidget {
                         Text(
                           mapModel.mapName,
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontFamily: 'NanumSquareNeo-Bold',
                           ),
                         ),
@@ -73,8 +74,8 @@ class ExpensesPanel extends StatelessWidget {
                             children: [
                               Image.asset(
                                 'assets/images/person.png',
-                                width: 16,
-                                height: 16,
+                                width: 14,
+                                height: 14,
                                 color: const Color(0xFFAF55A6),
                                 ),
                               const SizedBox(width: 4),
@@ -143,16 +144,16 @@ class ExpensesPanel extends StatelessWidget {
                   },
                   leading: const CircleAvatar(),
                   title: Text(
-                    DateFormat('yyyy년 M월 d일').format(dailyExpense.tourDay),
+                    DateFormat('yyyy-MM-dd(EEE)','ko_KR').format(dailyExpense.tourDay),
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 12,
                       fontFamily: 'NanumSquareNeo-Bold',
                     ),
                   ),
                   trailing: Text(
-                    '₩${NumberFormat('###,###').format(dailyExpense.totalAmount)}',
+                    '₩ ${NumberFormat('###,###').format(dailyExpense.totalAmount)}',
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       fontFamily: 'NanumSquareNeo-Bold',
                       color: Colors.red,
                     ),

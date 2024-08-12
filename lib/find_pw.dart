@@ -69,7 +69,7 @@ class FindPw extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 400), 
+            SizedBox(height: 320), 
             Container(
               width: double.infinity,
               child: ElevatedButton( 

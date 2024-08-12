@@ -128,7 +128,7 @@ class _$PinDetailModelCopyWithImpl<$Res, $Val extends PinDetailModel>
       day: null == day
           ? _value.day
           : day // ignore: cast_nullable_to_non_nullable
-              as int,       
+              as int,
       place: null == place
           ? _value.place
           : place // ignore: cast_nullable_to_non_nullable
@@ -240,7 +240,7 @@ class __$$PinDetailModelImplCopyWithImpl<$Res>
       day: null == day
           ? _value.day
           : day // ignore: cast_nullable_to_non_nullable
-              as int,         
+              as int,
       place: null == place
           ? _value.place
           : place // ignore: cast_nullable_to_non_nullable
@@ -325,7 +325,7 @@ class _$PinDetailModelImpl implements _PinDetailModel {
 
   @override
   String toString() {
-    return 'PinDetailModel(pinIdx: $pinIdx, writer: $writer, header: $header, title: $title, memo: $memo, category: $category, method: $method, cost: $cost, place: $place, list: $list, createdAt: $createdAt, updatedAt: $updatedAt, file: $file)';
+    return 'PinDetailModel(pinIdx: $pinIdx, writer: $writer, header: $header, title: $title, memo: $memo, category: $category, method: $method, cost: $cost, day: $day, place: $place, list: $list, createdAt: $createdAt, updatedAt: $updatedAt, file: $file)';
   }
 
   @override

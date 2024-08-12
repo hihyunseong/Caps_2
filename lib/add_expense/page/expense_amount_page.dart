@@ -75,59 +75,24 @@ class _ExpenseAmountPageState extends State<ExpenseAmountPage> {
       body: Column(
         children: <Widget>[
           const SizedBox(height: 15),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: const Text(
-              'KRW',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 80.0),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.location_on_outlined,
-                  color: Colors.red,
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                  ),
-                ),
-                const Text(
-                  '에서',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: 'NanumSquareNeo-Bold',
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10.0),
-          const Text(
-            '얼마를 결제하셨나요?',
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.w900,
-              fontFamily: 'NanumSquareNeo-Bold',
-            ),
-          ),
-          const SizedBox(height: 10.0),
+          // Container(
+          //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          //   decoration: BoxDecoration(
+          //     color: Colors.grey[300],
+          //     borderRadius: BorderRadius.circular(5),
+          //   ),
+          //   child: const Text(
+          //     'KRW',
+          //     style: TextStyle(fontWeight: FontWeight.bold),
+          //   ),
+          // ),
+          const SizedBox(height: 45),
+
           _buildInputField(),
+          const SizedBox(height: 25),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding: const EdgeInsets.symmetric(horizontal: 1.0),
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
@@ -149,23 +114,13 @@ class _ExpenseAmountPageState extends State<ExpenseAmountPage> {
             ),
           ),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               CustomButton(
                 title: '다음',
                 height: 70,
-                color: (_inputValue == '' || _controller.text == '')
-                    ? Colors.red[100]!
-                    : Colors.red[300]!,
+                color: (_inputValue == '') ? Colors.red[100]! : Colors.red[300]!,
                 onTap: () {
-                  if (_controller.text == '') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('장소를 입력해주세요.'),
-                      ),
-                    );
-                    return;
-                  }
                   if (_inputValue == '') {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -198,15 +153,15 @@ class _ExpenseAmountPageState extends State<ExpenseAmountPage> {
     String money;
 
     if (_inputValue.isEmpty) {
-      money = '₩0';
+      money = '₩ 0';
     } else {
-      money = '₩$_inputValue';
+      money = '₩ $_inputValue';
     }
 
     return Text(
       money,
       style: TextStyle(
-        fontSize: 24.0,
+        fontSize: 30.0,
         fontWeight: FontWeight.w900,
         fontFamily: 'NanumSquareNeo-Bold',
         color: _inputValue.isEmpty ? Colors.grey : Colors.black,
@@ -239,7 +194,7 @@ class _ExpenseAmountPageState extends State<ExpenseAmountPage> {
       child: Text(
         value,
         style: const TextStyle(
-          fontSize: 26.0,
+          fontSize: 16.0,
           fontWeight: FontWeight.w900,
           fontFamily: 'NanumSquareNeo-Bold',
         ),

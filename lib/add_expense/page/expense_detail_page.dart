@@ -6,16 +6,14 @@ import 'package:caps_2/common/enums/pay_method.dart';
 import 'package:caps_2/friend/model/friend_model.dart';
 import 'package:caps_2/models/map_model.dart';
 import 'package:caps_2/provider/map_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import '../../models/category.dart';
 import '../../models/expense.dart';
-import 'package:caps_2/expense/model/pin_detail_model.dart';
 
 // 소비 기록
 class ExpenseDetailPage extends StatefulWidget {
@@ -220,26 +218,6 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
     return Row(
       children: [
         Text(
-          '📍',
-          style: TextStyle(fontSize: 16.0),
-        ),
-        Text(
-          widget.expenseLocationName,
-          style: const TextStyle(
-            fontSize: 12.0,
-            fontWeight: FontWeight.w900,
-            fontFamily: 'NanumSquareNeo-Bold',
-          ),
-        ),
-        const Text(
-          ' 에서',
-          style: TextStyle(
-            fontSize: 12.0,
-            fontFamily: 'NanumSquareNeo-Bold',
-            color: Colors.grey,
-          ),
-        ),
-        Text(
           '🗓',
           style: TextStyle(fontSize: 16.0),
         ),
@@ -288,8 +266,8 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
       children: [
         Image.asset(
           'assets/images/frame.png',
-          width: 24.0, 
-          height: 24.0, 
+          width: 24.0,
+          height: 24.0,
         ),
         const SizedBox(width: 8.0),
         Text(
@@ -298,11 +276,11 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
             fontSize: 16.0,
             fontFamily: 'NanumSquareNeo-Bold',
             color: Colors.red,
-            ),
           ),
-        ],
-      );
-    }
+        ),
+      ],
+    );
+  }
 
   Widget _titleInputWidget() {
     return Column(
@@ -476,30 +454,28 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
   Widget _memoWidget() {
     return SizedBox(
       height: 120,
-      child: Expanded(
-        child: TextField(
-          controller: _additionalInfoController,
-          onChanged: (value) {
-            setState(() {});
-          },
-          expands: true,
-          minLines: null,
-          maxLines: null,
-          textAlignVertical: TextAlignVertical.top,
-          decoration: const InputDecoration(
-            border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: Colors.grey),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(
-                color: Colors.grey,
-                width: 1.5,
-              ),
-            ),
-            hintText: '메모를 입력해 보세요.',
+      child: TextField(
+        controller: _additionalInfoController,
+        onChanged: (value) {
+          setState(() {});
+        },
+        expands: true,
+        minLines: null,
+        maxLines: null,
+        textAlignVertical: TextAlignVertical.top,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderSide: BorderSide(color: Colors.grey),
           ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderSide: BorderSide(
+              color: Colors.grey,
+              width: 1.5,
+            ),
+          ),
+          hintText: '메모를 입력해 보세요.',
         ),
       ),
     );
@@ -515,7 +491,7 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
       date.month,
       date.day,
       time.hour,
-      time.minute, 
+      time.minute,
     );
 
     final expense = Expense(
@@ -533,56 +509,58 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
       createdAt: DateTime.now(),
       friends: widget.selectedFriends,
     );
-    
+
     final mapProvider = context.read<MapProvider>();
     mapProvider.addExpense(expense, widget.mapModel.isSharedMap);
   }
 
- Widget _buildIconButton(Category category) {
-  return Column(
-    children: [
-      Transform.translate(
-        offset: _selectedCategory == category ? Offset(0, -6) : Offset(0, 0),
-        child: IconButton(
-          onPressed: () {
-            setState(() {
-              _selectedCategory = category;
-            });
-          },
-          icon: Image.asset(
-            category.iconPath,
-            width: 40,
-            height: 40,
+  Widget _buildIconButton(Category category) {
+    return Column(
+      children: [
+        Transform.translate(
+          offset: _selectedCategory == category
+              ? const Offset(0, -6)
+              : const Offset(0, 0),
+          child: IconButton(
+            onPressed: () {
+              setState(() {
+                _selectedCategory = category;
+              });
+            },
+            icon: Image.asset(
+              category.iconPath,
+              width: 40,
+              height: 40,
+            ),
+            iconSize: 32.0,
           ),
-          iconSize: 32.0,
         ),
-      ),
-      Text(
-        category.text,
-        style: const TextStyle(
-          fontSize: 12,
-          fontFamily: 'NanumSquareNeo-Bold',
+        Text(
+          category.text,
+          style: const TextStyle(
+            fontSize: 12,
+            fontFamily: 'NanumSquareNeo-Bold',
+          ),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 
-    // return Column(
-    //   children: [
-    //     IconButton(
-    //       onPressed: () {
-    //         setState(() {
-    //           _selectedCategory = category;
-    //         });
-    //       },
-    //       icon: Icon(icon, size: _selectedCategory == category ? 30 : 15),
-    //       iconSize: 32.0,
-    //     ),
-    //     Text(label),
-    //   ],
-    // );
-  
+  // return Column(
+  //   children: [
+  //     IconButton(
+  //       onPressed: () {
+  //         setState(() {
+  //           _selectedCategory = category;
+  //         });
+  //       },
+  //       icon: Icon(icon, size: _selectedCategory == category ? 30 : 15),
+  //       iconSize: 32.0,
+  //     ),
+  //     Text(label),
+  //   ],
+  // );
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,

@@ -6,9 +6,9 @@ import 'package:caps_2/models/category.dart';
 extension StringColorExtensions on String {
   Color getColorFromString() {
     if (this == 'green') {
-      return const Color.fromRGBO(47, 200, 84, 1.0);
+      return const Color.fromRGBO(47, 200, 84, 1);
     } else if (this == 'orange') {
-      return const Color.fromRGBO(255, 185, 55, 1.0);
+      return const Color.fromRGBO(255, 185, 55, 1);
     } else if (this == 'purple') {
       return const Color.fromRGBO(124, 88, 175, 1);
     } else if (this == 'blue') {
