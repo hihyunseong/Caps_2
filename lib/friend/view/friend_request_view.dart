@@ -32,7 +32,7 @@ class _FriendRequestViewState extends State<FriendRequestView> {
       children: [
         FriendTextField(
           controller: friendRequestController,
-          hintText: '친구의 닉네임을 검색해보세요',
+          hintText: '친구의 닉네임을 검색해보세요.',
         ),
         const SizedBox(height: 20),
         Expanded(

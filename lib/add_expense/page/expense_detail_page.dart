@@ -71,7 +71,7 @@ class _ExpenseDetailPageState extends State<ExpenseDetailPage> {
   Widget build(BuildContext context) {
     String formattedDateTime =
         DateFormat('yyyy-MM-dd HH:mm').format(_selectedDate!);
-    String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate!);
+    String formattedDate = DateFormat('yyyy-MM-dd(EEE)', 'ko_KR').format(_selectedDate!);
     String formattedTime = _selectedTime != null
         ? _selectedTime!.format(context)
         : formattedDateTime.split(' ')[1];

@@ -23,13 +23,22 @@ class FriendTextField extends StatelessWidget {
         onChanged: onChanged,
         onSubmitted: onSubmitted,
         style: TextStyle(
-          fontSize: 16,
+          fontSize: 13,
           fontFamily: 'NanumSquareNeo-Bold',
-          color: Colors.grey[400]!,
+          color: Colors.black,
         ),
         decoration: InputDecoration(
           hintText: hintText,
-          suffixIcon: const Icon(Icons.search, color: Colors.grey),
+          hintStyle: const TextStyle(
+            color: Color(0xFFC4C4C4),  
+            fontSize: 13,              
+          ),
+          suffixIcon: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ImageIcon(
+              AssetImage('assets/images/search/Iconly/Regular/Light/Search.png'),
+            ),
+          ),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(30)),
             borderSide: BorderSide(color: Colors.grey),

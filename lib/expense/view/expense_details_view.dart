@@ -200,15 +200,14 @@ class _LocationAndDateSelectView extends StatelessWidget {
             ),
             if (pinDetailModel.list.isNotEmpty)
               Text(
-                ' - ${pinDetailModel.list.first.name}님 외 ${pinDetailModel.list.length - 1}명과 함께',
+                ' - ${pinDetailModel.writer}님 외 ${pinDetailModel.list.length - 1}명과 함께',
                 style: const TextStyle(
                   fontSize: 11.0,
                   fontFamily: 'NanumSquareNeo-Bold',
                   fontWeight: FontWeight.w900,
                   color: Colors.black,
                 ),
-              ),
-              
+              ),           
           ],
         ),
       ],

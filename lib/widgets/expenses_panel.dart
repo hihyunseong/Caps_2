@@ -142,6 +142,7 @@ class ExpensesPanel extends StatelessWidget {
                     await mapProvider.setIndexForDate(dailyExpense.tourDay);
                     mapProvider.fitAllMarkers(googleMapController);
                   },
+                  
                   leading: const CircleAvatar(),
                   title: Text(
                     DateFormat('yyyy-MM-dd(EEE)','ko_KR').format(dailyExpense.tourDay),

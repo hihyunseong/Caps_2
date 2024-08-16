@@ -17,17 +17,24 @@ class FriendRequestTile extends StatelessWidget {
       children: [
         ProfileImageWidget(
           imageUrl: friend.profile,
-          width: 70,
-          height: 70,
+          width: 60,
+          height: 60,
         ),
         Text(
           friend.username,
           style: const TextStyle(
             color: Colors.black,
             fontFamily: 'NanumSquareNeo-Bold',
+            fontSize: 12
           ),
         ),
-        Text(AppUtil.getTimeAgo(friend.createdAt)),
+        Text(
+          AppUtil.getTimeAgo(friend.createdAt),
+          style: TextStyle(
+            fontSize: 10, 
+            color: const Color(0xFF9D9D9D),
+          ),
+        ),
         Row(
           children: [
             Expanded(
@@ -40,6 +47,7 @@ class FriendRequestTile extends StatelessWidget {
                   style: TextStyle(
                     color: const Color(0xFFFF6F61),
                     fontFamily: 'NanumSquareNeo-Bold',
+                    fontSize: 12.0
                   ),
                 ),
               ),
@@ -54,6 +62,7 @@ class FriendRequestTile extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.black,
                     fontFamily: 'NanumSquareNeo-Bold',
+                    fontSize: 12.0,
                   ),
                 ),
               ),

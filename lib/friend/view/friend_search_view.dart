@@ -16,7 +16,7 @@ class FriendSearchView extends StatelessWidget {
       children: [
         FriendTextField(
           controller: friendProvider.friendFindController,
-          hintText: '친구의 이메일을 검색해보세요',
+          hintText: '친구의 이메일을 검색해보세요.',
           onSubmitted: (value) {
             friendProvider.searchFriend(value);
           },

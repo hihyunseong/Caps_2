@@ -18,14 +18,15 @@ class FriendListTile extends StatelessWidget {
       children: [
         ProfileImageWidget(
           imageUrl: friend.profile,
-          width: 70,
-          height: 70,
+          width: 60,
+          height: 60,
         ),
         Text(
           friend.name,
           style: const TextStyle(
             color: Colors.black,
             fontFamily: 'NanumSquareNeo-Bold',
+            fontSize: 12
           ),
         ),
         TextButton(
@@ -37,7 +38,7 @@ class FriendListTile extends StatelessWidget {
             style: TextStyle(
               color: Color(0xFF9D9D9D),
               fontFamily: 'NanumSquareNeo-Bold',
-              fontSize: 13.0,
+              fontSize: 12.0,
             ),
           ),
         )
